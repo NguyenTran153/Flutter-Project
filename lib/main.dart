@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/VideoCall/video_call.dart';
+import 'package:flutter_project/screens/Schedule/schedule.dart';
 import 'package:flutter_project/utils/colors.dart';
 
 void main() {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
         useMaterial3: true,
       ),
-      home: const VideoCallScreen(),
+      home: ScheduleScreen(),
     );
   }
 }
