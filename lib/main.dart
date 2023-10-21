@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/Schedule/schedule.dart';
+import 'package:flutter_project/screens/History/history_screen.dart';
+import 'package:flutter_project/screens/Homepage/homepage.dart';
 import 'package:flutter_project/utils/colors.dart';
 
 void main() {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
         useMaterial3: true,
       ),
-      home: ScheduleScreen(),
+      home: HomepageScreen(),
     );
   }
 }

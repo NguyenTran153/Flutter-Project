@@ -10,6 +10,10 @@ class Footer extends StatefulWidget {
 class _FooterState extends State<Footer> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+      child: Row(
+
+      ),
+    );
   }
 }

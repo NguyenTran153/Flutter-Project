@@ -1,15 +1,17 @@
 import "package:flutter/material.dart";
 
-class Header extends StatefulWidget {
-  const Header({super.key});
+class Header extends StatelessWidget {
+  final String title;
 
-  @override
-  State<Header> createState() => _HeaderState();
-}
+  const Header({
+    Key? key,
+    required this.title
+  }) : super(key: key);
 
-class _HeaderState extends State<Header> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+
+    );
   }
 }
