@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_project/screens/Homepage/tutorItem/tutor_item.dart";
-import "package:flutter_project/screens/View/header.dart";
+import "package:flutter_project/utils/colors.dart";
 
 class HomepageScreen extends StatefulWidget {
   const HomepageScreen({super.key});
@@ -10,15 +10,13 @@ class HomepageScreen extends StatefulWidget {
 }
 
 class _HomepageScreenState extends State<HomepageScreen> {
-  bool _isLoading = false;
-
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
+    return Scaffold(
+      backgroundColor: primaryColor,
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Header(title: 'Home'),
           Padding(
             padding: const EdgeInsets.all(12),
             child: Text(
@@ -26,16 +24,16 @@ class _HomepageScreenState extends State<HomepageScreen> {
               style: Theme.of(context).textTheme.displaySmall,
             ),
           ),
-          _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 8,
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const ClampingScrollPhysics(),
+              itemCount: 4,
               itemBuilder: (context, index) {
-                  return TutorItem();
+                return TutorItem();
               },
-          )
+            ),
+          ),
         ],
       ),
     );
