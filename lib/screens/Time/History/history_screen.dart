@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/History/historyItem/history_item.dart';
+import 'package:flutter_project/screens/Time/History/historyItem/history_item.dart';
 import 'package:flutter_project/utils/colors.dart';
 
 class HistoryScreen extends StatefulWidget {

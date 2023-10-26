@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:flutter_project/screens/History/history_screen.dart";
 import "package:flutter_project/screens/Homepage/homepage.dart";
+import "package:flutter_project/screens/Time/History/history_screen.dart";
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({super.key});

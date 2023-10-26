@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:flutter_project/screens/Schedule/scheduleItem/schedule_item.dart";
+import "package:flutter_project/screens/Time/Schedule/scheduleItem/schedule_item.dart";
 import "package:flutter_project/utils/colors.dart";
 
 class ScheduleScreen extends StatefulWidget {
