@@ -9,7 +9,7 @@ class TutorDetailScreen extends StatefulWidget {
 }
 
 class _TutorDetailScreenState extends State<TutorDetailScreen> {
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
