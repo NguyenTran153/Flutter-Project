@@ -3,6 +3,8 @@ import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 import 'package:flutter_project/widgets/text_field.dart';
 
+import '../../utils/routes.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -65,7 +67,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               sizedBox,
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.forgotPassword);
+                },
                 child: const Text(
                   "Forgot Password",
                   style: TextStyle(

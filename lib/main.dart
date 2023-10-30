@@ -4,6 +4,7 @@ import 'package:flutter_project/screens/Auth/login.dart';
 import 'package:flutter_project/screens/Auth/register.dart';
 import 'package:flutter_project/screens/Time/History/history_screen.dart';
 import 'package:flutter_project/screens/Tutor/tutorDetail/tutor_detail_screen.dart';
+import 'package:flutter_project/screens/VideoCall/video_call_screen.dart';
 import 'package:flutter_project/screens/View/navigation_screen.dart';
 import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/routes.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
         useMaterial3: true,
       ),
-      home: const HistoryScreen(),
+      home: const VideoCallScreen(),
       routes: {
         Routes.login: (context) => const LoginScreen(),
         Routes.register: (context) => const RegisterScreen(),
