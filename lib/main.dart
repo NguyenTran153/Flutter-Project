@@ -6,7 +6,7 @@ import 'package:flutter_project/screens/Course/course_screen.dart';
 import 'package:flutter_project/screens/Time/History/history_screen.dart';
 import 'package:flutter_project/screens/Tutor/tutorDetail/tutor_detail_screen.dart';
 import 'package:flutter_project/screens/VideoCall/video_call_screen.dart';
-import 'package:flutter_project/screens/View/navigation_screen.dart';
+import 'package:flutter_project/screens/Navigation/navigation_screen.dart';
 import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/routes.dart';
 

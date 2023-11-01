@@ -43,7 +43,7 @@ class _CameraScreenState extends State<CameraScreen> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
-            backgroundColor: videoColor,
+            backgroundColor: blackColor,
             appBar: AppBar(
               title: const Text("Camera"),
             ),

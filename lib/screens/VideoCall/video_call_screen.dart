@@ -13,7 +13,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: videoColor,
+      backgroundColor: blackColor,
       body: Column(
         children: [
           Expanded(
