@@ -69,7 +69,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 4),
+          subSizedBox,
           Card(
             surfaceTintColor: primaryColor,
             elevation: 2,
@@ -87,7 +87,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 4),
+          subSizedBox,
           InkWell(
             child: Card(
               surfaceTintColor: primaryColor,
