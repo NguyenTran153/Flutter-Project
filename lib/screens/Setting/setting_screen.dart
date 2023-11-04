@@ -40,7 +40,7 @@ class _SettingScreenState extends State<SettingScreen> {
           Align(
               alignment: Alignment.center,
               child: Text(
-                'name',
+                'Tran Nguyen',
                 style: Theme.of(context).textTheme.displaySmall,
               )),
           //const SizedBox(height: 12),
@@ -116,7 +116,7 @@ class _SettingScreenState extends State<SettingScreen> {
               child: Row(
                 children: const [
                   Icon(Icons.privacy_tip_outlined, size: 30),
-                  SizedBox(width: 12),
+                  sizedBox,
                   Text(
                     'Privacy Policy',
                     style: TextStyle(fontSize: 16),

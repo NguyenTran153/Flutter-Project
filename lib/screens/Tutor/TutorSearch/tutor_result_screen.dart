@@ -3,6 +3,7 @@ import 'package:flutter_project/screens/Tutor/TutorSearch/TutorSearchItem/tutor_
 import 'package:flutter_project/utils/colors.dart';
 
 import '../../../utils/constants.dart';
+import '../../Homepage/TutorItem/tutor_item.dart';
 
 class TutorResultScreen extends StatefulWidget {
   const TutorResultScreen({Key? key}) : super(key: key);
@@ -88,7 +89,7 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
             const SizedBox(height: 8),
             ...List<Widget>.generate(
               10,
-                  (index) => TutorSearchItemScreen(),
+                  (index) => TutorItem(),
             ),
             _count > 0
                 ? Row(
@@ -99,7 +100,7 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    backgroundColor: _page == 1 ? Colors.grey : Colors.blue[300],
+                    backgroundColor: _page == 1 ? tertiaryColor : secondaryColor,
                   ),
                   onPressed: _page == 1
                       ? null
