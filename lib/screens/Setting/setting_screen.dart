@@ -51,7 +51,7 @@ class _SettingScreenState extends State<SettingScreen> {
             child: const Text('Edit Profile'),
           ),
           // Functions Starts Here
-          const SizedBox(height: 4),
+          subSizedBox,
           Card(
             surfaceTintColor: primaryColor,
             elevation: 2,
