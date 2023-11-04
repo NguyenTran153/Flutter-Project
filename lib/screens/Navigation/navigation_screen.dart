@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_project/screens/Homepage/homepage_screen.dart";
+import "package:flutter_project/screens/Setting/setting_screen.dart";
 import "package:flutter_project/screens/Time/time_screen.dart";
 import "package:flutter_project/screens/Tutor/TutorSearch/tutor_search_screen.dart";
 import "package:flutter_project/utils/colors.dart";
@@ -19,14 +20,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
     const TutorSearchScreen(),
     const TimeScreen(),
     const CourseScreen(),
-    const HomepageScreen(),
+    const SettingScreen(),
   ];
   List<String> pagesTitles = [
     'Home',
-    'Tutors',
-    'Schedule',
-    'Courses',
-    'Settings'
+    'Tutor',
+    'Time',
+    'Course',
+    'Setting'
   ];
   int _chosenPageIndex = 0;
 
@@ -81,12 +82,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
         currentIndex: _chosenPageIndex,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Tutors'),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Tutor'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.schedule_outlined), label: 'Schedule'),
-          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Courses'),
+              icon: Icon(Icons.schedule_outlined), label: 'Time'),
+          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Course'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Settings'),
+              icon: Icon(Icons.settings), label: 'Setting'),
         ],
       ),
     );
