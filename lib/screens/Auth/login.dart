@@ -80,6 +80,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               subSizedBox,
               InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.main);
+                },
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
@@ -113,6 +116,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, Routes.register);
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: const Text(

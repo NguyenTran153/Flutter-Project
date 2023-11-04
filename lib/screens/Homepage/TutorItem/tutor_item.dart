@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
+import '../../../utils/routes.dart';
+
 class TutorItem extends StatefulWidget {
   const TutorItem({super.key});
 
@@ -53,7 +55,12 @@ class _TutorItemState extends State<TutorItem> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                Routes.teacherDetail,
+                              );
+                            },
                             child: Text(
                               "Noname",
                               style: Theme.of(context).textTheme.displaySmall,

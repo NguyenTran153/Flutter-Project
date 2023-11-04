@@ -1,6 +1,10 @@
 import "package:flutter/material.dart";
 import "package:flutter_project/screens/Homepage/homepage_screen.dart";
-import "package:flutter_project/screens/Time/History/history_screen.dart";
+import "package:flutter_project/screens/Time/time_screen.dart";
+import "package:flutter_project/screens/Tutor/TutorSearch/tutor_search_screen.dart";
+import "package:flutter_project/utils/colors.dart";
+
+import "../Course/course_screen.dart";
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({super.key});
@@ -12,9 +16,9 @@ class NavigationScreen extends StatefulWidget {
 class _NavigationScreenState extends State<NavigationScreen> {
   List<Widget> pages = [
     const HomepageScreen(),
-    const HomepageScreen(),
-    const HistoryScreen(),
-    const HomepageScreen(),
+    const TutorSearchScreen(),
+    const TimeScreen(),
+    const CourseScreen(),
     const HomepageScreen(),
   ];
   List<String> pagesTitles = [
@@ -31,7 +35,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        backgroundColor: primaryColor,
         title: Text(
           pagesTitles[_chosenPageIndex],
           style: Theme.of(context).textTheme.displayMedium,

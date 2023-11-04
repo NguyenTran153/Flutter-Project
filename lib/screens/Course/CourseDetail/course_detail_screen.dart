@@ -3,6 +3,8 @@ import "package:flutter/material.dart";
 import "package:flutter_project/utils/colors.dart";
 import "package:flutter_project/utils/sized_box.dart";
 
+import "../Lesson/LessonItem/lesson_item_screen.dart";
+
 class CourseDetailScreen extends StatefulWidget {
   const CourseDetailScreen({super.key});
 
@@ -14,6 +16,17 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: primaryColor,
+        leading: BackButton(
+          color: secondaryColor,
+        ),
+        title: Text(
+          'Course Detail',
+          style: Theme.of(context).textTheme.displayMedium,
+        ),
+      ),
       backgroundColor: primaryColor,
       body: SingleChildScrollView(
         child: Column(
@@ -80,7 +93,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               child: Row(
                 children: [
                   const Icon(Icons.help_outline, color: secondaryColor),
-                  const SizedBox(width: 8),
+                  subSizedBox,
                   Text(
                     'Why Take This Course?',
                     style: Theme.of(context).textTheme.headlineMedium,
@@ -154,6 +167,12 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               child: Text(
                 'List Of Topics',
                 style: Theme.of(context).textTheme.displaySmall,
+              ),
+            ),
+            ...List<Widget>.generate(
+              10,
+                  (index) => LessonItemScreen(
+                index: index,
               ),
             ),
           ],

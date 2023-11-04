@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/colors.dart';
 
+import '../../utils/routes.dart';
 import '../../utils/sized_box.dart';
 import '../../widgets/text_field.dart';
 
@@ -76,6 +77,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               sizedBox,
               InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.login);
+                },
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
@@ -98,6 +102,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, Routes.login);
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: const Text(
