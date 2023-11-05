@@ -2,13 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/colors.dart';
 
-import '../../../models/course.dart';
 import '../../../utils/routes.dart';
 
 class CourseItemScreen extends StatefulWidget {
-  const CourseItemScreen({Key? key
-  }) : super(key: key);
-
+  const CourseItemScreen({Key? key}) : super(key: key);
 
   @override
   State<CourseItemScreen> createState() => _CourseItemScreenState();
@@ -33,7 +30,8 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
         child: Column(
           children: [
             CachedNetworkImage(
-              imageUrl: 'https://media.istockphoto.com/id/1154103408/vi/anh/anh-ch%C3%A0ng-giao-xe-%C4%91%E1%BA%A1p.jpg?s=1024x1024&w=is&k=20&c=-g4glbkJ3fxyEXcZm0OmaoTRLX2GEeSeZbq1dtdHDnk=',
+              imageUrl:
+                  'https://media.istockphoto.com/id/1154103408/vi/anh/anh-ch%C3%A0ng-giao-xe-%C4%91%E1%BA%A1p.jpg?s=1024x1024&w=is&k=20&c=-g4glbkJ3fxyEXcZm0OmaoTRLX2GEeSeZbq1dtdHDnk=',
               fit: BoxFit.cover,
               placeholder: (context, url) => const Icon(
                 Icons.image_rounded,
@@ -52,15 +50,16 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                     'null course name',
+                    'null course name',
                     style: Theme.of(context).textTheme.displaySmall,
                   ),
                   const SizedBox(
                     height: 8,
                   ),
                   Text(
-                     'null course description',
-                    style: const TextStyle(fontWeight: FontWeight.w400, color: tertiaryColor),
+                    'null course description',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w400, color: tertiaryColor),
                   ),
                   const SizedBox(
                     height: 16,
@@ -69,7 +68,7 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                           'null course level',
+                          'null course level',
                           style: const TextStyle(fontSize: 18),
                         ),
                       ),
@@ -86,5 +85,5 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
         ),
       ),
     );
-}
+  }
 }
