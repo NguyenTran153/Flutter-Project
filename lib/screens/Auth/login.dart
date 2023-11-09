@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 import 'package:flutter_project/widgets/text_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/routes.dart';
 
@@ -15,6 +16,18 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _login() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedUsername = prefs.getString('email');
+    String? savedPassword = prefs.getString('password');
+
+    String enteredUsername = _emailController.text;
+    String enteredPassword = _passwordController.text;
+
+    if (enteredUsername == savedUsername && enteredPassword == savedPassword) {
+    } else {}
+  }
 
   @override
   void dispose() {
@@ -100,9 +113,21 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(onPressed: () {}, icon: Image.asset('public/icons/facebook.png'), iconSize: 32.0,),
-                  IconButton(onPressed: () {}, icon: Image.asset('public/icons/google.png'), iconSize: 32.0,),
-                  IconButton(onPressed: () {}, icon: Image.asset('public/icons/phone.png'), iconSize: 32.0,),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Image.asset('public/icons/facebook.png'),
+                    iconSize: 32.0,
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Image.asset('public/icons/google.png'),
+                    iconSize: 32.0,
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Image.asset('public/icons/phone.png'),
+                    iconSize: 32.0,
+                  ),
                 ],
               ),
               sizedBox,

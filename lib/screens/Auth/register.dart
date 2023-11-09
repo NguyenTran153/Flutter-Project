@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/routes.dart';
 import '../../utils/sized_box.dart';
@@ -17,6 +18,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+
+  Future<void> _register() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String username = _emailController.text;
+    String password = _passwordController.text;
+
+    await prefs.setString('username', username);
+    await prefs.setString('password', password);
+
+    Navigator.pushNamed(context, Routes.login);
+  }
 
   @override
   void dispose() {
