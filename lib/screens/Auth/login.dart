@@ -26,7 +26,28 @@ class _LoginScreenState extends State<LoginScreen> {
     String enteredPassword = _passwordController.text;
 
     if (enteredUsername == savedUsername && enteredPassword == savedPassword) {
-    } else {}
+      setState(() {
+        Navigator.pushNamed(context, Routes.main);
+      });
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Your information is wrong!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -94,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
               subSizedBox,
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, Routes.main);
+                  _login();
                 },
                 child: Container(
                   width: double.infinity,

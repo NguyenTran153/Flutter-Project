@@ -21,10 +21,77 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _register() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String username = _emailController.text;
+    String email = _emailController.text;
     String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
 
-    await prefs.setString('username', username);
+    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Please fill in full information'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    // Check if email is already registered
+    String? storedEmail = prefs.getString('email');
+    if (storedEmail == email) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Email is already registered'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Password and confirm are not matched'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Đóng'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+
+    await prefs.setString('email', email);
     await prefs.setString('password', password);
 
     Navigator.pushNamed(context, Routes.login);
@@ -90,7 +157,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               sizedBox,
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, Routes.login);
+                  _register();
                 },
                 child: Container(
                   width: double.infinity,
