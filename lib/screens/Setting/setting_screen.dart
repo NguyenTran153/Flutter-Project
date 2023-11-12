@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
+import '../../providers/theme_provider.dart';
 import '../../utils/routes.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -89,6 +91,29 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           subSizedBox,
           InkWell(
+            onTap: () => {
+            Provider.of<ThemeProvider>(context).toggleMode()
+          },
+            child: Card(
+              surfaceTintColor: primaryColor,
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: const [
+                    Icon(Icons.dark_mode, size: 30),
+                    sizedBox,
+                    Text(
+                      'Change theme',
+                      style: TextStyle(fontSize: 16),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          subSizedBox,
+          InkWell(
             child: Card(
               surfaceTintColor: primaryColor,
               elevation: 2,
@@ -107,7 +132,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
             ),
           ),
-          sizedBox,
+          subSizedBox,
           Card(
             surfaceTintColor: primaryColor,
             elevation: 2,

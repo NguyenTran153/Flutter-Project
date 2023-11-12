@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_project/screens/Auth/forget_password.dart';
 import 'package:flutter_project/screens/Auth/login.dart';
 import 'package:flutter_project/screens/Auth/register.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_project/screens/VideoCall/video_call_screen.dart';
 import 'package:flutter_project/screens/Navigation/navigation_screen.dart';
 import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/routes.dart';
+import 'package:flutter_project/providers/theme_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,25 +21,26 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'LetTutor',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
-        useMaterial3: true,
-      ),
-      home: const LoginScreen(),
-      routes: {
-        Routes.login: (context) => const LoginScreen(),
-        Routes.register: (context) => const RegisterScreen(),
-        Routes.forgotPassword: (context) => const ForgotPasswordScreen(),
-        Routes.main: (context) => const NavigationScreen(),
-        Routes.teacherDetail: (context) => const TutorDetailScreen(),
-        Routes.courseDetail: (context) => const CourseDetailScreen(),
-        Routes.tutorSearchResult: (context) => const TutorResultScreen(),
-      },
-    );
+    return ChangeNotifierProvider(
+        create: (context) => ThemeProvider(),
+        child: Consumer<ThemeProvider>(
+          builder: (ctx, themeProvider, _) => MaterialApp(
+            title: 'LetTutor',
+            theme:
+                themeProvider.mode == ThemeMode.light ? lightTheme : darkTheme,
+            home: const LoginScreen(),
+            routes: {
+              Routes.login: (context) => const LoginScreen(),
+              Routes.register: (context) => const RegisterScreen(),
+              Routes.forgotPassword: (context) => const ForgotPasswordScreen(),
+              Routes.main: (context) => const NavigationScreen(),
+              Routes.teacherDetail: (context) => const TutorDetailScreen(),
+              Routes.courseDetail: (context) => const CourseDetailScreen(),
+              Routes.tutorSearchResult: (context) => const TutorResultScreen(),
+            },
+          ),
+        ));
   }
 }

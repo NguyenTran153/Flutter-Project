@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/utils/colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/routes.dart';
 import '../../utils/sized_box.dart';
@@ -15,18 +15,91 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
 
+  Future<void> _getNewPassword() async {
+    String email = _emailController.text;
+
+    if (email.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Please enter your email'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedEmail = prefs.getString('email');
+
+    if (storedEmail == null || storedEmail != email) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Email does not exist'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    String newPassword = "12345";
+    await prefs.setString('password', newPassword);
+    showResetPasswordConfirmationDialog();
+  }
+
+  void showResetPasswordConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Reset Password'),
+          content: const Text('An email with instructions to reset your password has been sent.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, Routes.login);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     super.dispose();
     _emailController.dispose();
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: primaryColor,
+      backgroundColor: Theme.of(context).primaryColor,
       body: SafeArea(
         child: Container(
           margin: const EdgeInsets.all(10.0),
@@ -35,22 +108,14 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               sizedBox,
-              const Text(
+              Text(
                 "Say hello to your English tutors",
-                style: TextStyle(
-                  color: secondaryColor,
-                  fontSize: 36.0,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               sizedBox,
-              const Text(
+              Text(
                 "Become fluent faster through one-on-one video chat lessons tailored to your goals.",
-                style: TextStyle(
-                  color: tertiaryColor,
-                  fontSize: 24,
-                  fontWeight: FontWeight.normal,
-                ),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               sizedBox,
               TextFieldInput(
@@ -60,7 +125,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
               sizedBox,
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, Routes.login);
+                  _getNewPassword();
                 },
                 child: Container(
                   width: double.infinity,
@@ -68,7 +133,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: secondaryColor,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                   child: const Text("Send Email"),
                 ),
@@ -89,12 +154,9 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: const Text(
+                      child: Text(
                         ' Login',
-                        style: TextStyle(
-                          color: secondaryColor,
-                          decoration: TextDecoration.underline,
-                        ),
+                        style: Theme.of(context).textTheme.titleSmall,
                       ),
                     ),
                   ),

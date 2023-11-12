@@ -5,3 +5,7 @@ const secondaryColor = Colors.blue;
 const tertiaryColor = Colors.grey;
 const blackColor = Colors.black;
 const dangerColor = Colors.red;
+
+bool isDarkmode = false;
+
+

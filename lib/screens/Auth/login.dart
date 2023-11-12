@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 import 'package:flutter_project/widgets/text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/routes.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -16,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
 
   Future<void> _login() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: primaryColor,
+      backgroundColor: Theme.of(context).primaryColor,
       body: SafeArea(
         child: Container(
           margin: const EdgeInsets.all(10.0),
@@ -70,22 +70,14 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               sizedBox,
-              const Text(
+              Text(
                 "Say hello to your English tutors",
-                style: TextStyle(
-                  color: secondaryColor,
-                  fontSize: 36.0,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               sizedBox,
-              const Text(
+              Text(
                 "Become fluent faster through one-on-one video chat lessons tailored to your goals.",
-                style: TextStyle(
-                  color: tertiaryColor,
-                  fontSize: 24,
-                  fontWeight: FontWeight.normal,
-                ),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               sizedBox,
               TextFieldInput(
@@ -104,12 +96,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: () {
                   Navigator.pushNamed(context, Routes.forgotPassword);
                 },
-                child: const Text(
+                child: Text(
                   "Forgot Password",
-                  style: TextStyle(
-                    color: secondaryColor,
-                    decoration: TextDecoration.underline,
-                  ),
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
               subSizedBox,
@@ -123,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: secondaryColor,
+                    color: Theme.of(context).primaryColor,
                   ),
                   child: const Text("Login"),
                 ),
@@ -167,12 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: const Text(
+                      child: Text(
                         ' Register.',
-                        style: TextStyle(
-                          color: secondaryColor,
-                          decoration: TextDecoration.underline,
-                        ),
+                        style: Theme.of(context).textTheme.titleSmall
                       ),
                     ),
                   ),
