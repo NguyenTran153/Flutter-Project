@@ -3,7 +3,6 @@ import "package:flutter_project/screens/Homepage/homepage_screen.dart";
 import "package:flutter_project/screens/Setting/setting_screen.dart";
 import "package:flutter_project/screens/Time/time_screen.dart";
 import "package:flutter_project/screens/Tutor/TutorSearch/tutor_search_screen.dart";
-import "package:flutter_project/utils/colors.dart";
 
 import "../Course/course_screen.dart";
 
@@ -37,7 +36,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text(
           pagesTitles[_chosenPageIndex],
           style: Theme.of(context).textTheme.displayMedium,

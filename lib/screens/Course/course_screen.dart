@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/screens/Course/course_search_screen.dart';
-import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
 class CourseScreen extends StatefulWidget {
@@ -21,15 +20,15 @@ class _CourseScreenState extends State<CourseScreen> {
               Tab(
                 icon: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(
                       Icons.school_outlined,
-                      color: secondaryColor,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     subSizedBox,
                     Text(
                       'All Courses',
-                      style: TextStyle(color: secondaryColor),
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     )
                   ],
                 ),
@@ -37,15 +36,15 @@ class _CourseScreenState extends State<CourseScreen> {
               Tab(
                 icon: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(
                       Icons.book_online_outlined,
-                      color: secondaryColor,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     SizedBox(width: 8),
                     Text(
                       'E-Books',
-                      style: TextStyle(color: secondaryColor),
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     )
                   ],
                 ),
@@ -63,12 +62,12 @@ class _CourseScreenState extends State<CourseScreen> {
                       TextField(
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.only(right: 24),
-                          hintStyle: TextStyle(color: tertiaryColor[400]),
+                          hintStyle: TextStyle(color: Theme.of(context).colorScheme.tertiary),
                           hintText: 'search e-books',
                           prefixIcon: const Icon(Icons.search),
-                          border: const OutlineInputBorder(
+                          border: OutlineInputBorder(
                               borderSide:
-                                  BorderSide(color: tertiaryColor, width: 2),
+                                  BorderSide(color: Theme.of(context).colorScheme.tertiary, width: 2),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10))),
                         ),

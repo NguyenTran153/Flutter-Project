@@ -1,6 +1,5 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
-import "package:flutter_project/utils/colors.dart";
 import "package:flutter_project/utils/sized_box.dart";
 
 import "../Lesson/LessonItem/lesson_item_screen.dart";
@@ -18,16 +17,16 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
         leading: BackButton(
-          color: secondaryColor,
+          color: Theme.of(context).colorScheme.secondary,
         ),
         title: Text(
           'Course Detail',
           style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
-      backgroundColor: primaryColor,
+      backgroundColor: Theme.of(context).primaryColor,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -37,25 +36,25 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               imageUrl:
                   'https://media.istockphoto.com/id/1154103408/vi/anh/anh-ch%C3%A0ng-giao-xe-%C4%91%E1%BA%A1p.jpg?s=1024x1024&w=is&k=20&c=-g4glbkJ3fxyEXcZm0OmaoTRLX2GEeSeZbq1dtdHDnk=',
               fit: BoxFit.cover,
-              placeholder: (context, url) => const Icon(
+              placeholder: (context, url) => Icon(
                 Icons.image_rounded,
                 size: 48,
-                color: tertiaryColor,
+                color: Theme.of(context).colorScheme.tertiary,
               ),
               errorWidget: (context, url, error) => const Icon(
                 Icons.error_outline_rounded,
                 size: 32,
-                color: dangerColor,
+                color: Colors.red,
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Text(
                 'Name',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: blackColor,
+                  color: Theme.of(context).colorScheme.tertiary,
                 ),
               ),
             ),
@@ -72,11 +71,11 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 onPressed: () {},
                 style: TextButton.styleFrom(
                   minimumSize: const Size.fromHeight(44),
-                  backgroundColor: secondaryColor,
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
                 ),
-                child: const Text(
+                child: Text(
                   'Discover',
-                  style: TextStyle(fontSize: 18, color: primaryColor),
+                  style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),
                 ),
               ),
             ),
@@ -92,7 +91,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Row(
                 children: [
-                  const Icon(Icons.help_outline, color: secondaryColor),
+                  Icon(Icons.help_outline, color: Theme.of(context).colorScheme.secondary),
                   subSizedBox,
                   Text(
                     'Why Take This Course?',
@@ -109,7 +108,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Row(
                 children: [
-                  const Icon(Icons.help_outline, color: secondaryColor),
+                  Icon(Icons.help_outline, color: Theme.of(context).colorScheme.secondary),
                   const SizedBox(width: 8),
                   Text(
                     'What will you be able to do?',
@@ -133,8 +132,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Row(
                 children: [
-                  const Icon(Icons.group_add_outlined, color: secondaryColor),
-                  const SizedBox(width: 8),
+                  Icon(Icons.group_add_outlined, color: Theme.of(context).colorScheme.secondary),
+                  subSizedBox,
                   Text(
                     'Course level',
                     style: Theme.of(context).textTheme.headlineMedium,
@@ -153,8 +152,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Row(
                 children: [
-                  const Icon(Icons.book_outlined, color: secondaryColor),
-                  const SizedBox(width: 8),
+                  Icon(Icons.book_outlined, color: Theme.of(context).colorScheme.secondary),
+                  subSizedBox,
                   Text(
                     'Topics',
                     style: Theme.of(context).textTheme.headlineMedium,

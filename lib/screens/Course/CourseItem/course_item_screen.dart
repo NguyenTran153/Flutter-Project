@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_project/utils/colors.dart';
 
 import '../../../utils/routes.dart';
 
@@ -26,7 +25,7 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
         margin: const EdgeInsets.symmetric(vertical: 8),
         clipBehavior: Clip.hardEdge,
         elevation: 2,
-        surfaceTintColor: primaryColor,
+        surfaceTintColor: Theme.of(context).primaryColor,
         child: Column(
           children: [
             CachedNetworkImage(
@@ -58,8 +57,8 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
                   ),
                   Text(
                     'null course description',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w400, color: tertiaryColor),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400, color: Theme.of(context).colorScheme.tertiary),
                   ),
                   const SizedBox(
                     height: 16,

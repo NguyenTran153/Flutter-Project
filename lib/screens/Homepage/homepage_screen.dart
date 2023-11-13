@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_project/screens/Homepage/tutorItem/tutor_item.dart";
-import "package:flutter_project/utils/colors.dart";
 
 class HomepageScreen extends StatefulWidget {
   const HomepageScreen({super.key});
@@ -13,7 +12,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryColor,
+      backgroundColor: Theme.of(context).primaryColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

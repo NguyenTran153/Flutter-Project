@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
 import '../../providers/theme_provider.dart';
@@ -55,7 +54,7 @@ class _SettingScreenState extends State<SettingScreen> {
           // Functions Starts Here
           subSizedBox,
           Card(
-            surfaceTintColor: primaryColor,
+            surfaceTintColor: Theme.of(context).primaryColor,
             elevation: 2,
             child: Padding(
               padding: const EdgeInsets.all(12),
@@ -73,7 +72,7 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           subSizedBox,
           Card(
-            surfaceTintColor: primaryColor,
+            surfaceTintColor: Theme.of(context).primaryColor,
             elevation: 2,
             child: Padding(
               padding: const EdgeInsets.all(12),
@@ -95,7 +94,7 @@ class _SettingScreenState extends State<SettingScreen> {
             Provider.of<ThemeProvider>(context).toggleMode()
           },
             child: Card(
-              surfaceTintColor: primaryColor,
+              surfaceTintColor: Theme.of(context).primaryColor,
               elevation: 2,
               child: Padding(
                 padding: const EdgeInsets.all(12),
@@ -115,7 +114,7 @@ class _SettingScreenState extends State<SettingScreen> {
           subSizedBox,
           InkWell(
             child: Card(
-              surfaceTintColor: primaryColor,
+              surfaceTintColor: Theme.of(context).primaryColor,
               elevation: 2,
               child: Padding(
                 padding: const EdgeInsets.all(12),
@@ -134,7 +133,7 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           subSizedBox,
           Card(
-            surfaceTintColor: primaryColor,
+            surfaceTintColor: Theme.of(context).primaryColor,
             elevation: 2,
             child: Padding(
               padding: const EdgeInsets.all(12),
@@ -152,7 +151,7 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           subSizedBox,
           Card(
-            surfaceTintColor: primaryColor,
+            surfaceTintColor: Theme.of(context).primaryColor,
             elevation: 2,
             child: Padding(
               padding: const EdgeInsets.all(12),
@@ -170,7 +169,7 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           subSizedBox,
           Card(
-            surfaceTintColor: primaryColor,
+            surfaceTintColor: Theme.of(context).primaryColor,
             elevation: 2,
             child: Padding(
               padding: const EdgeInsets.all(12),
@@ -188,7 +187,7 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           subSizedBox,
           Card(
-            surfaceTintColor: primaryColor,
+            surfaceTintColor: Theme.of(context).primaryColor,
             elevation: 2,
             child: Padding(
               padding: const EdgeInsets.all(12),
@@ -220,13 +219,13 @@ class _SettingScreenState extends State<SettingScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                Icon(Icons.logout, color: dangerColor),
+                Icon(Icons.logout, color: Colors.red),
                 SizedBox(width: 8),
                 Text(
                   'Log Out',
                   style: TextStyle(
                     fontSize: 18,
-                    color: dangerColor,
+                    color: Colors.red,
                   ),
                 ),
               ],

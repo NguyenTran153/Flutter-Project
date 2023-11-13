@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
 import '../../../utils/routes.dart';
@@ -15,7 +14,7 @@ class _TutorItemState extends State<TutorItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-        surfaceTintColor: primaryColor,
+        surfaceTintColor: Theme.of(context).primaryColor,
         elevation: 3.0,
         margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         child: Padding(
@@ -41,7 +40,7 @@ class _TutorItemState extends State<TutorItem> {
                             StackTrace? stackTrace) {
                           return const Icon(
                             Icons.error_outline_rounded,
-                            color: dangerColor,
+                            color: Colors.red,
                             size: 32,
                           );
                         },

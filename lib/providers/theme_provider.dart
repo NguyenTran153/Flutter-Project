@@ -5,6 +5,7 @@ final lightTheme = ThemeData(
   primaryColor: Colors.white,
   colorScheme: ColorScheme.fromSeed(
     secondary: Colors.blue,
+    tertiary: Colors.black,
     seedColor: Colors.black,
     brightness: Brightness.light,
   ),
