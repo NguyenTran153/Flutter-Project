@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/screens/UserProfile/user_profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_project/screens/Auth/forget_password.dart';
 import 'package:flutter_project/screens/Auth/login.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
             title: 'LetTutor',
             theme:
                 themeProvider.mode == ThemeMode.light ? lightTheme : darkTheme,
-            home: const LoginScreen(),
+            home: const UserProfileScreen(),
             routes: {
               Routes.login: (context) => const LoginScreen(),
               Routes.register: (context) => const RegisterScreen(),
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
               Routes.teacherDetail: (context) => const TutorDetailScreen(),
               Routes.courseDetail: (context) => const CourseDetailScreen(),
               Routes.tutorSearchResult: (context) => const TutorResultScreen(),
+              Routes.userProfile: (context) => const UserProfileScreen(),
             },
           ),
         ));
