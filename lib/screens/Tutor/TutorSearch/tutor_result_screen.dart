@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/screens/Tutor/TutorSearch/TutorSearchItem/tutor_search_item.dart';
 import 'package:flutter_project/utils/colors.dart';
+import 'package:flutter_project/utils/sized_box.dart';
 
 import '../../../utils/constants.dart';
 import '../../Homepage/TutorItem/tutor_item.dart';
@@ -86,21 +87,21 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
               ],
             )
                 : const SizedBox.shrink(),
-            const SizedBox(height: 8),
+            sizedBox,
             ...List<Widget>.generate(
               10,
-                  (index) => TutorItem(),
+                  (index) => TutorSearchItemScreen(),
             ),
             _count > 0
                 ? Row(
               children: [
-                const SizedBox(width: 16),
+                sizedBox,
                 IconButton(
                   style: IconButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    backgroundColor: _page == 1 ? tertiaryColor : secondaryColor,
+                    backgroundColor: _page == 1 ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.secondary,
                   ),
                   onPressed: _page == 1
                       ? null
@@ -110,10 +111,10 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                       _page--;
                     });
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.navigate_before_rounded,
                     size: 28,
-                    color: Colors.white,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
                 Expanded(

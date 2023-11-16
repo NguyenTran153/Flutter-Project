@@ -23,12 +23,12 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Find a tutor', style: Theme.of(context).textTheme.headline4),
+          Text('Find a tutor', style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 8),
           TextField(
             controller: _nameController,
             decoration: InputDecoration(
-              // contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               hintStyle: TextStyle(color: tertiaryColor),
               hintText: "search by name",
               border: const OutlineInputBorder(
@@ -53,7 +53,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
           ),
           sizedBox,
           Text('Specialties', style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 4),
+          subSizedBox,
           Wrap(
             spacing: 8,
             runSpacing: -4,
@@ -78,7 +78,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          sizedBox,
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.max,
@@ -94,7 +94,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                   child: Text('Reset Filters', style: TextStyle(fontSize: 16)),
                 ),
               ),
-              const SizedBox(width: 10),
+              sizedBox,
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(
@@ -105,11 +105,11 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                 style: TextButton.styleFrom(
                   backgroundColor: secondaryColor,
                 ),
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
                     'Search',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),
                   ),
                 ),
               ),
