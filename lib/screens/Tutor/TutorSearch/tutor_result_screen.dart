@@ -4,7 +4,6 @@ import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
 import '../../../utils/constants.dart';
-import '../../Homepage/TutorItem/tutor_item.dart';
 
 class TutorResultScreen extends StatefulWidget {
   const TutorResultScreen({Key? key}) : super(key: key);

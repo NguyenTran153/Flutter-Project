@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/models/tutor.dart';
 import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
@@ -15,6 +16,8 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
   final _nameController = TextEditingController();
   List<String> _specialties = [];
   int _chosenSpecialtiesIndex = 0;
+
+  List<Tutor> tutors = getTutors();
 
   @override
   Widget build(BuildContext context) {
