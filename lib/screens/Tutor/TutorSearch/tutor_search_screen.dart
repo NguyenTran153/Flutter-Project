@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/models/tutor.dart';
-import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
+import '../../../constants/nationality.dart';
 import '../../../utils/routes.dart';
 
 class TutorSearchScreen extends StatefulWidget {
@@ -15,62 +15,116 @@ class TutorSearchScreen extends StatefulWidget {
 class _TutorSearchScreenState extends State<TutorSearchScreen> {
   final _nameController = TextEditingController();
   List<String> _specialties = [];
-  int _chosenSpecialtiesIndex = 0;
+  List<String> _filterSpecialies = [];
+  Nationality? _nationality = Nationality.foreign;
 
+  int _chosenSpecialtiesIndex = 0;
   List<Tutor> tutors = getTutors();
+
+  Map<String, dynamic> _encapsulateSearchParams() {
+    final name = _nameController.text;
+
+    return {
+      'search': name,
+      'nationality': _nationality?.index == Nationality.vietnamese.index,
+      'specialties': _chosenSpecialtiesIndex == 0
+          ? [].map((e) => e as String).toList()
+          : [
+              _specialties[_chosenSpecialtiesIndex]
+                  .toLowerCase()
+                  .replaceAll(' ', '-')
+            ].map((e) => e as String).toList(),
+    };
+  }
+
+  void _loadSpecialties() {
+    _specialties = [
+      'All',
+      'Math',
+      'History',
+      'English',
+      'Physics',
+      'Chemistry'
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    _loadSpecialties();
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Find a tutor', style: Theme.of(context).textTheme.headlineMedium),
+          Text('Find a tutor',
+              style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 8),
           TextField(
             controller: _nameController,
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              hintStyle: TextStyle(color: tertiaryColor),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              hintStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.tertiary),
               hintText: "search by name",
-              border: const OutlineInputBorder(
-                  borderSide: BorderSide(color: tertiaryColor, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.tertiary, width: 2),
+                  borderRadius: const BorderRadius.all(Radius.circular(10))),
             ),
           ),
-          const SizedBox(height: 16),
-          Text('Nationality', style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 4),
+          sizedBox,
+          Text('Nationality',
+              style: Theme.of(context).textTheme.headlineMedium),
+          subSizedBox,
           Row(
             children: [
-              // Radio(value: value, groupValue: groupValue, onChanged: onChanged)
+              Radio<Nationality>(
+                value: Nationality.vietnamese,
+                groupValue: _nationality,
+                onChanged: (value) {
+                  setState(() {
+                    _nationality = value;
+                  });
+                },
+              ),
               const Text('Vietnamese Tutors'),
             ],
           ),
           Row(
             children: [
-              // Radio(value: value, groupValue: groupValue, onChanged: onChanged)
+              Radio<Nationality>(
+                value: Nationality.foreign,
+                groupValue: _nationality,
+                onChanged: (value) {
+                  setState(() {
+                    _nationality = value;
+                  });
+                },
+              ),
               const Text('Foreign Tutors'),
             ],
           ),
           sizedBox,
-          Text('Specialties', style: Theme.of(context).textTheme.headlineMedium),
+          Text('Specialties',
+              style: Theme.of(context).textTheme.headlineMedium),
           subSizedBox,
           Wrap(
             spacing: 8,
             runSpacing: -4,
             children: List<Widget>.generate(
               _specialties.length,
-                  (index) => ChoiceChip(
-                backgroundColor: tertiaryColor,
-                selectedColor: secondaryColor,
+              (index) => ChoiceChip(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                selectedColor: Colors.grey,
                 selected: _chosenSpecialtiesIndex == index,
                 label: Text(
                   _specialties[index],
                   style: TextStyle(
                     fontSize: 14,
-                    color: _chosenSpecialtiesIndex == index ? secondaryColor : tertiaryColor,
+                    color: _chosenSpecialtiesIndex == index
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
                 onSelected: (bool selected) {
@@ -103,16 +157,18 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                   Navigator.pushNamed(
                     context,
                     Routes.tutorSearchResult,
+                    arguments: _encapsulateSearchParams(),
                   );
                 },
                 style: TextButton.styleFrom(
-                  backgroundColor: secondaryColor,
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
                     'Search',
-                    style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),
+                    style: TextStyle(
+                        fontSize: 16, color: Theme.of(context).primaryColor),
                   ),
                 ),
               ),
