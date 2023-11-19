@@ -100,6 +100,7 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
       _sortIcon = _isDescending ? Icons.arrow_downward : Icons.arrow_upward;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final data =
@@ -135,8 +136,43 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                       ? Container(
                           padding: EdgeInsets.all(8.0),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              Expanded(
+                                flex: 6,
+                                child: PopupMenuButton<int>(
+                                  icon: Icon(Icons.sort),
+                                  initialValue: _selectedSortOption,
+                                  onSelected: (value) {
+                                    setState(() {
+                                      if (value == 0) {
+                                        _selectedSortOption = value;
+                                        _isDescending = !_isDescending;
+                                        _defaultSorting = false;
+                                        _sortTutors();
+                                      } else {
+                                        _selectedSortOption = value;
+                                        _defaultSorting = true;
+                                        _sortTutors();
+                                      }
+                                    });
+                                  },
+                                  itemBuilder: (BuildContext context) =>
+                                      <PopupMenuEntry<int>>[
+                                    PopupMenuItem<int>(
+                                      value: 0,
+                                      child: Text('Sort by Rating'),
+                                    ),
+                                    PopupMenuItem<int>(
+                                      value: 1,
+                                      child: Text('Default Sorting'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
                               const Expanded(
                                 flex: 20,
                                 child: Text(
@@ -144,7 +180,9 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                                   textAlign: TextAlign.right,
                                 ),
                               ),
-                              sizedBox,
+                              const SizedBox(
+                                width: 8,
+                              ),
                               Expanded(
                                 flex: 6,
                                 child: DropdownButtonFormField<int>(
@@ -152,10 +190,21 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                                   isExpanded: true,
                                   value: _perPage,
                                   items: itemsPerPage
-                                      .map((itemPerPage) =>
-                                          DropdownMenuItem<int>(
-                                              value: itemPerPage,
-                                              child: Text('$itemPerPage')))
+                                      .map(
+                                        (itemPerPage) => DropdownMenuItem<int>(
+                                          value: itemPerPage,
+                                          child: Text(
+                                            '$itemPerPage',
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .tertiary,
+                                              fontSize: 16,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      )
                                       .toList(),
                                   onChanged: (value) {
                                     setState(() {
@@ -187,41 +236,9 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(24)),
                                     ),
+                                    floatingLabelAlignment: FloatingLabelAlignment.center,
                                   ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Expanded(
-                                flex: 6,
-                                child: PopupMenuButton<int>(
-                                  icon: Icon(Icons.sort),
-                                  initialValue: _selectedSortOption,
-                                  onSelected: (value) {
-                                    setState(() {
-                                      if (value == 0) {
-                                        _selectedSortOption = value;
-                                        _isDescending = !_isDescending;
-                                        _defaultSorting = false;
-                                        _sortTutors();
-                                      } else {
-                                        _selectedSortOption = value;
-                                        _defaultSorting = true;
-                                        _sortTutors();
-                                      }
-                                    });
-                                  },
-                                  itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                                    PopupMenuItem<int>(
-                                      value: 0,
-                                      child: Text('Sort by Rating'),
-                                    ),
-                                    PopupMenuItem<int>(
-                                      value: 1,
-                                      child: Text('Default Sorting'),
-                                    ),
-                                  ],
+                                  alignment: Alignment.center,
                                 ),
                               ),
                             ],

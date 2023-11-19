@@ -5,10 +5,11 @@ import "package:flutter_project/utils/sized_box.dart";
 import "package:video_player/video_player.dart";
 
 import "../../../models/course.dart";
+import "../../../models/tutor.dart";
 import "../../../utils/routes.dart";
 
 class TutorDetailScreen extends StatefulWidget {
-  const TutorDetailScreen({super.key});
+  const TutorDetailScreen({Key? key}) : super(key: key);
 
   @override
   State<TutorDetailScreen> createState() => _TutorDetailScreenState();
@@ -17,6 +18,19 @@ class TutorDetailScreen extends StatefulWidget {
 class _TutorDetailScreenState extends State<TutorDetailScreen> {
   VideoPlayerController? _videoPlayerController;
   ChewieController? _chewieController;
+  Tutor? _tutor;
+  bool _isFavorite = false;
+  late List<String> _specialties;
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    _tutor = ModalRoute.of(context)?.settings.arguments as Tutor?;
+    String specialtiesString = _tutor!.specialties ?? '';
+    _specialties = specialtiesString.split(',').map((s) => s.trim()).toList();
+  }
 
   //Fake
   List<Course> courses = [
@@ -52,7 +66,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
         elevation: 0,
         backgroundColor: primaryColor,
         leading: BackButton(
-          color: secondaryColor,
+          color: Theme.of(context).colorScheme.secondary,
         ),
         title: Text(
           'Teacher',
@@ -75,8 +89,8 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        child: Image.asset(
-                          "public/images/avatar.png",
+                        child: Image.network(
+                          _tutor!.avatar,
                           fit: BoxFit.cover,
                           errorBuilder: (context, url, error) => const Icon(
                             Icons.error_outline_rounded,
@@ -91,27 +105,30 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Name of tutor",
+                              _tutor!.name,
                               style: Theme.of(context).textTheme.displaySmall,
                             ),
                             Text(
-                              "Country",
+                              _tutor!.country,
                               style: const TextStyle(fontSize: 16),
                             ),
-                            Row(
-                              children: [
-                                ...List<Widget>.generate(
-                                  5,
-                                  (index) => const Icon(Icons.star,
-                                      color: Colors.amber),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  '13',
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                              ],
-                            ),
+                            _tutor!.rating == null
+                                ? const Text(
+                              'No reviews yet',
+                              style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.grey,
+                              ),
+                            )
+                                : Row(children: [
+                              ...List<Widget>.generate(
+                                _tutor!.rating.round(),
+                                    (index) => const Icon(Icons.star, color: Colors.amber),
+                              ),
+                              const SizedBox(width: 8),
+                              Text('1',
+                                  style: const TextStyle(fontSize: 18))
+                            ])
                           ],
                         ),
                       ),
@@ -120,7 +137,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Text(
-                      'Description about tutor',
+                      _tutor!.specialties ?? '',
                       style: const TextStyle(fontSize: 16),
                     ),
                   ),
@@ -131,14 +148,19 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                           onPressed: () {},
                           child: Column(
                             children: [
-                              const Icon(
-                                Icons.favorite_rounded,
-                                color: dangerColor,
-                              ),
+                            _isFavorite
+                                ? const Icon(
+                              Icons.favorite_rounded,
+                              color: Colors.red,
+                            )
+                                : Icon(
+                              Icons.favorite_border_rounded,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
                               Text(
                                 'Favorite',
                                 style: TextStyle(
-                                  color: dangerColor,
+                                  color: Colors.red,
                                 ),
                               ),
                             ],
@@ -149,11 +171,11 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         child: TextButton(
                           onPressed: () {},
                           child: Column(
-                            children: const [
+                            children: [
                               Icon(Icons.reviews_outlined,
-                                  color: secondaryColor),
+                                  color: Theme.of(context).colorScheme.secondary),
                               Text('Reviews',
-                                  style: TextStyle(color: secondaryColor))
+                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary))
                             ],
                           ),
                         ),
@@ -162,11 +184,11 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         child: TextButton(
                           onPressed: () {},
                           child: Column(
-                            children: const [
+                            children: [
                               Icon(Icons.report_outlined,
-                                  color: secondaryColor),
+                                  color: Theme.of(context).colorScheme.secondary),
                               Text('Report',
-                                  style: TextStyle(color: secondaryColor))
+                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary))
                             ],
                           ),
                         ),
@@ -204,10 +226,10 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         5,
                         (index) => Chip(
                           label: Text(
-                            'Language',
-                            style: const TextStyle(color: secondaryColor),
+                            _tutor!.language,
+                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                           ),
-                          backgroundColor: secondaryColor[50],
+                          backgroundColor: Theme.of(context).primaryColor,
                         ),
                       ),
                     ),
@@ -221,13 +243,13 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                       spacing: 8,
                       runSpacing: -4,
                       children: List<Widget>.generate(
-                        5,
+                        _specialties.length,
                         (index) => Chip(
-                          backgroundColor: secondaryColor[50],
+                          backgroundColor: Theme.of(context).primaryColor,
                           label: Text(
-                            "Math",
-                            style: const TextStyle(
-                                fontSize: 14, color: secondaryColor),
+                            _specialties[index],
+                            style: TextStyle(
+                                fontSize: 14, color: Theme.of(context).colorScheme.secondary),
                           ),
                         ),
                       ),
@@ -277,8 +299,8 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         style: TextButton.styleFrom(
                             minimumSize: const Size.fromHeight(0),
                             padding: const EdgeInsets.all(8),
-                            side: const BorderSide(
-                                color: Colors.blue, width: 1.5)),
+                            side: BorderSide(
+                                color: Theme.of(context).colorScheme.secondary, width: 1.5)),
                         onPressed: () async {
                           await showModalBottomSheet(
                             context: context,
