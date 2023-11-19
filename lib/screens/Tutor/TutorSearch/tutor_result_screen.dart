@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/models/tutor.dart';
 import 'package:flutter_project/screens/Tutor/TutorSearch/TutorSearchItem/tutor_search_item.dart';
-import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
 import '../../../utils/constants.dart';

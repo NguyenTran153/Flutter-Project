@@ -24,18 +24,16 @@ class _TutorSearchItemScreenState extends State<TutorSearchItemScreen> {
   @override
   void initState() {
     super.initState();
-    // Extract specialties from the tutor's specialties property
     String specialtiesString = widget.tutor.specialties ?? '';
     _specialties = specialtiesString.split(',').map((s) => s.trim()).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, Routes.teacherDetail, arguments: widget.tutor);
+        Navigator.pushNamed(context, Routes.teacherDetail,
+            arguments: widget.tutor);
       },
       child: Card(
         surfaceTintColor: primaryColor,
@@ -81,7 +79,8 @@ class _TutorSearchItemScreenState extends State<TutorSearchItemScreen> {
                                   'No reviews yet',
                                   style: TextStyle(
                                     fontStyle: FontStyle.italic,
-                                    color: Theme.of(context).colorScheme.tertiary,
+                                    color:
+                                        Theme.of(context).colorScheme.tertiary,
                                   ),
                                 )
                               : Row(

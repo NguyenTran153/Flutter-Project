@@ -9,7 +9,9 @@ import "../../../models/tutor.dart";
 import "../../../utils/routes.dart";
 
 class TutorDetailScreen extends StatefulWidget {
-  const TutorDetailScreen({Key? key}) : super(key: key);
+  const TutorDetailScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<TutorDetailScreen> createState() => _TutorDetailScreenState();
@@ -18,18 +20,18 @@ class TutorDetailScreen extends StatefulWidget {
 class _TutorDetailScreenState extends State<TutorDetailScreen> {
   VideoPlayerController? _videoPlayerController;
   ChewieController? _chewieController;
-  Tutor? _tutor;
   bool _isFavorite = false;
   late List<String> _specialties;
+  late Tutor _tutor;
 
-
-  @override
-  void initState() {
-    super.initState();
-
-    _tutor = ModalRoute.of(context)?.settings.arguments as Tutor?;
-    String specialtiesString = _tutor!.specialties ?? '';
-    _specialties = specialtiesString.split(',').map((s) => s.trim()).toList();
+  Future<void> _getTutor() async {
+    // Use try-catch to handle errors during tutor data fetching
+      Tutor result = ModalRoute.of(context)?.settings.arguments as Tutor;
+      String specialtiesString = result.specialties ?? '';
+      _specialties = specialtiesString.split(',').map((s) => s.trim()).toList();
+      setState(() {
+        _tutor = result;
+      });
   }
 
   //Fake
@@ -61,6 +63,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _getTutor();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -90,7 +93,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                           shape: BoxShape.circle,
                         ),
                         child: Image.network(
-                          _tutor!.avatar,
+                          _tutor.avatar ?? '',
                           fit: BoxFit.cover,
                           errorBuilder: (context, url, error) => const Icon(
                             Icons.error_outline_rounded,
@@ -105,14 +108,14 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _tutor!.name,
+                              _tutor.name,
                               style: Theme.of(context).textTheme.displaySmall,
                             ),
                             Text(
-                              _tutor!.country,
+                              _tutor.country,
                               style: const TextStyle(fontSize: 16),
                             ),
-                            _tutor!.rating == null
+                            _tutor.rating == null
                                 ? const Text(
                               'No reviews yet',
                               style: TextStyle(
@@ -122,7 +125,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                             )
                                 : Row(children: [
                               ...List<Widget>.generate(
-                                _tutor!.rating.round(),
+                                _tutor.rating.round(),
                                     (index) => const Icon(Icons.star, color: Colors.amber),
                               ),
                               const SizedBox(width: 8),
@@ -137,7 +140,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Text(
-                      _tutor!.specialties ?? '',
+                      _tutor.specialties ?? '',
                       style: const TextStyle(fontSize: 16),
                     ),
                   ),
@@ -209,7 +212,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w500,
-                              color: secondaryColor,
+                              color: Theme.of(context).colorScheme.secondary,
                             ),
                           )
                         : Chewie(controller: _chewieController!),
@@ -226,7 +229,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         5,
                         (index) => Chip(
                           label: Text(
-                            _tutor!.language,
+                            _tutor.language,
                             style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                           ),
                           backgroundColor: Theme.of(context).primaryColor,
@@ -317,9 +320,9 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                             },
                           );
                         },
-                        child: const Text(
+                        child: Text(
                           'Book This Tutor',
-                          style: TextStyle(fontSize: 18, color: Colors.blue),
+                          style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.secondary),
                         ),
                       ))
                 ],
