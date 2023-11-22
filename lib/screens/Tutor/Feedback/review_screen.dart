@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class FeedbackScreen extends StatefulWidget {
-  const FeedbackScreen({super.key});
+class ReviewScreen extends StatefulWidget {
+  const ReviewScreen({super.key});
 
   @override
-  State<FeedbackScreen> createState() => _FeedbackScreenState();
+  State<ReviewScreen> createState() => _ReviewScreenState();
 }
 
-class _FeedbackScreenState extends State<FeedbackScreen> {
+class _ReviewScreenState extends State<ReviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

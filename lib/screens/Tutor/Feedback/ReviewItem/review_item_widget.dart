@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
-class FeedbackItemWidget extends StatelessWidget {
-  const FeedbackItemWidget({
+class ReviewItemWidget extends StatelessWidget {
+  const ReviewItemWidget({
     Key? key,
   }) : super(key: key);
 
