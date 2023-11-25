@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/Tutor/Feedback/review_screen.dart';
+import 'package:flutter_project/screens/Tutor/Review/review_screen.dart';
 import 'package:flutter_project/screens/UserProfile/user_profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_project/screens/Auth/forget_password.dart';

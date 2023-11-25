@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import "package:flutter_project/utils/colors.dart";
 import "package:flutter_project/utils/sized_box.dart";
 
+import "../../../../utils/routes.dart";
+
 class ScheduleItem extends StatefulWidget {
   const ScheduleItem({super.key});
 
@@ -120,7 +122,9 @@ class _ScheduleItemState extends State<ScheduleItem> {
                 sizedBox,
                 Expanded(
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.videoCall);
+                      },
                       child: const Text(
                         'Go to meeting',
                         style: TextStyle(fontSize: 16),

@@ -1,5 +1,7 @@
 import "package:chewie/chewie.dart";
 import "package:flutter/material.dart";
+import "package:flutter_project/models/tutor/feedback.dart";
+import "package:flutter_project/screens/Tutor/Schedule/tutor_schedule_widget.dart";
 import "package:flutter_project/utils/colors.dart";
 import "package:flutter_project/utils/sized_box.dart";
 import "package:video_player/video_player.dart";
@@ -23,15 +25,18 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
   bool _isFavorite = false;
   late List<String> _specialties;
   late Tutor _tutor;
+  late List<TutorFeedback> feedbacks;
 
   Future<void> _getTutor() async {
     // Use try-catch to handle errors during tutor data fetching
-      Tutor result = ModalRoute.of(context)?.settings.arguments as Tutor;
-      String specialtiesString = result.specialties ?? '';
-      _specialties = specialtiesString.split(',').map((s) => s.trim()).toList();
-      setState(() {
-        _tutor = result;
-      });
+    Tutor result = ModalRoute.of(context)?.settings.arguments as Tutor;
+    String specialtiesString = result.specialties ?? '';
+    _specialties = specialtiesString.split(',').map((s) => s.trim()).toList();
+
+    setState(() {
+      _tutor = result;
+      feedbacks = getFeedbacks();
+    });
   }
 
   //Fake
@@ -93,7 +98,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                           shape: BoxShape.circle,
                         ),
                         child: Image.network(
-                          _tutor.avatar ?? '',
+                          _tutor.avatar,
                           fit: BoxFit.cover,
                           errorBuilder: (context, url, error) => const Icon(
                             Icons.error_outline_rounded,
@@ -117,21 +122,22 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                             ),
                             _tutor.rating == null
                                 ? const Text(
-                              'No reviews yet',
-                              style: TextStyle(
-                                fontStyle: FontStyle.italic,
-                                color: Colors.grey,
-                              ),
-                            )
+                                    'No reviews yet',
+                                    style: TextStyle(
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.grey,
+                                    ),
+                                  )
                                 : Row(children: [
-                              ...List<Widget>.generate(
-                                _tutor.rating.round(),
-                                    (index) => const Icon(Icons.star, color: Colors.amber),
-                              ),
-                              const SizedBox(width: 8),
-                              Text('1',
-                                  style: const TextStyle(fontSize: 18))
-                            ])
+                                    ...List<Widget>.generate(
+                                      _tutor.rating.round(),
+                                      (index) => const Icon(Icons.star,
+                                          color: Colors.amber),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text('1',
+                                        style: const TextStyle(fontSize: 18))
+                                  ])
                           ],
                         ),
                       ),
@@ -148,18 +154,24 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                     children: [
                       Expanded(
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            setState(() {
+                              _isFavorite = !_isFavorite;
+                            });
+                          },
                           child: Column(
                             children: [
-                            _isFavorite
-                                ? const Icon(
-                              Icons.favorite_rounded,
-                              color: Colors.red,
-                            )
-                                : Icon(
-                              Icons.favorite_border_rounded,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
+                              _isFavorite
+                                  ? const Icon(
+                                      Icons.favorite_rounded,
+                                      color: Colors.red,
+                                    )
+                                  : Icon(
+                                      Icons.favorite_border_rounded,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                    ),
                               Text(
                                 'Favorite',
                                 style: TextStyle(
@@ -172,26 +184,54 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                       ),
                       Expanded(
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, Routes.review,
+                                arguments: feedbacks);
+                          },
                           child: Column(
                             children: [
                               Icon(Icons.reviews_outlined,
-                                  color: Theme.of(context).colorScheme.secondary),
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
                               Text('Reviews',
-                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary))
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary))
                             ],
                           ),
                         ),
                       ),
                       Expanded(
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Report Success'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
                           child: Column(
                             children: [
                               Icon(Icons.report_outlined,
-                                  color: Theme.of(context).colorScheme.secondary),
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
                               Text('Report',
-                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary))
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary))
                             ],
                           ),
                         ),
@@ -230,7 +270,8 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         (index) => Chip(
                           label: Text(
                             _tutor.language,
-                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary),
                           ),
                           backgroundColor: Theme.of(context).primaryColor,
                         ),
@@ -252,7 +293,8 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                           label: Text(
                             _specialties[index],
                             style: TextStyle(
-                                fontSize: 14, color: Theme.of(context).colorScheme.secondary),
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.secondary),
                           ),
                         ),
                       ),
@@ -303,7 +345,8 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                             minimumSize: const Size.fromHeight(0),
                             padding: const EdgeInsets.all(8),
                             side: BorderSide(
-                                color: Theme.of(context).colorScheme.secondary, width: 1.5)),
+                                color: Theme.of(context).colorScheme.secondary,
+                                width: 1.5)),
                         onPressed: () async {
                           await showModalBottomSheet(
                             context: context,
@@ -315,14 +358,14 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                                 top: Radius.circular(16),
                               ),
                             ),
-                            builder: (BuildContext context) {
-                              return Container();
-                            },
+                            builder: (context) => TutorScheduleWidget(),
                           );
                         },
                         child: Text(
                           'Book This Tutor',
-                          style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.secondary),
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Theme.of(context).colorScheme.secondary),
                         ),
                       ))
                 ],

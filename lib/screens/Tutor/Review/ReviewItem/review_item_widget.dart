@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
+import '../../../../models/tutor/feedback.dart';
+
 class ReviewItemWidget extends StatelessWidget {
   const ReviewItemWidget({
     Key? key,
+    required this.feedback,
   }) : super(key: key);
+
+  final TutorFeedback feedback;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +48,7 @@ class ReviewItemWidget extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'null name',
+                        'Trần Lê',
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w600,
@@ -51,8 +56,7 @@ class ReviewItemWidget extends StatelessWidget {
                       ),
                       subSizedBox,
                       Text(
-                        '${DateTime.now().difference(DateTime.parse('15/03/2023')).inDays} days ago',
-                        style: const TextStyle(
+                        '${DateTime.now().difference(DateTime.parse(feedback.createdAt!)).inDays} days ago',                        style: const TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
                       ),
                     ],
@@ -60,17 +64,17 @@ class ReviewItemWidget extends StatelessWidget {
                   Row(
                     children: [
                       ...List<Widget>.generate(
-                        4,
+                        feedback.rating ?? 0,
                             (index) => const Icon(Icons.star, size: 20, color: Colors.amber),
                       ),
                       ...List<Widget>.generate(
-                        5 ,
+                        5 - feedback.rating!.toInt(),
                             (index) => Icon(Icons.star, size: 20, color: Theme.of(context).colorScheme.tertiary),
                       ),
                     ],
                   ),
                   subSizedBox,
-                  Text('null content')
+                  Text(feedback.content ?? 'null content')
                 ],
               ),
             ),

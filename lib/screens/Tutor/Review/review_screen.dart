@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/screens/Tutor/Review/ReviewItem/review_item_widget.dart';
+
+import '../../../models/tutor/feedback.dart';
 
 class ReviewScreen extends StatefulWidget {
   const ReviewScreen({super.key});
@@ -10,6 +13,8 @@ class ReviewScreen extends StatefulWidget {
 class _ReviewScreenState extends State<ReviewScreen> {
   @override
   Widget build(BuildContext context) {
+    final feedbacks = ModalRoute.of(context)?.settings.arguments as List<TutorFeedback>;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -25,9 +30,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView.builder(
-          itemCount: 1,
+          itemCount: feedbacks.length,
           shrinkWrap: true,
-          itemBuilder: (context, index) => Card(),
+          itemBuilder: (context, index) => ReviewItemWidget(feedback: feedbacks[feedbacks.length-index-1],),
         ),
       ),
     );
