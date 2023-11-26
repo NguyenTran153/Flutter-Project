@@ -109,6 +109,7 @@ class _BookingHourScreenState extends State<BookingHourScreen> {
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: (){
+                            Navigator.pop(context);
                             showDialog(
                               context: context,
                               builder: (context) => BookingTutorWidget(

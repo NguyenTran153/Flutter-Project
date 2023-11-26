@@ -4,14 +4,14 @@ import "package:flutter_project/utils/sized_box.dart";
 
 import "../../../../utils/routes.dart";
 
-class ScheduleItem extends StatefulWidget {
-  const ScheduleItem({super.key});
+class UpcomingClassWidget extends StatefulWidget {
+  const UpcomingClassWidget({super.key});
 
   @override
-  State<ScheduleItem> createState() => _ScheduleItemState();
+  State<UpcomingClassWidget> createState() => _UpcomingClassWidgetState();
 }
 
-class _ScheduleItemState extends State<ScheduleItem> {
+class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -46,21 +46,21 @@ class _ScheduleItemState extends State<ScheduleItem> {
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       sizedBox,
-                      Text(
+                      const Text(
                         "07-05-2002",
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),
                       ),
-                      Text(
+                      const Text(
                         "12h49",
-                        style: const TextStyle(fontSize: 15),
+                        style: TextStyle(fontSize: 15),
                       ),
                     ],
                   ),
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.edit_note_outlined,
                     size: 32,
                     color: secondaryColor,

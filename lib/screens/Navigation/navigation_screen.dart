@@ -1,12 +1,12 @@
 import "package:flutter/material.dart";
 import "package:flutter_project/screens/Homepage/homepage_screen.dart";
 import "package:flutter_project/screens/Setting/setting_screen.dart";
-import "package:flutter_project/screens/Time/time_screen.dart";
 import "package:flutter_project/screens/Tutor/TutorSearch/tutor_search_screen.dart";
 import "package:flutter_project/screens/UserProfile/user_profile_screen.dart";
 import "package:flutter_project/utils/routes.dart";
 
 import "../Course/course_screen.dart";
+import "../Schedule/schedule_screen.dart";
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({super.key});
@@ -19,14 +19,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
   List<Widget> pages = [
     const HomepageScreen(),
     const TutorSearchScreen(),
-    const TimeScreen(),
+    const ScheduleScreen(),
     const CourseScreen(),
     const SettingScreen(),
   ];
   List<String> pagesTitles = [
     'Home',
     'Tutor',
-    'Time',
+    'Schedule',
     'Course',
     'Setting'
   ];
@@ -87,7 +87,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Tutor'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.schedule_outlined), label: 'Time'),
+              icon: Icon(Icons.schedule_outlined), label: 'Schedule'),
           BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Course'),
           BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: 'Setting'),

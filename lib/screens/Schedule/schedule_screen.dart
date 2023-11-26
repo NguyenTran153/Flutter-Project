@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/Time/History/history_screen.dart';
-import 'package:flutter_project/screens/Time/Schedule/schedule_screen.dart';
-import 'package:flutter_project/utils/colors.dart';
+import 'package:flutter_project/screens/Schedule/UpcomingClass/upcoming_class_screen.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
-class TimeScreen extends StatefulWidget {
-  const TimeScreen({Key? key}) : super(key: key);
+import 'History/history_screen.dart';
+
+class ScheduleScreen extends StatefulWidget {
+  const ScheduleScreen({Key? key}) : super(key: key);
 
   @override
-  State<TimeScreen> createState() => _TimeScreenState();
+  State<ScheduleScreen> createState() => _ScheduleScreenState();
 }
 
-class _TimeScreenState extends State<TimeScreen> {
+class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,15 +24,15 @@ class _TimeScreenState extends State<TimeScreen> {
                 Tab(
                   icon: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(
                         Icons.timer_outlined,
-                        color: secondaryColor,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       subSizedBox,
                       Text(
-                        'Schedule',
-                        style: TextStyle(color: secondaryColor),
+                        'Upcoming',
+                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       )
                     ],
                   ),
@@ -40,15 +40,15 @@ class _TimeScreenState extends State<TimeScreen> {
                 Tab(
                   icon: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(
                         Icons.history_outlined,
-                        color: secondaryColor,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
                         'History',
-                        style: TextStyle(color: secondaryColor),
+                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       )
                     ],
                   ),
@@ -58,7 +58,7 @@ class _TimeScreenState extends State<TimeScreen> {
             const Expanded(
               child: TabBarView(
                 children: [
-                  ScheduleScreen(),
+                  UpcomingClassScreen(),
                   HistoryScreen(),
                 ],
               ),

@@ -89,41 +89,63 @@ class _CourseListScreenState extends State<CourseSearchScreen> {
                             const SizedBox.shrink(),
                             sizedBox,
                             Expanded(
-                              flex: 7,
+                              flex: 6,
                               child: DropdownButtonFormField<int>(
+                                isDense: true,
+                                isExpanded: true,
+                                value: _perPage,
                                 items: itemsPerPage
-                                    .map((itemPerPage) => DropdownMenuItem<int>(
-                                        value: itemPerPage,
-                                        child: Text('$itemPerPage')))
+                                    .map(
+                                      (itemPerPage) => DropdownMenuItem<int>(
+                                    value: itemPerPage,
+                                    child: Text(
+                                      '$itemPerPage',
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary,
+                                        fontSize: 16,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                )
                                     .toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _perPage = value!;
+                                    _page = 1;
+                                    _isLoading = true;
+                                  });
+                                },
                                 icon: Icon(
                                   Icons.keyboard_arrow_down_rounded,
                                   color:
-                                      Theme.of(context).colorScheme.secondary,
+                                  Theme.of(context).colorScheme.secondary,
                                 ),
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 4, horizontal: 16),
+                                      vertical: 3, horizontal: 8),
                                   filled: true,
                                   fillColor:
-                                      Theme.of(context).colorScheme.secondary,
+                                  Theme.of(context).colorScheme.secondary,
                                   enabledBorder: const OutlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: Colors.transparent),
+                                    BorderSide(color: Colors.transparent),
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(24)),
+                                    BorderRadius.all(Radius.circular(24)),
                                   ),
                                   focusedBorder: const OutlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: Colors.transparent),
+                                    BorderSide(color: Colors.transparent),
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(24)),
+                                    BorderRadius.all(Radius.circular(24)),
                                   ),
+                                  floatingLabelAlignment: FloatingLabelAlignment.center,
                                 ),
-                                onChanged: (int? value) {},
+                                alignment: Alignment.center,
                               ),
-                            ),
-                          ],
+                            ),                          ],
                         ),
                         ...List<Widget>.generate(
                             2, (index) => CourseItemScreen()),

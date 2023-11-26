@@ -1,19 +1,18 @@
 import "package:flutter/material.dart";
-import "package:flutter_project/screens/Time/Schedule/scheduleItem/schedule_item.dart";
-import "package:flutter_project/utils/colors.dart";
+import "package:flutter_project/screens/Schedule/UpcomingClass/UpcomingClassWidget/upcoming_class_widget.dart";
 
 import "../../../models/schedule/schedule.dart";
 import "../../../utils/constants.dart";
 import "../../../utils/sized_box.dart";
 
-class ScheduleScreen extends StatefulWidget {
-  const ScheduleScreen({Key? key}) : super(key: key);
+class UpcomingClassScreen extends StatefulWidget {
+  const UpcomingClassScreen({Key? key}) : super(key: key);
 
   @override
-  State<ScheduleScreen> createState() => _ScheduleScreenState();
+  State<UpcomingClassScreen> createState() => _UpcomingClassScreenState();
 }
 
-class _ScheduleScreenState extends State<ScheduleScreen> {
+class _UpcomingClassScreenState extends State<UpcomingClassScreen> {
   List<Schedule> upcoming = [];
 
   int _page = 1;
@@ -40,8 +39,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       child: Column(
         children: [
           Text(
-            'You have $_count upcoming classes',
-            style: Theme.of(context).textTheme.headlineMedium,
+            'You have $_count upcoming classes with $_count hours to study',
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
           sizedBox,
           Row(
@@ -58,10 +57,25 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               Expanded(
                 flex: 6,
                 child: DropdownButtonFormField<int>(
+                  isDense: true,
+                  isExpanded: true,
                   value: _perPage,
                   items: itemsPerPage
-                      .map((itemPerPage) => DropdownMenuItem<int>(
-                      value: itemPerPage, child: Text('$itemPerPage')))
+                      .map(
+                        (itemPerPage) => DropdownMenuItem<int>(
+                      value: itemPerPage,
+                      child: Text(
+                        '$itemPerPage',
+                        style: TextStyle(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .tertiary,
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -72,30 +86,37 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   },
                   icon: Icon(
                     Icons.keyboard_arrow_down_rounded,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color:
+                    Theme.of(context).colorScheme.secondary,
                   ),
                   decoration: InputDecoration(
-                    contentPadding:
-                    const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 3, horizontal: 8),
                     filled: true,
-                    fillColor: Theme.of(context).colorScheme.secondary,
+                    fillColor:
+                    Theme.of(context).colorScheme.secondary,
                     enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.all(Radius.circular(24)),
+                      borderSide:
+                      BorderSide(color: Colors.transparent),
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(24)),
                     ),
                     focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.all(Radius.circular(24)),
+                      borderSide:
+                      BorderSide(color: Colors.transparent),
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(24)),
                     ),
+                    floatingLabelAlignment: FloatingLabelAlignment.center,
                   ),
+                  alignment: Alignment.center,
                 ),
-              )
-            ],
+              ),            ],
           ),
-          const SizedBox(height: 8),
+          subSizedBox,
           ...List<Widget>.generate(
             upcoming.length,
-                (index) => ScheduleItem(
+                (index) => UpcomingClassWidget(
 
             ),
           ),

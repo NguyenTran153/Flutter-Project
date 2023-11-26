@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/screens/Tutor/Review/review_screen.dart';
 import 'package:flutter_project/screens/UserProfile/user_profile_screen.dart';
+import 'package:flutter_project/screens/VideoCall/video_call_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_project/screens/Auth/forget_password.dart';
 import 'package:flutter_project/screens/Auth/login.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
               Routes.tutorSearchResult: (context) => const TutorResultScreen(),
               Routes.userProfile: (context) => const UserProfileScreen(),
               Routes.review: (context) => const ReviewScreen(),
+              Routes.videoCall: (context) => const VideoCallScreen(),
             },
           ),
         ));
