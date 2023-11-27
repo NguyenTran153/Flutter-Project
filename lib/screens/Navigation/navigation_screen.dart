@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_project/screens/Homepage/homepage_screen.dart";
 import "package:flutter_project/screens/Setting/setting_screen.dart";
 import "package:flutter_project/screens/Tutor/TutorSearch/tutor_search_screen.dart";
-import "package:flutter_project/screens/UserProfile/user_profile_screen.dart";
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import "package:flutter_project/utils/routes.dart";
 
 import "../Course/course_screen.dart";
@@ -72,27 +72,25 @@ class _NavigationScreenState extends State<NavigationScreen> {
             : [],
       ),
       body: pages[_chosenPageIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        selectedFontSize: 14,
-        unselectedFontSize: 12,
-        type: BottomNavigationBarType.fixed,
-        onTap: (value) {
+      bottomNavigationBar: CurvedNavigationBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        color: Theme.of(context).colorScheme.secondary,
+        buttonBackgroundColor: Theme.of(context).colorScheme.secondary,
+        height: 50,
+        onTap: (index) {
           setState(() {
-            _chosenPageIndex = value;
+            _chosenPageIndex = index;
           });
         },
-        elevation: 20,
-        currentIndex: _chosenPageIndex,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Tutor'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.schedule_outlined), label: 'Schedule'),
-          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Course'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Setting'),
+        index: _chosenPageIndex,
+        items: <Widget>[
+          Icon(Icons.home_filled, size: 30, color: Theme.of(context).primaryColor,),
+          Icon(Icons.people, size: 30, color: Theme.of(context).primaryColor),
+          Icon(Icons.schedule_outlined, size: 30, color: Theme.of(context).primaryColor),
+          Icon(Icons.school, size: 30, color: Theme.of(context).primaryColor),
+          Icon(Icons.settings, size: 30, color: Theme.of(context).primaryColor),
         ],
-      ),
+      )
     );
   }
 }
