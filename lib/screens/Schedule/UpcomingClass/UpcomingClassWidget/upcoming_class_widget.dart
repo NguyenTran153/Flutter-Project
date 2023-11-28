@@ -2,19 +2,28 @@ import 'package:flutter/material.dart';
 import "package:flutter_project/utils/colors.dart";
 import "package:flutter_project/utils/sized_box.dart";
 
+import "../../../../models/schedule/booking_info.dart";
 import "../../../../utils/routes.dart";
 
 class UpcomingClassWidget extends StatefulWidget {
-  const UpcomingClassWidget({super.key});
+  const UpcomingClassWidget(
+      {Key? key, required this.bookingInfo, required this.onCancel})
+      : super(key: key);
+
+  final BookingInfo bookingInfo;
+  final Function(bool cancelResult) onCancel;
 
   @override
   State<UpcomingClassWidget> createState() => _UpcomingClassWidgetState();
 }
 
 class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
+  bool _isCardVisible = true;
+
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return _isCardVisible
+        ? Card(
       margin: const EdgeInsets.symmetric(vertical: 12),
       surfaceTintColor: primaryColor,
       elevation: 2,
@@ -42,17 +51,17 @@ class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Name",
+                        widget.bookingInfo.userId ?? "Tran Nam",
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       sizedBox,
-                      const Text(
-                        "07-05-2002",
-                        style: TextStyle(
+                      Text(
+                        widget.bookingInfo.createdAt ?? "07-05-2002",
+                        style: const TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),
                       ),
                       const Text(
-                        "12h49",
+                        "12h00",
                         style: TextStyle(fontSize: 15),
                       ),
                     ],
@@ -80,14 +89,20 @@ class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
                         builder: (context) => AlertDialog(
                           title: const Text('Cancel class'),
                           content:
-                          const Text('Are you sure to cancel this class?'),
+                              const Text('Are you sure to cancel this class?'),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
                               child: const Text('NO'),
                             ),
                             TextButton(
-                              onPressed: () => Navigator.pop(context, true),
+                              onPressed: () {
+                                Navigator.pop(context, true);
+                                // Ẩn Card khi cancel
+                                setState(() {
+                                  _isCardVisible = false;
+                                });
+                              },
                               child: const Text('YES'),
                             ),
                           ],
@@ -122,20 +137,20 @@ class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
                 sizedBox,
                 Expanded(
                     child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, Routes.videoCall);
-                      },
-                      child: const Text(
-                        'Go to meeting',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ))
+                  onPressed: () {
+                    Navigator.pushNamed(context, Routes.videoCall);
+                  },
+                  child: const Text(
+                    'Go to meeting',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ))
               ],
             ),
           ],
         ),
       ),
-    );
-
+    )
+        : SizedBox.shrink();
   }
 }

@@ -32,7 +32,7 @@ List<Tutor> getTutors() {
       country: "Vietnam",
       phone: "1234567891",
       language: "Language 1",
-      specialties: "Math,Physics,Chemistry",
+      specialties: "Math, Physics, Chemistry",
       rating: 4.5,
     ),
     Tutor(

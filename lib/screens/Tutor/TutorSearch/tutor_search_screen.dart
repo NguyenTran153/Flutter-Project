@@ -64,9 +64,8 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
             decoration: InputDecoration(
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              hintStyle:
-                  TextStyle(color: Theme.of(context).colorScheme.tertiary),
-              hintText: "search by name",
+
+              hintText: "Search by name",
               border: OutlineInputBorder(
                   borderSide: BorderSide(
                       color: Theme.of(context).colorScheme.tertiary, width: 2),
@@ -77,6 +76,20 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
           Text('Nationality',
               style: Theme.of(context).textTheme.headlineMedium),
           subSizedBox,
+          Row(
+            children: [
+              Radio<Nationality>(
+                value: Nationality.vietnamese,
+                groupValue: _nationality,
+                onChanged: (value) {
+                  setState(() {
+                    _nationality = value;
+                  });
+                },
+              ),
+              const Text('All Tutors'),
+            ],
+          ),
           Row(
             children: [
               Radio<Nationality>(

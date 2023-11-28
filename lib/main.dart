@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/screens/Tutor/Review/review_screen.dart';
+import 'package:flutter_project/screens/UserProfile/become_tutor_screen.dart';
 import 'package:flutter_project/screens/UserProfile/user_profile_screen.dart';
 import 'package:flutter_project/screens/VideoCall/video_call_screen.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
               Routes.userProfile: (context) => const UserProfileScreen(),
               Routes.review: (context) => const ReviewScreen(),
               Routes.videoCall: (context) => const VideoCallScreen(),
+              Routes.becomeTutor: (context) => const BecomeTutorScreen(),
             },
           ),
         ));

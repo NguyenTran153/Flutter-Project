@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
+import '../../../models/tutor.dart';
 import '../../../utils/routes.dart';
 
 class TutorItem extends StatefulWidget {
-  const TutorItem({super.key});
+  const TutorItem({
+    Key? key,
+    required this.tutor,
+  }) : super(key: key);
+
+
+  final Tutor tutor;
 
   @override
   State<TutorItem> createState() => _TutorItemState();
 }
 
 class _TutorItemState extends State<TutorItem> {
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -34,7 +42,7 @@ class _TutorItemState extends State<TutorItem> {
                         shape: BoxShape.circle,
                       ),
                       child: Image.asset(
-                        "public/images/avatar.png",
+                        widget.tutor.avatar ?? "public/images/avatar.png",
                         fit: BoxFit.cover,
                         errorBuilder: (BuildContext context, Object error,
                             StackTrace? stackTrace) {
@@ -61,11 +69,11 @@ class _TutorItemState extends State<TutorItem> {
                               );
                             },
                             child: Text(
-                              "Noname",
+                              widget.tutor.name ?? "Noname",
                               style: Theme.of(context).textTheme.displaySmall,
                             ),
                           ),
-                          Text('Country', style: const TextStyle(fontSize: 16)),
+                          Text( widget.tutor.country ?? 'Country', style: const TextStyle(fontSize: 16)),
                           Row(
                             children: List<Widget>.generate(
                               5,
@@ -89,17 +97,18 @@ class _TutorItemState extends State<TutorItem> {
               Wrap(
                 spacing: 8,
                 runSpacing: -4,
-                children: List<Widget>.generate(
-                  5,
-                      (index) => Chip(
-                    backgroundColor: Colors.lightBlue[50],
-                    label: Text(
-                      "Tagname",
-                      style: const TextStyle(fontSize: 14, color: Colors.blue),
-                    ),
+                children: (widget.tutor.specialties ?? "")
+                    .split(', ')
+                    .map((specialty) => Chip(
+                  backgroundColor: Colors.lightBlue[50],
+                  label: Text(
+                    specialty.trim(), // Remove leading/trailing whitespaces
+                    style: const TextStyle(fontSize: 14, color: Colors.blue),
                   ),
-                ),
+                ))
+                    .toList(),
               ),
+
               subSizedBox,
               Text(
                  'Description about tutor',

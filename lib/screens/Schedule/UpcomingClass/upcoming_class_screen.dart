@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_project/screens/Schedule/UpcomingClass/UpcomingClassWidget/upcoming_class_widget.dart";
 
-import "../../../models/schedule/schedule.dart";
+import "../../../models/schedule/booking_info.dart";
 import "../../../utils/constants.dart";
 import "../../../utils/sized_box.dart";
 
@@ -13,7 +13,7 @@ class UpcomingClassScreen extends StatefulWidget {
 }
 
 class _UpcomingClassScreenState extends State<UpcomingClassScreen> {
-  List<Schedule> upcoming = [];
+  List<BookingInfo> upcoming = [];
 
   int _page = 1;
   int _perPage = itemsPerPage.first;
@@ -21,7 +21,7 @@ class _UpcomingClassScreenState extends State<UpcomingClassScreen> {
   bool _isLoading = true;
 
   void _getUpcomingClasses() {
-    final result = getSchedules();
+    final result = getBookingInfoList();
 
     setState(() {
       upcoming = result;
@@ -63,19 +63,17 @@ class _UpcomingClassScreenState extends State<UpcomingClassScreen> {
                   items: itemsPerPage
                       .map(
                         (itemPerPage) => DropdownMenuItem<int>(
-                      value: itemPerPage,
-                      child: Text(
-                        '$itemPerPage',
-                        style: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .tertiary,
-                          fontSize: 16,
+                          value: itemPerPage,
+                          child: Text(
+                            '$itemPerPage',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.tertiary,
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
+                      )
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -86,38 +84,40 @@ class _UpcomingClassScreenState extends State<UpcomingClassScreen> {
                   },
                   icon: Icon(
                     Icons.keyboard_arrow_down_rounded,
-                    color:
-                    Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 3, horizontal: 8),
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                     filled: true,
-                    fillColor:
-                    Theme.of(context).colorScheme.secondary,
+                    fillColor: Theme.of(context).colorScheme.secondary,
                     enabledBorder: const OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.transparent),
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(24)),
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.all(Radius.circular(24)),
                     ),
                     focusedBorder: const OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.transparent),
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(24)),
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.all(Radius.circular(24)),
                     ),
                     floatingLabelAlignment: FloatingLabelAlignment.center,
                   ),
                   alignment: Alignment.center,
                 ),
-              ),            ],
+              ),
+            ],
           ),
           subSizedBox,
           ...List<Widget>.generate(
             upcoming.length,
-                (index) => UpcomingClassWidget(
-
+            (index) => UpcomingClassWidget(
+              bookingInfo: upcoming[index],
+              onCancel: (value) {
+                if (value) {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                }
+              },
             ),
           ),
           subSizedBox,
@@ -128,16 +128,18 @@ class _UpcomingClassScreenState extends State<UpcomingClassScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  backgroundColor: _page == 1 ? Colors.grey : Theme.of(context).colorScheme.secondary,
+                  backgroundColor: _page == 1
+                      ? Colors.grey
+                      : Theme.of(context).colorScheme.secondary,
                 ),
                 onPressed: _page == 1
                     ? null
                     : () {
-                  setState(() {
-                    _isLoading = true;
-                    _page--;
-                  });
-                },
+                        setState(() {
+                          _isLoading = true;
+                          _page--;
+                        });
+                      },
                 icon: Icon(
                   Icons.navigate_before_rounded,
                   size: 28,
@@ -155,16 +157,18 @@ class _UpcomingClassScreenState extends State<UpcomingClassScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  backgroundColor: _page == _count ? Colors.grey : Theme.of(context).colorScheme.secondary,
+                  backgroundColor: _page == _count
+                      ? Colors.grey
+                      : Theme.of(context).colorScheme.secondary,
                 ),
                 onPressed: _page == (_count / _perPage).ceil()
                     ? null
                     : () {
-                  setState(() {
-                    _isLoading = true;
-                    _page++;
-                  });
-                },
+                        setState(() {
+                          _isLoading = true;
+                          _page++;
+                        });
+                      },
                 icon: Icon(
                   Icons.navigate_next_rounded,
                   size: 28,

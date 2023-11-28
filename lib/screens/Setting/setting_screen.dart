@@ -113,6 +113,9 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           subSizedBox,
           InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, Routes.becomeTutor);
+            },
             child: Card(
               surfaceTintColor: Theme.of(context).primaryColor,
               elevation: 2,

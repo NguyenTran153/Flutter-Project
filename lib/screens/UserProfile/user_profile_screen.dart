@@ -33,10 +33,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      emailAddress = prefs.getString('email') ?? '';
-      phoneNumber = prefs.getString('phone') ?? '';
-      country = prefs.getString('country') ?? '';
-      name = prefs.getString('name') ?? '';
+      emailAddress = prefs.getString('email') ?? 'nguyen@gmail.com';
+      phoneNumber = prefs.getString('phone') ?? '0388455212';
+      country = prefs.getString('country') ?? 'Vietnam';
+      name = prefs.getString('name') ?? 'Tran Nguyen';
     });
   }
 
@@ -73,6 +73,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         leading: BackButton(
           color: Theme.of(context).colorScheme.secondary,
           onPressed: () {
+            Navigator.pop(context);
           },
         ),
         title: Text(
