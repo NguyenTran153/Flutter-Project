@@ -7,6 +7,7 @@ A new Flutter project for Avanced Mobile.
 
 ## Link Demo
 
-- [Milestone 1 - UI Mockup](https://www.youtube.com/watch?v=1UYMa3OMwB8)
+- [Milestone 1](https://www.youtube.com/watch?v=1UYMa3OMwB8)
+- [Milestone 2](https://www.youtube.com/watch?v=Bo9KJPMUONw)
 
 ## 
