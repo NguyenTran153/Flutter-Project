@@ -2,7 +2,6 @@ import "package:chewie/chewie.dart";
 import "package:flutter/material.dart";
 import "package:flutter_project/models/tutor/feedback.dart";
 import "package:flutter_project/screens/Tutor/Schedule/tutor_schedule_widget.dart";
-import "package:flutter_project/utils/colors.dart";
 import "package:flutter_project/utils/sized_box.dart";
 import "package:video_player/video_player.dart";
 
@@ -72,7 +71,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
         leading: BackButton(
           color: Theme.of(context).colorScheme.secondary,
         ),
@@ -243,7 +242,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                     height: 300,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                        border: Border.all(color: secondaryColor, width: 2),
+                        border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10))),
                     child: _chewieController == null

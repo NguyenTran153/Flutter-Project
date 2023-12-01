@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/utils/colors.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
 import '../../../../models/tutor.dart';
@@ -36,7 +35,7 @@ class _TutorSearchItemScreenState extends State<TutorSearchItemScreen> {
             arguments: widget.tutor);
       },
       child: Card(
-        surfaceTintColor: primaryColor,
+        surfaceTintColor: Theme.of(context).primaryColor,
         elevation: 3.0,
         margin: const EdgeInsets.symmetric(vertical: 12),
         child: Padding(
@@ -103,11 +102,11 @@ class _TutorSearchItemScreenState extends State<TutorSearchItemScreen> {
                     icon: _isFavorite
                         ? const Icon(
                             Icons.favorite_rounded,
-                            color: dangerColor,
+                            color: Colors.red,
                           )
-                        : const Icon(
+                        : Icon(
                             Icons.favorite_border_rounded,
-                            color: secondaryColor,
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
                   )
                 ],

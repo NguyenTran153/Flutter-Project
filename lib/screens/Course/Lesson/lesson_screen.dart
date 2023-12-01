@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter_project/utils/colors.dart";
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class LessonScreen extends StatelessWidget {
@@ -16,9 +15,9 @@ class LessonScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
         leading: BackButton(
-          color: secondaryColor,
+          color: Theme.of(context).colorScheme.secondary,
         ),
         title: Text(
           title,

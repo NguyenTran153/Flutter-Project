@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
-import "package:flutter_project/screens/VideoCall/videoCallItems/camera_screen.dart";
-import "package:flutter_project/utils/colors.dart";
+
 
 class VideoCallScreen extends StatefulWidget {
   const VideoCallScreen({super.key});
@@ -13,7 +12,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: blackColor,
+      backgroundColor: Colors.black,
       body: Column(
         children: [
           Expanded(
@@ -21,19 +20,19 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
               child: Text(
                 "Lesson is starting in 1000s",
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 20, color: primaryColor),
+                style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
               ),
             ),
           ),
-          Row(
-            children: const [
-              Expanded(child: Icon(Icons.mic_rounded, color: primaryColor,)),
-              Expanded(child: Icon(Icons.video_call, color: primaryColor,)),
-              Expanded(child: Icon(Icons.comment, color: primaryColor,)),
-              Expanded(child: Icon(Icons.mobile_screen_share, color: primaryColor,)),
-              Expanded(child: Icon(Icons.front_hand, color: primaryColor,)),
-              Expanded(child: Icon(Icons.fullscreen_outlined, color: primaryColor,)),
-              Expanded(child: Icon(Icons.phone, color: dangerColor,)),
+          const Row(
+            children: [
+              Expanded(child: Icon(Icons.mic_rounded, color: Colors.white,)),
+              Expanded(child: Icon(Icons.video_call, color: Colors.white,)),
+              Expanded(child: Icon(Icons.comment, color: Colors.white,)),
+              Expanded(child: Icon(Icons.mobile_screen_share, color: Colors.white,)),
+              Expanded(child: Icon(Icons.front_hand, color: Colors.white,)),
+              Expanded(child: Icon(Icons.fullscreen_outlined, color: Colors.white,)),
+              Expanded(child: Icon(Icons.phone, color: Colors.red,)),
             ],
           )
         ],

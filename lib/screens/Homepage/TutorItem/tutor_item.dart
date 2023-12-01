@@ -18,6 +18,7 @@ class TutorItem extends StatefulWidget {
 }
 
 class _TutorItemState extends State<TutorItem> {
+  bool _isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,17 +42,15 @@ class _TutorItemState extends State<TutorItem> {
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                       ),
-                      child: Image.asset(
-                        widget.tutor.avatar ?? "public/images/avatar.png",
+                      child: Image.network(
+                        widget.tutor.avatar ??
+                            'https://khoanh24.com/uploads/w750/2020/03/23/avatar-facebook-mac-dinh-nen-thay-doi-tien-do_75d21ddca.jpg',
                         fit: BoxFit.cover,
-                        errorBuilder: (BuildContext context, Object error,
-                            StackTrace? stackTrace) {
-                          return const Icon(
-                            Icons.error_outline_rounded,
-                            color: Colors.red,
-                            size: 32,
-                          );
-                        },
+                        errorBuilder: (context, error, stackTrace) => const Icon(
+                          Icons.error_outline_rounded,
+                          color: Colors.red,
+                          size: 32,
+                        ),
                       ),
                     ),
                   ),
@@ -69,16 +68,25 @@ class _TutorItemState extends State<TutorItem> {
                               );
                             },
                             child: Text(
-                              widget.tutor.name ?? "Noname",
+                              widget.tutor.name,
                               style: Theme.of(context).textTheme.displaySmall,
                             ),
                           ),
-                          Text( widget.tutor.country ?? 'Country', style: const TextStyle(fontSize: 16)),
-                          Row(
+                          Text( widget.tutor.country, style: const TextStyle(fontSize: 16)),
+                          widget.tutor.rating == null
+                              ? Text(
+                            'No reviews yet',
+                            style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              color:
+                              Theme.of(context).colorScheme.tertiary,
+                            ),
+                          )
+                              : Row(
                             children: List<Widget>.generate(
-                              5,
-                              (index) =>
-                                  const Icon(Icons.star, color: Colors.amber),
+                              widget.tutor.rating!.round(),
+                                  (index) => const Icon(Icons.star,
+                                  color: Colors.amber),
                             ),
                           )
                         ],
@@ -86,11 +94,21 @@ class _TutorItemState extends State<TutorItem> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
+                    onPressed: () {
+                      setState(() {
+                        _isFavorite = !_isFavorite;
+                      });
+                    },
+                    icon: _isFavorite
+                        ? const Icon(
                       Icons.favorite_rounded,
+                      color: Colors.red,
+                    )
+                        : Icon(
+                      Icons.favorite_border_rounded,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
-                  ),
+                  )
                 ],
               ),
               subSizedBox,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/screens/Course/Lesson/lesson_screen.dart';
-import 'package:flutter_project/utils/colors.dart';
 
 class LessonItemScreen extends StatefulWidget {
   const LessonItemScreen({
@@ -21,15 +20,15 @@ class _TopicItemScreenState extends State<LessonItemScreen> {
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
       child: Card(
         elevation: 1.5,
-        surfaceTintColor: primaryColor,
+        surfaceTintColor: Theme.of(context).primaryColor,
         child: ListTile(
-          title: Text('. Topic name'),
+          title: Text('Lesson about Math'),
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => LessonScreen(
-                  title: 'null name',
+                  title: 'Math',
                   url: 'https://www.africau.edu/images/default/sample.pdf',
                 ),
               ),

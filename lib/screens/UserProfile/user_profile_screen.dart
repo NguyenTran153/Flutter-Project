@@ -37,6 +37,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       phoneNumber = prefs.getString('phone') ?? '0388455212';
       country = prefs.getString('country') ?? 'Vietnam';
       name = prefs.getString('name') ?? 'Tran Nguyen';
+
+      // Add default values for other fields if they are empty
+      birthday = prefs.getString('birthday') ?? '';
+      level = prefs.getString('level') ?? '';
+      chosenLevel = prefs.getString('chosenLevel') ?? '';
+      _nameController.text = name;
+      _emailController.text = emailAddress;
+      _phoneController.text = phoneNumber;
+      _countryController.text = country;
+      _studyScheduleController.text = prefs.getString('studySchedule') ?? '';
     });
   }
 
@@ -62,6 +72,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   void initState() {
     super.initState();
     loadUserDataFromLocal();
+
+    _nameController.text = name;
+    _emailController.text = emailAddress;
+    _phoneController.text = phoneNumber;
+    _countryController.text = country;
   }
 
   @override
@@ -234,65 +249,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 });
               },
             ),
-            sizedBox,
-            Text(
-              'Level',
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-            ),
-            subSizedBox,
-            DropdownButtonFormField(
-              isExpanded: true,
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                hintStyle: TextStyle(color: Colors.grey[400]),
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-              value: chosenLevel,
-              items: ['BEGINNER', 'INTERMEDIATE', 'ADVANCED']
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.tertiary,
-                              fontSize: 24,
-                            ),
-                            overflow: TextOverflow.ellipsis),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  chosenLevel = value.toString();
-                });
-              },
-            ),
-            sizedBox,
-            Text(
-              'Topic',
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-            ),
-            subSizedBox,
-            Wrap(),
-            sizedBox,
-            Text(
-              'Test Preparation',
-              style: TextStyle(
-                  fontSize: 16, color: Theme.of(context).colorScheme.tertiary),
-            ),
-            subSizedBox,
-            Wrap(),
-            sizedBox,
             Text(
               'Study Schedule',
               style: TextStyle(
@@ -319,16 +275,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             TextButton(
               onPressed: () {
                 saveUserDataToLocal();
+                Navigator.pop(context);
               },
               style: TextButton.styleFrom(
-                minimumSize: Size.fromHeight(48),
+                minimumSize: const Size.fromHeight(48),
                 backgroundColor: Theme.of(context).colorScheme.secondary,
               ),
-              child: const Text(
+              child: Text(
                 'SAVE',
                 style: TextStyle(
                   fontSize: 18,
-                  color: Colors.white,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             )

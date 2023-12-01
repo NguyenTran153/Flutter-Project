@@ -1,8 +1,9 @@
+import "package:cached_network_image/cached_network_image.dart";
 import 'package:flutter/material.dart';
-import "package:flutter_project/utils/colors.dart";
 import "package:flutter_project/utils/sized_box.dart";
 
 import "../../../../models/schedule/booking_info.dart";
+import "../../../../models/tutor.dart";
 import "../../../../utils/routes.dart";
 
 class UpcomingClassWidget extends StatefulWidget {
@@ -19,13 +20,24 @@ class UpcomingClassWidget extends StatefulWidget {
 
 class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
   bool _isCardVisible = true;
+  final tutor = Tutor(
+    id: 1,
+    name: "Tutor 1",
+    email: "tutor1@example.com",
+    avatar: "https://plus.unsplash.com/premium_photo-1674180786953-4223a4208d9a?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    country: "Vietnam",
+    phone: "1234567891",
+    language: "Language 1",
+    specialties: "Math, Physics, Chemistry",
+    rating: 4.5,
+  );
 
   @override
   Widget build(BuildContext context) {
     return _isCardVisible
         ? Card(
       margin: const EdgeInsets.symmetric(vertical: 12),
-      surfaceTintColor: primaryColor,
+      surfaceTintColor: Theme.of(context).primaryColor,
       elevation: 2,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
@@ -33,16 +45,21 @@ class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
           children: [
             Row(
               children: [
-                const CircleAvatar(
-                  backgroundImage: AssetImage("public/images/avatar.png"),
-                  radius: 32,
-                ),
                 Container(
                   width: 72,
                   height: 72,
                   clipBehavior: Clip.hardEdge,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
+                  ),
+                  child: CachedNetworkImage(
+                    imageUrl: 'https://picsum.photos/250?image=9',
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) => const Icon(
+                      Icons.error_outline_rounded,
+                      size: 32,
+                      color: Colors.redAccent,
+                    ),
                   ),
                 ),
                 sizedBox,
@@ -69,10 +86,10 @@ class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.edit_note_outlined,
                     size: 32,
-                    color: secondaryColor,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 )
               ],
@@ -82,7 +99,7 @@ class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
               children: [
                 Expanded(
                   child: TextButton(
-                    style: TextButton.styleFrom(foregroundColor: dangerColor),
+                    style: TextButton.styleFrom(foregroundColor: Colors.red,),
                     onPressed: () async {
                       final dialogResult = await showDialog(
                         context: context,
@@ -109,11 +126,11 @@ class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
                         ),
                       );
                       if (dialogResult) {
-                        final result = "Class Cancelled Successfully";
+                        const result = "Class Cancelled Successfully";
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            content: Text(result),
+                            content: const Text(result),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -151,6 +168,6 @@ class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
         ),
       ),
     )
-        : SizedBox.shrink();
+        : const SizedBox.shrink();
   }
 }
