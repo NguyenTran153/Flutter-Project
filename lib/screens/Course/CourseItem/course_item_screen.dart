@@ -49,14 +49,14 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'null course name',
+                    'Lái xe đạp',
                     style: Theme.of(context).textTheme.displaySmall,
                   ),
                   const SizedBox(
                     height: 8,
                   ),
                   Text(
-                    'null course description',
+                    'Mô tả chuyến đi xe đạp',
                     style: TextStyle(
                         fontWeight: FontWeight.w400, color: Theme.of(context).colorScheme.tertiary),
                   ),
@@ -67,12 +67,12 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          'null course level',
+                          'Cấp cơ bản',
                           style: const TextStyle(fontSize: 18),
                         ),
                       ),
                       Text(
-                        '5 lessons',
+                        '5 tiết học',
                         style: const TextStyle(fontSize: 18),
                       )
                     ],

@@ -50,7 +50,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Text(
-                'Name',
+                'Xe đạp',
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
@@ -119,7 +119,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 48, right: 16),
-              child: Text("Course purpose"),
+              child: Text("Học"),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),

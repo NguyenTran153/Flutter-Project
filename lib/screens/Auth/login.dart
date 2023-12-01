@@ -70,14 +70,15 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               sizedBox,
+              sizedBox,
               Text(
                 "Say hello to your English tutors",
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.displayMedium,
               ),
               sizedBox,
               Text(
                 "Become fluent faster through one-on-one video chat lessons tailored to your goals.",
-                style: Theme.of(context).textTheme.titleMedium,
+                style: TextStyle(fontSize: 24, color: Colors.grey),
               ),
               sizedBox,
               TextFieldInput(

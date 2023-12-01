@@ -30,7 +30,8 @@ class MyApp extends StatelessWidget {
             title: 'LetTutor',
             theme:
                 themeProvider.mode == ThemeMode.light ? lightTheme : darkTheme,
-            home: const NavigationScreen(),
+            home: const LoginScreen(),
+            debugShowCheckedModeBanner: false,
             routes: {
               Routes.login: (context) => const LoginScreen(),
               Routes.register: (context) => const RegisterScreen(),

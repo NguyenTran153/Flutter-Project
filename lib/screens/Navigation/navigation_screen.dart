@@ -73,7 +73,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       ),
       body: pages[_chosenPageIndex],
       bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.transparent,
         color: Theme.of(context).colorScheme.secondary,
         buttonBackgroundColor: Theme.of(context).colorScheme.secondary,
         height: 50,
