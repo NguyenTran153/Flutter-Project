@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
           margin: const EdgeInsets.all(10.0),
           width: double.infinity,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               sizedBox,
               sizedBox,
