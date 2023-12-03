@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_project/constants/base_url.dart';
 import 'package:http/http.dart';
 
 class AuthenticationService {
-  static const String _baseUrl = 'https://reqres.in/api';
+  static const _baseUrl = baseUrl;
 
   static Future<Response> login(String email, String password) async {
-    String url = '$_baseUrl/login';
+    String url = '$_baseUrl//auth/login';
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {'email': email, 'password': password};
 

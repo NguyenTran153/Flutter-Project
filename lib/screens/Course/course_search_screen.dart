@@ -4,7 +4,7 @@ import 'package:flutter_project/utils/sized_box.dart';
 import 'package:flutter_project/widgets/text_field.dart';
 
 import '../../models/course.dart';
-import '../../utils/constants.dart';
+import '../../constants/items_per_page.dart';
 
 class CourseSearchScreen extends StatefulWidget {
   const CourseSearchScreen({super.key});

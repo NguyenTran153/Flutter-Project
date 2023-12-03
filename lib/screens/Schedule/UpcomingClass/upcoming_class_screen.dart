@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_project/screens/Schedule/UpcomingClass/UpcomingClassWidget/upcoming_class_widget.dart";
 
 import "../../../models/schedule/booking_info.dart";
-import "../../../utils/constants.dart";
+import '../../../constants/items_per_page.dart';
 import "../../../utils/sized_box.dart";
 
 class UpcomingClassScreen extends StatefulWidget {

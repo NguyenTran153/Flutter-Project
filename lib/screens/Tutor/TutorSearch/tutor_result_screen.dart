@@ -3,7 +3,7 @@ import 'package:flutter_project/models/tutor.dart';
 import 'package:flutter_project/screens/Tutor/TutorSearch/TutorSearchItem/tutor_search_item.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
-import '../../../utils/constants.dart';
+import '../../../constants/items_per_page.dart';
 
 class TutorResultScreen extends StatefulWidget {
   const TutorResultScreen({Key? key}) : super(key: key);

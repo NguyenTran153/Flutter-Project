@@ -3,7 +3,7 @@ import 'package:flutter_project/screens/Schedule/History/HistoryWidget/history_w
 import 'package:flutter_project/utils/sized_box.dart';
 
 import '../../../models/schedule/booking_info.dart';
-import '../../../utils/constants.dart';
+import '../../../constants/items_per_page.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
