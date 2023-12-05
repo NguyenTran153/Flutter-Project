@@ -4,10 +4,17 @@ import 'dart:convert';
 import 'package:flutter_project/constants/base_url.dart';
 import 'package:http/http.dart';
 
+import '../models/user/token.dart';
+import '../models/user/user.dart';
+
 class AuthenticationService {
   static const _baseUrl = baseUrl;
 
-  static Future<Response> login(String email, String password) async {
+  static Future<void> loginWithEmailAndPassword({
+    required String email,
+    required String password,
+    required Function(User, Token) onSuccess,
+  }) async {
     String url = '$_baseUrl//auth/login';
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {'email': email, 'password': password};
@@ -15,18 +22,32 @@ class AuthenticationService {
     Response response = await post(Uri.parse(url),
         headers: headers, body: jsonEncode(body));
 
-    return response;
+    final jsonDecode = json.decode(response.body);
+
+    if (response.statusCode != 200) {
+      throw Exception(jsonDecode['message']);
+    }
+
+    final user = User.fromJson(jsonDecode['user']);
+    final token = Token.fromJson(jsonDecode['tokens']);
+    await onSuccess(user, token);
   }
 
-  static Future<Response> register(String email, String password) async {
-    String url = '$_baseUrl/register';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'email': email, 'password': password};
+  static Future<void> registerWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    String url = '$_baseUrl/auth/register';
+    Map<String, String> headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    Map<String, String> body = {'email': email, 'password': password, 'source': 'null'};
 
     Response response = await post(Uri.parse(url),
         headers: headers, body: jsonEncode(body));
 
-    return response;
+    if (response.statusCode != 201) {
+      final jsonDecode = json.decode(response.body);
+      throw Exception(jsonDecode['message']);
+    }
   }
 
   static Future<Response> forgotPassword(String email) async {
@@ -99,7 +120,7 @@ class AuthenticationService {
     return response;
   }
 
-  static Future<Response> resendOTPforRegisterByPhoneNumber(
+  static Future<Response> resendOtpforRegisterByPhoneNumber(
       String phoneNumber) async {
     String url = '$_baseUrl/resend-otp-for-register-by-phone-number';
     Map<String, String> headers = {'Content-Type': 'application/json'};
@@ -111,7 +132,7 @@ class AuthenticationService {
     return response;
   }
 
-  static Future<Response> ActiveAccountByPhoneNumber(
+  static Future<Response> activeAccountByPhoneNumber(
       String phoneNumber, String otp) async {
     String url = '$_baseUrl/active-account-by-phone-number';
     Map<String, String> headers = {'Content-Type': 'application/json'};

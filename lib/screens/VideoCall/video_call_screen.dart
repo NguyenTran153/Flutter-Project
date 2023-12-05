@@ -24,15 +24,58 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
               ),
             ),
           ),
-          const Row(
+          Row(
             children: [
-              Expanded(child: Icon(Icons.mic_rounded, color: Colors.white,)),
-              Expanded(child: Icon(Icons.video_call, color: Colors.white,)),
-              Expanded(child: Icon(Icons.comment, color: Colors.white,)),
-              Expanded(child: Icon(Icons.mobile_screen_share, color: Colors.white,)),
-              Expanded(child: Icon(Icons.front_hand, color: Colors.white,)),
-              Expanded(child: Icon(Icons.fullscreen_outlined, color: Colors.white,)),
-              Expanded(child: Icon(Icons.phone, color: Colors.red,)),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                  },
+                  child: const Icon(Icons.mic_rounded, color: Colors.white),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                  },
+                  child: const Icon(Icons.video_call, color: Colors.white),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                  },
+                  child: const Icon(Icons.comment, color: Colors.white),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                  },
+                  child: const Icon(Icons.mobile_screen_share, color: Colors.white),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                  },
+                  child: const Icon(Icons.front_hand, color: Colors.white),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                  },
+                  child: const Icon(Icons.fullscreen_outlined, color: Colors.white),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+
+                  },
+                  child: const Icon(Icons.phone, color: Colors.red),
+                ),
+              ),
             ],
           )
         ],

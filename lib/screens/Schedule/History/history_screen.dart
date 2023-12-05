@@ -21,10 +21,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
   bool _isLoading = true;
 
   void _getHistory() {
-    final result = getBookingInfoList();
+    final result = [];
 
     setState(() {
-      history = result;
       _count = result.length;
       _isLoading = false;
     });

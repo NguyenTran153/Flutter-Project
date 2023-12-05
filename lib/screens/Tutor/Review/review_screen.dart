@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/screens/Tutor/Review/ReviewItem/review_item_widget.dart';
 
-import '../../../models/tutor/feedback.dart';
+import '../../../models/tutor/tutor_feedback.dart';
 
 class ReviewScreen extends StatefulWidget {
   const ReviewScreen({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../services/authentication_service.dart';
 import '../../utils/routes.dart';
 import '../../utils/sized_box.dart';
 import '../../widgets/text_field.dart';
@@ -19,90 +19,58 @@ class _RegisterScreenState extends State<RegisterScreen> {
       TextEditingController();
 
   Future<void> _register() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String confirmPassword = _confirmPasswordController.text;
+    final emailRegExp = RegExp(
+        r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
 
-    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Please fill in full information'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Close'),
-              ),
-            ],
-          );
-        },
-      );
-      return;
+    bool isValid = true;
+    String errorMessage = '';
+
+    void validateField(String value, String errorType) {
+      if (value.isEmpty) {
+        isValid = false;
+        errorMessage = "Thông tin bị trống";
+      } else if (errorType == 'email' && !emailRegExp.hasMatch(value)) {
+        isValid = false;
+        errorMessage = "Email không hợp lệ";
+      } else if (errorType == 'password' && value.length < 6) {
+        isValid = false;
+        errorMessage = "Mật khẩu quá ngắn";
+      } else if (errorType == 'confirmPassword' && value.length < 6) {
+        isValid = false;
+        errorMessage = "Mật khẩu quá ngắn";
+      } else if (errorType == 'confirmPassword' && value != _passwordController.text) {
+        isValid = false;
+        errorMessage = "Mật khẩu không khớp";
+      }
     }
 
-    // Check if email is already registered
-    String? storedEmail = prefs.getString('email');
-    if (storedEmail == email) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Email is already registered'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Close'),
-              ),
-            ],
-          );
-        },
+    validateField(_emailController.text, 'email');
+    validateField(_passwordController.text, 'password');
+    validateField(_confirmPasswordController.text, 'confirmPassword');
+
+    if (isValid) {
+      try {
+        await AuthenticationService.registerWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        if (mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Đăng ký thành công")),);
+          Navigator.pop(context);
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Lỗi đăng ký: ${e.toString()}')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
       );
-      return;
     }
-
-    if (password != confirmPassword) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Password and confirm are not matched'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Close'),
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    }
-
-
-    await prefs.setString('email', email);
-    await prefs.setString('password', password);
-
-    Navigator.pushNamed(context, Routes.login);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               sizedBox,
               InkWell(
-                onTap: () {
+                onTap: () async {
                   _register();
                 },
                 child: Container(

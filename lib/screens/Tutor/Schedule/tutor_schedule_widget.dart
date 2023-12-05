@@ -16,7 +16,7 @@ class _TutorScheduleWidgetState extends State<TutorScheduleWidget> {
   List<int> scheduleStartTimestamps = [];
 
   void _getTutorSchedule() {
-    List<Schedule> result = getSchedules();
+    List<Schedule> result = [];
 
     // Remove all learning dates before today
     result = result.where((schedule) {

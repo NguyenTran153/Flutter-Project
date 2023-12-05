@@ -1,3 +1,6 @@
+import '../tutor/tutor.dart';
+import 'schedule_detail.dart';
+
 class Schedule {
   String? id;
   String? tutorId;
@@ -7,7 +10,8 @@ class Schedule {
   int? endTimestamp;
   String? createdAt;
   bool? isBooked;
-
+  List<ScheduleDetail>? scheduleDetails;
+  Tutor? tutorInfo;
 
   Schedule({
     this.id,
@@ -18,61 +22,44 @@ class Schedule {
     this.endTimestamp,
     this.createdAt,
     this.isBooked,
+    this.scheduleDetails,
+    this.tutorInfo,
   });
-}
 
-List<Schedule> getSchedules() {
-  return [
-    Schedule(
-      id: "1",
-      tutorId: "123",
-      startTime: "08:00 AM",
-      endTime: "10:00 AM",
-      startTimestamp: 1679798400,
-      endTimestamp: 1679809200,
-      createdAt: "2023-11-20",
-      isBooked: true,
-    ),
-    Schedule(
-      id: "2",
-      tutorId: "456",
-      startTime: "02:00 PM",
-      endTime: "04:00 PM",
-      startTimestamp: 1679852400,
-      endTimestamp: 1679863200,
-      createdAt: "2023-11-22",
-      isBooked: false,
-    ),
-    Schedule(
-      id: "3",
-      tutorId: "789",
-      startTime: "10:30 AM",
-      endTime: "12:30 PM",
-      startTimestamp: 1679706600,
-      endTimestamp: 1679717400,
-      createdAt: "2023-11-25",
-      isBooked: true,
-    ),
-    Schedule(
-      id: "4",
-      tutorId: "101",
-      startTime: "03:00 PM",
-      endTime: "05:00 PM",
-      startTimestamp: DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch,
-      endTimestamp: DateTime.now().add(Duration(days: 1, hours: 2)).millisecondsSinceEpoch,
-      createdAt: "2023-11-26",
-      isBooked: false,
-    ),
-    Schedule(
-      id: "5",
-      tutorId: "202",
-      startTime: "10:00 AM",
-      endTime: "12:00 PM",
-      startTimestamp: DateTime.now().add(Duration(days: 2)).millisecondsSinceEpoch,
-      endTimestamp: DateTime.now().add(Duration(days: 2, hours: 2)).millisecondsSinceEpoch,
-      createdAt: "2023-11-27",
-      isBooked: true,
-    ),
-    // Add more schedule objects here...
-  ];
+  Schedule.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    tutorId = json['tutorId'];
+    startTime = json['startTime'];
+    endTime = json['endTime'];
+    startTimestamp = json['startTimestamp'];
+    endTimestamp = json['endTimestamp'];
+    createdAt = json['createdAt'];
+    isBooked = json['isBooked'];
+    if (json['scheduleDetails'] != null) {
+      scheduleDetails = <ScheduleDetail>[];
+      json['scheduleDetails'].forEach((v) {
+        scheduleDetails!.add(ScheduleDetail.fromJson(v));
+      });
+    }
+    tutorInfo = json['tutorInfo'] != null ? Tutor.fromJson(json['tutorInfo']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['tutorId'] = tutorId;
+    data['startTime'] = startTime;
+    data['endTime'] = endTime;
+    data['startTimestamp'] = startTimestamp;
+    data['endTimestamp'] = endTimestamp;
+    data['createdAt'] = createdAt;
+    data['isBooked'] = isBooked;
+    if (scheduleDetails != null) {
+      data['scheduleDetails'] = scheduleDetails!.map((v) => v.toJson()).toList();
+    }
+    if (tutorInfo != null) {
+      data['tutorInfo'] = tutorInfo!.toJson();
+    }
+    return data;
+  }
 }

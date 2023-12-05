@@ -21,10 +21,9 @@ class _UpcomingClassScreenState extends State<UpcomingClassScreen> {
   bool _isLoading = true;
 
   void _getUpcomingClasses() {
-    final result = getBookingInfoList();
+    final result = [];
 
     setState(() {
-      upcoming = result;
       _count = result.length;
       _isLoading = false;
     });

@@ -1,6 +1,6 @@
 import "package:chewie/chewie.dart";
 import "package:flutter/material.dart";
-import "package:flutter_project/models/tutor/feedback.dart";
+import "package:flutter_project/models/tutor/tutor_feedback.dart";
 import "package:flutter_project/screens/Tutor/Schedule/tutor_schedule_widget.dart";
 import "package:flutter_project/utils/sized_box.dart";
 import "package:video_player/video_player.dart";
@@ -27,34 +27,11 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
   late List<TutorFeedback> feedbacks;
 
   Future<void> _getTutor() async {
-    // Use try-catch to handle errors during tutor data fetching
-    Tutor result = ModalRoute.of(context)?.settings.arguments as Tutor;
-    String specialtiesString = result.specialties ?? '';
-    _specialties = specialtiesString.split(',').map((s) => s.trim()).toList();
-
-    setState(() {
-      _tutor = result;
-      feedbacks = getFeedbacks();
-    });
   }
 
   //Fake
   List<Course> courses = [
-    Course(
-      name: 'Lập trình Flutter',
-      description: 'Khóa học học lập trình Flutter từ cơ bản đến nâng cao',
-      price: 1000000,
-    ),
-    Course(
-      name: 'Lập trình Android',
-      description: 'Khóa học học lập trình Android từ cơ bản đến nâng cao',
-      price: 2000000,
-    ),
-    Course(
-      name: 'Lập trình iOS',
-      description: 'Khóa học học lập trình iOS từ cơ bản đến nâng cao',
-      price: 3000000,
-    ),
+
   ];
   bool _isLoading = false;
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
-import '../../../../models/tutor/feedback.dart';
+import '../../../../models/tutor/tutor_feedback.dart';
 
 class ReviewItemWidget extends StatelessWidget {
   const ReviewItemWidget({
