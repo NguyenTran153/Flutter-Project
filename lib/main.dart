@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:flutter_project/providers/language_provider.dart';
@@ -18,7 +20,17 @@ import 'package:flutter_project/providers/theme_provider.dart';
 
 import 'l10n.dart';
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+  }
+}
+
+
 void main() {
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 
@@ -42,8 +54,7 @@ class MyApp extends StatelessWidget {
               const Locale('vi'),
             ],
             localizationsDelegates: [
-              const AppLocalizationsDelegate(), // Thêm delegate cho ngôn ngữ
-              // Thêm các delegate khác nếu cần
+              const AppLocalizationsDelegate(),
             ],
             theme:
                 themeProvider.mode == ThemeMode.light ? lightTheme : darkTheme,

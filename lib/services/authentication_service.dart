@@ -15,7 +15,7 @@ class AuthenticationService {
     required String password,
     required Function(User, Token) onSuccess,
   }) async {
-    String url = '$_baseUrl//auth/login';
+    String url = '$_baseUrl/auth/login';
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {'email': email, 'password': password};
 
@@ -62,7 +62,7 @@ class AuthenticationService {
   }
 
   static Future<Response> loginByPhoneNumber(String phoneNumber) async {
-    String url = '$_baseUrl/login-by-phone-number';
+    String url = '$_baseUrl/auth/phone-login';
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {'phone_number': phoneNumber};
 
@@ -73,9 +73,9 @@ class AuthenticationService {
   }
 
   static Future<Response> loginByGoogle(String googleToken) async {
-    String url = '$_baseUrl/login-by-google';
+    String url = '$_baseUrl/auth/google';
     Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'google_token': googleToken};
+    Map<String, String> body = {'access_token': googleToken};
 
     Response response = await post(Uri.parse(url),
         headers: headers, body: jsonEncode(body));
@@ -84,9 +84,9 @@ class AuthenticationService {
   }
 
   static Future<Response> loginByFacebook(String facebookToken) async {
-    String url = '$_baseUrl/login-by-facebook';
+    String url = '$_baseUrl/auth/facebook';
     Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'facebook_token': facebookToken};
+    Map<String, String> body = {'access_token': facebookToken};
 
     Response response = await post(Uri.parse(url),
         headers: headers, body: jsonEncode(body));
@@ -95,9 +95,9 @@ class AuthenticationService {
   }
 
   static Future<Response> refreshToken(String refreshToken) async {
-    String url = '$_baseUrl/refresh-token';
+    String url = '$_baseUrl/auth/refresh-token';
     Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'refresh_token': refreshToken};
+    Map<String, String> body = {'refresh_token': refreshToken, 'timezone': '7'};
 
     Response response = await post(Uri.parse(url),
         headers: headers, body: jsonEncode(body));
@@ -107,11 +107,12 @@ class AuthenticationService {
 
   static Future<Response> registerByPhoneNumber(
       String phoneNumber, String password) async {
-    String url = '$_baseUrl/register-by-phone-number';
+    String url = '$_baseUrl/auth/phone-register';
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {
-      'phone_number': phoneNumber,
-      'password': password
+      'phone': phoneNumber,
+      'password': password,
+      'source': 'null'
     };
 
     Response response = await post(Uri.parse(url),
@@ -122,9 +123,9 @@ class AuthenticationService {
 
   static Future<Response> resendOtpforRegisterByPhoneNumber(
       String phoneNumber) async {
-    String url = '$_baseUrl/resend-otp-for-register-by-phone-number';
+    String url = '$_baseUrl/verify/phone-auth-verify/create';
     Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'phone_number': phoneNumber};
+    Map<String, String> body = {'phone': phoneNumber};
 
     Response response = await post(Uri.parse(url),
         headers: headers, body: jsonEncode(body));
@@ -132,11 +133,11 @@ class AuthenticationService {
     return response;
   }
 
-  static Future<Response> activeAccountByPhoneNumber(
+  static Future<Response> activePhoneNumberWithOTP(
       String phoneNumber, String otp) async {
-    String url = '$_baseUrl/active-account-by-phone-number';
+    String url = '$_baseUrl/verify/phone-auth-verify/activate';
     Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'phone_number': phoneNumber, 'otp': otp};
+    Map<String, String> body = {'phone': phoneNumber, 'otp': otp};
 
     Response response = await post(Uri.parse(url),
         headers: headers, body: jsonEncode(body));
