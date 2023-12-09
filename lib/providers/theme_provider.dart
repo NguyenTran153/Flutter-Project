@@ -16,6 +16,7 @@ final darkTheme = ThemeData(
   primaryColor: Colors.black,
   colorScheme: ColorScheme.fromSeed(
     secondary: Colors.grey,
+    tertiary: Colors.purple,
     seedColor: Colors.purple,
     brightness: Brightness.dark,
   ),

@@ -6,7 +6,7 @@ import "package:flutter_project/utils/sized_box.dart";
 import "package:video_player/video_player.dart";
 
 import "../../../models/course.dart";
-import "../../../models/tutor.dart";
+import "../../../models/tutor/tutor.dart";
 import "../../../utils/routes.dart";
 
 class TutorDetailScreen extends StatefulWidget {
@@ -73,15 +73,15 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        child: Image.network(
-                          _tutor.avatar,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, url, error) => const Icon(
-                            Icons.error_outline_rounded,
-                            size: 32,
-                            color: Colors.redAccent,
-                          ),
-                        ),
+                        // child: Image.network(
+                        //   _tutor.avatar,
+                        //   fit: BoxFit.cover,
+                        //   errorBuilder: (context, url, error) => const Icon(
+                        //     Icons.error_outline_rounded,
+                        //     size: 32,
+                        //     color: Colors.redAccent,
+                        //   ),
+                        // ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -89,11 +89,11 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _tutor.name,
+                              "_tutor.name",
                               style: Theme.of(context).textTheme.displaySmall,
                             ),
                             Text(
-                              _tutor.country,
+                              "_tutor.country",
                               style: const TextStyle(fontSize: 16),
                             ),
                             _tutor.rating == null
@@ -106,7 +106,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                                   )
                                 : Row(children: [
                                     ...List<Widget>.generate(
-                                      _tutor.rating.round(),
+                                      5,
                                       (index) => const Icon(Icons.star,
                                           color: Colors.amber),
                                     ),
@@ -245,7 +245,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         5,
                         (index) => Chip(
                           label: Text(
-                            _tutor.language,
+                            '_tutor.language',
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.secondary),
                           ),

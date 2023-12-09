@@ -19,8 +19,8 @@ class AuthenticationService {
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {'email': email, 'password': password};
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     final jsonDecode = json.decode(response.body);
 
@@ -38,11 +38,17 @@ class AuthenticationService {
     required String password,
   }) async {
     String url = '$_baseUrl/auth/register';
-    Map<String, String> headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-    Map<String, String> body = {'email': email, 'password': password, 'source': 'null'};
+    Map<String, String> headers = {
+      'Content-Type': 'application/json'
+    };
+    Map<String, String> body = {
+      'email': email,
+      'password': password,
+      'source': 'null'
+    };
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     if (response.statusCode != 201) {
       final jsonDecode = json.decode(response.body);
@@ -55,8 +61,8 @@ class AuthenticationService {
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {'email': email};
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     return response;
   }
@@ -66,32 +72,49 @@ class AuthenticationService {
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {'phone_number': phoneNumber};
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     return response;
   }
 
-  static Future<Response> loginByGoogle(String googleToken) async {
+  static Future<void> loginByGoogle({
+    required String accessToken,
+    required Function(User, Token) onSuccess,
+  }) async {
     String url = '$_baseUrl/auth/google';
     Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'access_token': googleToken};
+    Map<String, String> body = {'access_token': accessToken};
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
-    return response;
+    final jsonDecode = json.decode(response.body);
+    if (response.statusCode != 200) {
+      throw Exception(jsonDecode['message']);
+    }
+    final user = User.fromJson(jsonDecode['user']);
+    final tokens = Token.fromJson(jsonDecode['tokens']);
+    await onSuccess(user, tokens);
   }
 
-  static Future<Response> loginByFacebook(String facebookToken) async {
+  static Future<void> loginByFacebook({
+    required String accessToken,
+    required Function(User, Token) onSuccess,
+  }) async {
     String url = '$_baseUrl/auth/facebook';
     Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'access_token': facebookToken};
+    Map<String, String> body = {'access_token': accessToken};
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
-
-    return response;
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
+    final jsonDecode = json.decode(response.body);
+    if (response.statusCode != 200) {
+      throw Exception(jsonDecode['message']);
+    }
+    final user = User.fromJson(jsonDecode['user']);
+    final tokens = Token.fromJson(jsonDecode['tokens']);
+    await onSuccess(user, tokens);
   }
 
   static Future<Response> refreshToken(String refreshToken) async {
@@ -99,8 +122,8 @@ class AuthenticationService {
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {'refresh_token': refreshToken, 'timezone': '7'};
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     return response;
   }
@@ -115,8 +138,8 @@ class AuthenticationService {
       'source': 'null'
     };
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     return response;
   }
@@ -127,8 +150,8 @@ class AuthenticationService {
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {'phone': phoneNumber};
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     return response;
   }
@@ -139,8 +162,8 @@ class AuthenticationService {
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {'phone': phoneNumber, 'otp': otp};
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     return response;
   }

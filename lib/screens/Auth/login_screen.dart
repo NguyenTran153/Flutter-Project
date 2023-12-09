@@ -149,12 +149,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: () {
                   Navigator.pushNamed(context, Routes.forgotPassword);
                 },
-                child: Text(
-                  "Forgot Password",
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                child: const Text("Forgot Password",
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.green,
+                        decoration: TextDecoration.underline)),
               ),
-              subSizedBox,
               InkWell(
                 onTap: () {
                   _loginWithEmailAndPassword(authProvider);
@@ -170,9 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Text("Login"),
                 ),
               ),
-              sizedBox,
               const Text("Or continue with"),
-              subSizedBox,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -200,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: const Text(
-                      'Dont have an account?',
+                      "Don't have an account?",
                     ),
                   ),
                   GestureDetector(

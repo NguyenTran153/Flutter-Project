@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project/models/schedule/booking_info.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 
-import '../../../../models/tutor.dart';
 
 class HistoryWidget extends StatefulWidget {
   const HistoryWidget({Key? key, required this.bookingInfo}) : super(key: key);
@@ -14,17 +13,6 @@ class HistoryWidget extends StatefulWidget {
 }
 
 class _HistoryWidgetState extends State<HistoryWidget> {
-  final tutor = Tutor(
-    id: 1,
-    name: "Tutor 1",
-    email: "tutor1@example.com",
-    avatar: "https://plus.unsplash.com/premium_photo-1674180786953-4223a4208d9a?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    country: "Vietnam",
-    phone: "1234567891",
-    language: "Language 1",
-    specialties: "Math, Physics, Chemistry",
-    rating: 4.5,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +36,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                     shape: BoxShape.circle,
                   ),
                   child: Image.network(
-                    tutor.avatar ??
+
                         'https://khoanh24.com/uploads/w750/2020/03/23/avatar-facebook-mac-dinh-nen-thay-doi-tien-do_75d21ddca.jpg',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => const Icon(
@@ -64,7 +52,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        tutor.name,
+                        "tutor.name",
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       subSizedBox,

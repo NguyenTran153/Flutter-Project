@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../l10n.dart';
+import '../../providers/language_provider.dart';
 import '../../services/authentication_service.dart';
 import '../../utils/routes.dart';
 import '../../utils/sized_box.dart';
@@ -18,6 +21,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  late Locale currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
+  }
+
   Future<void> _register() async {
     final emailRegExp = RegExp(
         r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
@@ -28,19 +44,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
     void validateField(String value, String errorType) {
       if (value.isEmpty) {
         isValid = false;
-        errorMessage = "Thông tin bị trống";
+        errorMessage = AppLocalizations(currentLocale).translate('emptyField')!;
       } else if (errorType == 'email' && !emailRegExp.hasMatch(value)) {
         isValid = false;
-        errorMessage = "Email không hợp lệ";
+        errorMessage =
+            AppLocalizations(currentLocale).translate('notValidEmail')!;
       } else if (errorType == 'password' && value.length < 6) {
         isValid = false;
-        errorMessage = "Mật khẩu quá ngắn";
+        errorMessage =
+            AppLocalizations(currentLocale).translate('passwordTooShort')!;
       } else if (errorType == 'confirmPassword' && value.length < 6) {
         isValid = false;
-        errorMessage = "Mật khẩu quá ngắn";
-      } else if (errorType == 'confirmPassword' && value != _passwordController.text) {
+        errorMessage =
+            AppLocalizations(currentLocale).translate('passwordTooShort')!;
+      } else if (errorType == 'confirmPassword' &&
+          value != _passwordController.text) {
         isValid = false;
-        errorMessage = "Mật khẩu không khớp";
+        errorMessage =
+            AppLocalizations(currentLocale).translate('passwordNotMatch')!;
       }
     }
 
@@ -55,14 +76,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
           password: _passwordController.text,
         );
         if (mounted) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Đăng ký thành công")),);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(AppLocalizations(currentLocale)
+                    .translate('registerCompleted')!)),
+          );
           Navigator.pop(context);
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Lỗi đăng ký: ${e.toString()}')),
-        );
+          SnackBar(content: Text(AppLocalizations(currentLocale)
+              .translate('registerError')!),
+        ));
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -71,9 +96,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).primaryColor,
@@ -97,19 +122,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
               sizedBox,
               TextFieldInput(
                   textEditingController: _emailController,
-                  hintText: "Enter your email",
+                  hintText: AppLocalizations(currentLocale)
+                      .translate('enterEmail')!,
                   textInputType: TextInputType.emailAddress),
               sizedBox,
               TextFieldInput(
                 textEditingController: _passwordController,
-                hintText: "Enter your password",
+                hintText: AppLocalizations(currentLocale)
+                    .translate('enterPassword')!,
                 textInputType: TextInputType.text,
                 isPass: true,
               ),
               sizedBox,
               TextFieldInput(
                 textEditingController: _confirmPasswordController,
-                hintText: "Enter your password again",
+                hintText: AppLocalizations(currentLocale)
+                    .translate('enterPassword')!,
                 textInputType: TextInputType.text,
                 isPass: true,
               ),
@@ -126,7 +154,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     borderRadius: BorderRadius.circular(10.0),
                     color: Theme.of(context).colorScheme.secondary,
                   ),
-                  child: const Text("Register"),
+                  child: Text(AppLocalizations(currentLocale)
+                      .translate('register')!),
                 ),
               ),
               sizedBox,

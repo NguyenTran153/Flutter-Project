@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/models/tutor.dart';
 import 'package:flutter_project/utils/sized_box.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants/nationality.dart';
+import '../../../l10n.dart';
+import '../../../providers/auth_provider.dart';
+import '../../../providers/language_provider.dart';
 import '../../../utils/routes.dart';
 
 class TutorSearchScreen extends StatefulWidget {
@@ -15,16 +18,29 @@ class TutorSearchScreen extends StatefulWidget {
 class _TutorSearchScreenState extends State<TutorSearchScreen> {
   final _nameController = TextEditingController();
   List<String> _specialties = [];
-  List<String> _filterSpecialies = [];
+
   Nationality? _nationality = Nationality.foreign;
-
   int _chosenSpecialtiesIndex = 0;
-  List<Tutor> tutors = getTutors();
 
-  Map<String, dynamic> _encapsulateSearchParams() {
+  late Locale currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
+  }
+
+  Map<String, dynamic> _encapsulateSearchParams(AuthProvider authProvider) {
     final name = _nameController.text;
+    final accessToken = authProvider.token?.access?.token as String;
 
     return {
+      'token': accessToken,
       'search': name,
       'nationality': _nationality?.index == Nationality.vietnamese.index,
       'specialties': _chosenSpecialtiesIndex == 0
@@ -33,39 +49,48 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
               _specialties[_chosenSpecialtiesIndex]
                   .toLowerCase()
                   .replaceAll(' ', '-')
-            ].map((e) => e as String).toList(),
+            ],
     };
   }
 
-  void _loadSpecialties() {
-    _specialties = [
-      'All',
-      'Math',
-      'History',
-      'English',
-      'Physics',
-      'Chemistry'
-    ];
+  // void _loadSpecialties() {
+  //   _specialties = [
+  //     'All',
+  //     'Math',
+  //     'History',
+  //     'English',
+  //     'Physics',
+  //     'Chemistry'
+  //   ];
+  // }
+  void _loadSpecialties(AuthProvider authProvider) {
+    final learnTopics = authProvider.learnTopics.map((e) => e.name ?? 'null');
+    final testPreparations =
+        authProvider.testPreparations.map((e) => e.name ?? 'null');
+    _specialties = ['All', ...learnTopics, ...testPreparations];
   }
 
   @override
   Widget build(BuildContext context) {
-    _loadSpecialties();
+    final authProvider = context.watch<AuthProvider>();
+    _loadSpecialties(authProvider);
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Find a tutor',
+          Text(AppLocalizations(currentLocale).translate('findTutor')!,
               style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 8),
+          subSizedBox,
           TextField(
             controller: _nameController,
             decoration: InputDecoration(
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-
-              hintText: "Search by name",
+              hintStyle: TextStyle(color: Colors.grey[500]),
+              hintText:
+                  AppLocalizations(currentLocale).translate('searchByName')!,
               border: OutlineInputBorder(
                   borderSide: BorderSide(
                       color: Theme.of(context).colorScheme.tertiary, width: 2),
@@ -73,7 +98,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
             ),
           ),
           sizedBox,
-          Text('Nationality',
+          Text(AppLocalizations(currentLocale).translate('nationality')!,
               style: Theme.of(context).textTheme.headlineMedium),
           subSizedBox,
           Row(
@@ -87,7 +112,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                   });
                 },
               ),
-              const Text('All Tutors'),
+              Text(AppLocalizations(currentLocale).translate('all')!),
             ],
           ),
           Row(
@@ -101,7 +126,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                   });
                 },
               ),
-              const Text('Vietnamese Tutors'),
+              Text(AppLocalizations(currentLocale).translate('vietnamese')!),
             ],
           ),
           Row(
@@ -115,11 +140,11 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                   });
                 },
               ),
-              const Text('Foreign Tutors'),
+              Text(AppLocalizations(currentLocale).translate('foreign')!),
             ],
           ),
           sizedBox,
-          Text('Specialties',
+          Text(AppLocalizations(currentLocale).translate('specialties')!,
               style: Theme.of(context).textTheme.headlineMedium),
           subSizedBox,
           Wrap(
@@ -159,9 +184,11 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                     _chosenSpecialtiesIndex = 0;
                   });
                 },
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 6),
-                  child: Text('Reset Filters', style: TextStyle(fontSize: 16)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: Text(
+                      AppLocalizations(currentLocale).translate('resetFilter')!,
+                      style: const TextStyle(fontSize: 16)),
                 ),
               ),
               sizedBox,
@@ -170,7 +197,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                   Navigator.pushNamed(
                     context,
                     Routes.tutorSearchResult,
-                    arguments: _encapsulateSearchParams(),
+                    arguments: _encapsulateSearchParams(authProvider),
                   );
                 },
                 style: TextButton.styleFrom(
@@ -179,7 +206,7 @@ class _TutorSearchScreenState extends State<TutorSearchScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
-                    'Search',
+                    AppLocalizations(currentLocale).translate('search')!,
                     style: TextStyle(
                         fontSize: 16, color: Theme.of(context).primaryColor),
                   ),

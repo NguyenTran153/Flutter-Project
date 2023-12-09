@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import "package:flutter_project/utils/sized_box.dart";
 
 import "../../../../models/schedule/booking_info.dart";
-import "../../../../models/tutor.dart";
 import "../../../../utils/routes.dart";
 
 class UpcomingClassWidget extends StatefulWidget {
@@ -20,17 +19,7 @@ class UpcomingClassWidget extends StatefulWidget {
 
 class _UpcomingClassWidgetState extends State<UpcomingClassWidget> {
   bool _isCardVisible = true;
-  final tutor = Tutor(
-    id: 1,
-    name: "Tutor 1",
-    email: "tutor1@example.com",
-    avatar: "https://plus.unsplash.com/premium_photo-1674180786953-4223a4208d9a?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    country: "Vietnam",
-    phone: "1234567891",
-    language: "Language 1",
-    specialties: "Math, Physics, Chemistry",
-    rating: 4.5,
-  );
+
 
   @override
   Widget build(BuildContext context) {

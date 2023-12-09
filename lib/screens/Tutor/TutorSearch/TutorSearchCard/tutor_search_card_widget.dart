@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
+import 'package:provider/provider.dart';
 
-import '../../../../models/tutor.dart';
+import '../../../../constants/countries.dart';
+import '../../../../l10n.dart';
+import '../../../../models/tutor/tutor.dart';
+import '../../../../models/tutor/tutor_info.dart';
+import '../../../../providers/auth_provider.dart';
+import '../../../../providers/language_provider.dart';
+import '../../../../services/tutor_service.dart';
 import '../../../../utils/routes.dart';
 
-class TutorSearchItemScreen extends StatefulWidget {
-  const TutorSearchItemScreen({
+class TutorSearchCardWidget extends StatefulWidget {
+  const TutorSearchCardWidget({
     Key? key,
     required this.tutor,
   }) : super(key: key);
@@ -13,22 +20,59 @@ class TutorSearchItemScreen extends StatefulWidget {
   final Tutor tutor;
 
   @override
-  State<TutorSearchItemScreen> createState() => _TutorSearchItemScreenState();
+  State<TutorSearchCardWidget> createState() => _TutorSearchCardWidgetState();
 }
 
-class _TutorSearchItemScreenState extends State<TutorSearchItemScreen> {
+class _TutorSearchCardWidgetState extends State<TutorSearchCardWidget> {
+  TutorInfo? _tutorInfo;
   late List<String> _specialties;
-  bool _isFavorite = false;
+
+  late Locale currentLocale;
 
   @override
   void initState() {
     super.initState();
-    String specialtiesString = widget.tutor.specialties ?? '';
-    _specialties = specialtiesString.split(',').map((s) => s.trim()).toList();
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
+  }
+
+  Future<void> _getTutorInformation(AuthProvider authProvider) async {
+    final String token = authProvider.token?.access?.token as String;
+
+    final learnTopics = authProvider.learnTopics
+        .where((topic) =>
+            _tutorInfo?.specialties?.split(',').contains(topic.key) ?? false)
+        .map((e) => e.name ?? 'null');
+    final testPreparations = authProvider.testPreparations
+        .where((test) =>
+            _tutorInfo?.specialties?.split(',').contains(test.key) ?? false)
+        .map((e) => e.name ?? 'null');
+    _specialties = [...learnTopics, ...testPreparations];
+
+    final result = await TutorService.getTutorInformationById(
+      token: token,
+      userId: widget.tutor.userId ?? '',
+    );
+
+    if (mounted) {
+      setState(() {
+        _tutorInfo = result;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+
+    if (authProvider.token != null) {
+      _getTutorInformation(authProvider);
+    }
+
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, Routes.teacherDetail,
@@ -53,8 +97,7 @@ class _TutorSearchItemScreenState extends State<TutorSearchItemScreen> {
                       shape: BoxShape.circle,
                     ),
                     child: Image.network(
-                      widget.tutor.avatar ??
-                          'https://khoanh24.com/uploads/w750/2020/03/23/avatar-facebook-mac-dinh-nen-thay-doi-tien-do_75d21ddca.jpg',
+                      widget.tutor.avatar ?? '',
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.error_outline_rounded,
@@ -69,9 +112,17 @@ class _TutorSearchItemScreenState extends State<TutorSearchItemScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(widget.tutor.name ?? 'null name',
+                          Text(
+                              widget.tutor.name ??
+                                  AppLocalizations(currentLocale)
+                                      .translate('null')!,
                               style: Theme.of(context).textTheme.displaySmall),
-                          Text(widget.tutor.country ?? 'unknown country',
+                          Text(
+                              countries[widget.tutor.country ??
+                                      AppLocalizations(currentLocale)
+                                          .translate('null')!] ??
+                                  AppLocalizations(currentLocale)
+                                      .translate('unknownCountry')!,
                               style: const TextStyle(fontSize: 16)),
                           widget.tutor.rating == null
                               ? Text(
@@ -94,12 +145,18 @@ class _TutorSearchItemScreenState extends State<TutorSearchItemScreen> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _isFavorite = !_isFavorite;
-                      });
+                    onPressed: () async {
+                      if (authProvider.token != null) {
+                        final String accessToken =
+                            authProvider.token?.access?.token as String;
+                        await TutorService.addTutorToFavorite(
+                          token: accessToken,
+                          userId: widget.tutor.userId ?? '',
+                        );
+                        _getTutorInformation(authProvider);
+                      }
                     },
-                    icon: _isFavorite
+                    icon: _tutorInfo?.isFavorite ?? false
                         ? const Icon(
                             Icons.favorite_rounded,
                             color: Colors.red,
@@ -130,7 +187,8 @@ class _TutorSearchItemScreenState extends State<TutorSearchItemScreen> {
               ),
               subSizedBox,
               Text(
-                widget.tutor.language ?? 'null',
+                widget.tutor.language ??
+                    AppLocalizations(currentLocale).translate('null')!,
                 maxLines: 5,
                 overflow: TextOverflow.ellipsis,
               ),
