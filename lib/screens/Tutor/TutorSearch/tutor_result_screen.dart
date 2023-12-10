@@ -217,7 +217,7 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                                 flex: 20,
                                 child: Text(
                                   AppLocalizations(currentLocale)
-                                      .translate('tutorsPerPage')!,
+                                      .translate('perPage')!,
                                   textAlign: TextAlign.right,
                                 ),
                               ),
