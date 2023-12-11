@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:flutter_project/screens/Schedule/UpcomingClass/UpcomingClassWidget/booked_class_card_widget.dart";
+import "package:flutter_project/screens/Schedule/BookedClass/BookedClassWidget/booked_class_card_widget.dart";
 import "package:flutter_project/services/schedule_service.dart";
 import "package:provider/provider.dart";
 
@@ -77,7 +77,8 @@ class _BookedClassScreenState extends State<BookedClassScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'You have $_count upcoming classes with $_count hours to study',
+                      AppLocalizations(currentLocale)
+                          .translate('youHaveBookedClasses', ['$_count'])!,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     sizedBox,
@@ -86,7 +87,8 @@ class _BookedClassScreenState extends State<BookedClassScreen> {
                         Expanded(
                           flex: 16,
                           child: Text(
-                            AppLocalizations(currentLocale).translate('perPage')!,
+                            AppLocalizations(currentLocale)
+                                .translate('perPage')!,
                             textAlign: TextAlign.right,
                           ),
                         ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/Schedule/UpcomingClass/booked_class_screen.dart';
+import 'package:flutter_project/screens/Schedule/BookedClass/booked_class_screen.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 import 'package:provider/provider.dart';
 

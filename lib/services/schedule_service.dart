@@ -39,6 +39,35 @@ class ScheduleService {
     };
   }
 
+  static Future<Map<String, dynamic>> getHistory({
+    required String token,
+    required int page,
+    required int perPage,
+  }) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    String url =
+        '$_baseUrl/booking/list/student?page=$page&perPage=$perPage&dateTimeLte=$now&orderBy=meeting&sortBy=desc';
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    Response response = await get(Uri.parse(url), headers: headers);
+
+    final jsonDecode = json.decode(response.body);
+    if (response.statusCode != 200) {
+      throw Exception('Error: Cannot get history. ${jsonDecode['message']}');
+    }
+
+    final List<dynamic> classes = jsonDecode['data']['rows'];
+    return {
+      'count': jsonDecode['data']['count'],
+      'classes':
+          classes.map((schedule) => BookingInfo.fromJson(schedule)).toList(),
+    };
+  }
+
   static Future<String> cancelBookedClass({
     required List<String> scheduleDetailIds,
     required String token,

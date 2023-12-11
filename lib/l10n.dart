@@ -8,7 +8,6 @@ class AppLocalizations {
 
   static final Map<String, Map<String, String>> _localizedValues = {
     'en': {
-      'hello_world': 'Hello World',
       'errorLogin': 'Email or password is incorrect',
       'emptyField': 'These fields are required',
       'notValidEmail': 'Email is not valid',
@@ -40,13 +39,29 @@ class AppLocalizations {
       'noBookedClasses': 'You have no booked classes',
       'cancel': 'Cancel',
       'requestForLesson': 'Request for lesson',
+      'noRequestForLesson': 'You have no request for lesson',
       'cancelSuccess': 'Cancel success',
       'cancel': 'Cancel',
       'areYouSure': 'Are you sure?',
       'goToMeeting': 'Go to meeting',
+      'youHaveBookedClasses': 'You have booked {count} classes',
+      'noReview': 'No review',
+      'report': 'Report',
+      'review': 'Review',
+      'course': 'Courses',
+      'overview': 'Overview',
+      'whyTakeThisCourse': 'Why take this course?',
+      'takeThisCourseForWhat': 'Take this course for what?',
+      'whatWillYouAbleToDo': 'What will you able to do?',
+      'lean': 'Learn',
+      'level': 'Level',
+      'exprerienceLevel': 'Experience level',
+      'courseLevel': 'Course level',
+      'courseLength': 'Course length',
+      'topics': 'Topics',
+      'topicList': 'Topic list',
     },
     'vi': {
-      'hello_world': 'Xin chào thế giới',
       'errorLogin': 'Email hoặc mật khẩu không đúng',
       'emptyField': 'Thông tin bị trống',
       'notValidEmail': 'Email không hợp lệ',
@@ -78,26 +93,44 @@ class AppLocalizations {
       'noBookedClasses': 'Bạn chưa có lịch học',
       'cancel': 'Hủy lớp',
       'requestForLesson': 'Yêu cầu lớp học',
+      'noRequestForLesson': 'Bạn chưa có yêu cầu lớp học',
       'cancelSuccess': 'Hủy lớp thành công',
       'cancel': 'Hủy lớp',
       'areYouSure': 'Bạn có chắc chắn?',
       'goToMeeting': 'Đi đến lớp học',
+      'youHaveBookedClasses': 'Bạn đã đặt {count} lớp học',
+      'noReview': 'Chưa có đánh giá',
+      'report': 'Báo cáo',
+      'review': 'Đánh giá',
+      'course': 'Khóa học',
+      'overview': 'Tổng quan',
+      'whyTakeThisCourse': 'Tại sao nên học khóa học này?',
+      'takeThisCourseForWhat': 'Học khóa học này để làm gì?',
+      'whatWillYouAbleToDo': 'Bạn sẽ có thể làm được gì?',
+      'learn': 'Học',
+      'level': 'Cấp độ',
+      'experienceLevel': 'Cấp bậc kinh nghiệm',
+      'courseLevel': 'Cấp độ khóa học',
+      'courseLength': 'Thời lượng khóa học',
+      'topics': 'Chủ đề',
+      'topicList': 'Danh sách chủ đề',
     },
   };
 
-  String? get helloWorld {
-    return _localizedValues[locale.languageCode]?['hello_world'];
-  }
+  String? translate(String key, [List<String?>? params]) {
+    String? translation = _localizedValues[locale.languageCode]?[key];
 
-  String? translate(String key) {
-    return _localizedValues[locale.languageCode]?[key];
-  }
+    if (params != null) {
+      for (int i = 0; i < params.length; i++) {
+        translation = translation?.replaceFirst('{count}', params[i] ?? '');
+      }
+    }
 
-// Thêm các phương thức dịch cho các chuỗi khác nếu cần
+    return translation;
+  }
 }
 
-class AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const AppLocalizationsDelegate();
 
   @override

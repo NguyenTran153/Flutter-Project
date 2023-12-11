@@ -1,16 +1,41 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project/utils/sized_box.dart';
+import 'package:provider/provider.dart';
 
+import '../../../l10n.dart';
+import '../../../models/course/course.dart';
+import '../../../providers/language_provider.dart';
 import '../../../utils/routes.dart';
 
-class CourseItemScreen extends StatefulWidget {
-  const CourseItemScreen({Key? key}) : super(key: key);
+class CourseCardWidget extends StatefulWidget {
+  const CourseCardWidget({
+    Key? key,
+    required this.course,
+  }) : super(key: key);
+
+  final Course course;
 
   @override
-  State<CourseItemScreen> createState() => _CourseItemScreenState();
+  State<CourseCardWidget> createState() => _CourseCardWidgetState();
 }
 
-class _CourseItemScreenState extends State<CourseItemScreen> {
+class _CourseCardWidgetState extends State<CourseCardWidget> {
+  late final Course course;
+  late Locale currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    course = widget.course;
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -18,7 +43,7 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
         Navigator.pushNamed(
           context,
           Routes.courseDetail,
-          arguments: 'null courseId',
+          arguments: course.id ?? 'null courseId',
         );
       },
       child: Card(
@@ -29,8 +54,7 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
         child: Column(
           children: [
             CachedNetworkImage(
-              imageUrl:
-                  'https://media.istockphoto.com/id/1154103408/vi/anh/anh-ch%C3%A0ng-giao-xe-%C4%91%E1%BA%A1p.jpg?s=1024x1024&w=is&k=20&c=-g4glbkJ3fxyEXcZm0OmaoTRLX2GEeSeZbq1dtdHDnk=',
+              imageUrl: course.imageUrl ?? '',
               fit: BoxFit.cover,
               placeholder: (context, url) => const Icon(
                 Icons.image_rounded,
@@ -40,7 +64,7 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
               errorWidget: (context, url, error) => const Icon(
                 Icons.error_outline_rounded,
                 size: 32,
-                color: Colors.redAccent,
+                color: Colors.red,
               ),
             ),
             Padding(
@@ -49,30 +73,33 @@ class _CourseItemScreenState extends State<CourseItemScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Lái xe đạp',
+                    course.name ??
+                        AppLocalizations(currentLocale).translate('null')!,
                     style: Theme.of(context).textTheme.displaySmall,
                   ),
                   const SizedBox(
                     height: 8,
                   ),
                   Text(
-                    'Mô tả chuyến đi xe đạp',
+                    course.description ??
+                        AppLocalizations(currentLocale).translate('null')!,
                     style: TextStyle(
-                        fontWeight: FontWeight.w400, color: Theme.of(context).colorScheme.tertiary),
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.tertiary),
                   ),
-                  const SizedBox(
-                    height: 16,
-                  ),
+                  sizedBox,
                   Row(
                     children: [
                       Expanded(
                         child: Text(
-                          'Cấp cơ bản',
+                          course.level ??
+                              AppLocalizations(currentLocale)
+                                  .translate('null')!,
                           style: const TextStyle(fontSize: 18),
                         ),
                       ),
                       Text(
-                        '5 tiết học',
+                        '${course.topics!.length} lessons',
                         style: const TextStyle(fontSize: 18),
                       )
                     ],

@@ -5,7 +5,7 @@ import "package:flutter_project/screens/Tutor/Schedule/tutor_schedule_widget.dar
 import "package:flutter_project/utils/sized_box.dart";
 import "package:video_player/video_player.dart";
 
-import "../../../models/course.dart";
+import "../../../models/course/course.dart";
 import "../../../models/tutor/tutor.dart";
 import "../../../utils/routes.dart";
 
@@ -286,7 +286,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            course.name,
+                            "course.name",
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           const SizedBox(width: 16),

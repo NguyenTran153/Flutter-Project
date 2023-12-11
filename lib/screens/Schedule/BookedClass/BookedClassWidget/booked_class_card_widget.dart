@@ -30,9 +30,12 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
   late final BookingInfo bookingInfo;
   late final Function(bool cancelResult) onCancel;
 
+  late Locale currentLocale;
+
   @override
   void initState() {
     super.initState();
+    bookingInfo = widget.bookingInfo;
     currentLocale = context.read<LanguageProvider>().currentLocale;
     context.read<LanguageProvider>().addListener(() {
       setState(() {
