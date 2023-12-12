@@ -43,7 +43,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
         Navigator.pushNamed(
           context,
           Routes.courseDetail,
-          arguments: course.id ?? 'null courseId',
+          arguments: course.id ?? '',
         );
       },
       child: Card(

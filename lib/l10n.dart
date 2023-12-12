@@ -55,11 +55,12 @@ class AppLocalizations {
       'whatWillYouAbleToDo': 'What will you able to do?',
       'lean': 'Learn',
       'level': 'Level',
-      'exprerienceLevel': 'Experience level',
+      'experienceLevel': 'Experience level',
       'courseLevel': 'Course level',
       'courseLength': 'Course length',
       'topics': 'Topics',
       'topicList': 'Topic list',
+      'youHaveNoCourse': 'You have no course',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -108,12 +109,13 @@ class AppLocalizations {
       'takeThisCourseForWhat': 'Học khóa học này để làm gì?',
       'whatWillYouAbleToDo': 'Bạn sẽ có thể làm được gì?',
       'learn': 'Học',
-      'level': 'Cấp độ',
+      'level': 'Cấp bậc',
       'experienceLevel': 'Cấp bậc kinh nghiệm',
       'courseLevel': 'Cấp độ khóa học',
       'courseLength': 'Thời lượng khóa học',
       'topics': 'Chủ đề',
       'topicList': 'Danh sách chủ đề',
+      'youHaveNoCourse': 'Bạn chưa có khóa học',
     },
   };
 

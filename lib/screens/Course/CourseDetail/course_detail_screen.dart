@@ -22,6 +22,7 @@ class CourseDetailScreen extends StatefulWidget {
 class _CourseDetailScreenState extends State<CourseDetailScreen> {
   late final String courseId;
   late final Course courseDetail;
+
   late Locale currentLocale;
 
   @override
@@ -123,7 +124,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 children: [
                   Icon(Icons.help_outline,
                       color: Theme.of(context).colorScheme.secondary),
-                  subSizedBox,
+                  const SizedBox(width: 8),
                   Text(
                     AppLocalizations(currentLocale)
                         .translate('whyTakeThisCourse')!,
@@ -157,42 +158,39 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: Text(
-                AppLocalizations(currentLocale).translate('experienceLevel')!,
-                style: Theme.of(context).textTheme.displaySmall,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.group_add_outlined,
-                      color: Theme.of(context).colorScheme.secondary),
-                  subSizedBox,
-                  Text(
-                    courseDetail.level ?? '0',
-                    style: Theme.of(context).textTheme.headlineMedium,
+                  Row(
+                    children: [
+                      Icon(Icons.group_add_outlined,
+                          color: Theme.of(context).colorScheme.secondary),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${AppLocalizations(currentLocale).translate('level')!}: ${courseDetail.level ?? '0'}',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: Text(
-                AppLocalizations(currentLocale).translate('courseLength')!,
-                style: Theme.of(context).textTheme.displaySmall,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.book_outlined,
-                      color: Theme.of(context).colorScheme.secondary),
-                  subSizedBox,
-                  Text(
-                    '${courseDetail.topics!.length}${AppLocalizations(currentLocale).translate('topics')!}',
-                    style: Theme.of(context).textTheme.headlineMedium,
+                  Row(
+                    children: [
+                      Icon(Icons.book_outlined,
+                          color: Theme.of(context).colorScheme.secondary),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${AppLocalizations(currentLocale).translate('courseLength')!}: ${courseDetail.topics!.length} ${AppLocalizations(currentLocale).translate('topics')!}',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ],
                   ),
                 ],
               ),

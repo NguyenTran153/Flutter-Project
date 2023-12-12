@@ -49,12 +49,12 @@ class MyApp extends StatelessWidget {
           builder: (ctx, themeProvider, languageProvider, authProvider, _) => MaterialApp(
             title: 'LetTutor',
             locale: languageProvider.currentLocale,
-            supportedLocales: [
-              const Locale('en'),
-              const Locale('vi'),
+            supportedLocales: const [
+              Locale('en'),
+              Locale('vi'),
             ],
-            localizationsDelegates: [
-              const AppLocalizationsDelegate(),
+            localizationsDelegates: const [
+              AppLocalizationsDelegate(),
             ],
             theme:
                 themeProvider.mode == ThemeMode.light ? lightTheme : darkTheme,
