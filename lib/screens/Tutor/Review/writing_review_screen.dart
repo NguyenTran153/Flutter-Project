@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
+import 'package:provider/provider.dart';
+
+import '../../../l10n.dart';
+import '../../../providers/language_provider.dart';
 
 class WritingReviewScreen extends StatefulWidget {
   const WritingReviewScreen({Key? key}) : super(key: key);
@@ -11,6 +15,20 @@ class WritingReviewScreen extends StatefulWidget {
 class _WritingReviewScreenState extends State<WritingReviewScreen> {
   int rate = 5;
 
+  late Locale currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +39,7 @@ class _WritingReviewScreenState extends State<WritingReviewScreen> {
           color: Theme.of(context).colorScheme.secondary,
         ),
         title: Text(
-          'Review',
+          AppLocalizations(currentLocale).translate('review')!,
           style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
@@ -31,7 +49,7 @@ class _WritingReviewScreenState extends State<WritingReviewScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Rating',
+              AppLocalizations(currentLocale).translate('rating')!,
               style: Theme.of(context).textTheme.displaySmall,
             ),
             subSizedBox,
@@ -58,7 +76,7 @@ class _WritingReviewScreenState extends State<WritingReviewScreen> {
             sizedBox,
             sizedBox,
             Text(
-              'Description',
+              AppLocalizations(currentLocale).translate('description')!,
               style: Theme.of(context).textTheme.displaySmall,
             ),
             subSizedBox,
@@ -86,8 +104,8 @@ class _WritingReviewScreenState extends State<WritingReviewScreen> {
                   final dialogResult = await showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Success'),
-                      content: const Text('Review Sent'),
+                      title: Text(AppLocalizations(currentLocale).translate('success')!),
+                      content: Text(AppLocalizations(currentLocale).translate('reviewSent')!),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
@@ -103,7 +121,7 @@ class _WritingReviewScreenState extends State<WritingReviewScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Send',
+                      AppLocalizations(currentLocale).translate('send')!,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
                     ),

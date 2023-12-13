@@ -3,9 +3,9 @@ import "package:flutter_project/screens/Schedule/BookedClass/BookedClassWidget/b
 import "package:flutter_project/services/schedule_service.dart";
 import "package:provider/provider.dart";
 
+import "../../../constants/constant.dart";
 import "../../../l10n.dart";
 import "../../../models/schedule/booking_info.dart";
-import '../../../constants/items_per_page.dart';
 import "../../../providers/auth_provider.dart";
 import "../../../providers/language_provider.dart";
 import "../../../utils/sized_box.dart";

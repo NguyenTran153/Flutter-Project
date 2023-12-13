@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/Course/Lesson/lesson_screen.dart';
+import 'package:flutter_project/screens/Course/Topic/topic_screen.dart';
 
-class LessonItemScreen extends StatefulWidget {
-  const LessonItemScreen({
+import '../../../../models/course/course_topic.dart';
+
+class TopicCardWidget extends StatefulWidget {
+  const TopicCardWidget({
     Key? key,
     required this.index,
+    required this.topic,
   }) : super(key: key);
 
   final int index;
+  final CourseTopic topic;
 
   @override
-  State<LessonItemScreen> createState() => _TopicItemScreenState();
+  State<TopicCardWidget> createState() => _TopicCardWidgetState();
 }
 
-class _TopicItemScreenState extends State<LessonItemScreen> {
+class _TopicCardWidgetState extends State<TopicCardWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,14 +26,14 @@ class _TopicItemScreenState extends State<LessonItemScreen> {
         elevation: 1.5,
         surfaceTintColor: Theme.of(context).primaryColor,
         child: ListTile(
-          title: Text('Lesson about Math'),
+          title: Text('${widget.index + 1}. ${widget.topic.name}'),
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => LessonScreen(
-                  title: 'Math',
-                  url: 'https://www.africau.edu/images/default/sample.pdf',
+                builder: (context) => TopicScreen(
+                  title: widget.topic.name ?? '',
+                  url: widget.topic.nameFile ?? '',
                 ),
               ),
             );

@@ -1,12 +1,19 @@
+import "package:cached_network_image/cached_network_image.dart";
 import "package:chewie/chewie.dart";
 import "package:flutter/material.dart";
 import "package:flutter_project/models/tutor/tutor_feedback.dart";
+import "package:flutter_project/providers/auth_provider.dart";
 import "package:flutter_project/screens/Tutor/Schedule/tutor_schedule_widget.dart";
 import "package:flutter_project/utils/sized_box.dart";
+import "package:provider/provider.dart";
 import "package:video_player/video_player.dart";
 
+import "../../../constants/constant.dart";
+import "../../../l10n.dart";
 import "../../../models/course/course.dart";
-import "../../../models/tutor/tutor.dart";
+import "../../../models/tutor/tutor_info.dart";
+import "../../../providers/language_provider.dart";
+import "../../../services/tutor_service.dart";
 import "../../../utils/routes.dart";
 
 class TutorDetailScreen extends StatefulWidget {
@@ -21,19 +28,76 @@ class TutorDetailScreen extends StatefulWidget {
 class _TutorDetailScreenState extends State<TutorDetailScreen> {
   VideoPlayerController? _videoPlayerController;
   ChewieController? _chewieController;
-  bool _isFavorite = false;
-  late List<String> _specialties;
-  late Tutor _tutor;
-  late List<TutorFeedback> feedbacks;
 
-  Future<void> _getTutor() async {
+  late TutorInfo _tutorInfo;
+  late final List<String> _specialties;
+  late final List<String> languages;
+  late final List<TutorFeedback> feedbacks;
+  late final List<Course> courses = [];
+  late String userId;
+
+  bool _isLoading = true;
+
+  late Locale currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
   }
 
-  //Fake
-  List<Course> courses = [
+  Future<void> _getTutor(AuthProvider authProvider) async {
+    final String token = authProvider.token?.access?.token as String;
 
-  ];
-  bool _isLoading = false;
+    final result = await TutorService.getTutorInformationById(
+      token: token,
+      userId: userId,
+    );
+
+    if (_isLoading) {
+      final learnTopics = authProvider.learnTopics
+          .where((topic) =>
+              result.specialties?.split(',').contains(topic.key) ?? false)
+          .map((e) => e.name ?? 'null');
+      final testPreparations = authProvider.testPreparations
+          .where((test) =>
+              result.specialties?.split(',').contains(test.key) ?? false)
+          .map((e) => e.name ?? 'null');
+      _specialties = [...learnTopics, ...testPreparations];
+      languages = result.languages?.split(',') ?? ['null'];
+    }
+    if (mounted) {
+      setState(() {
+        _tutorInfo = result;
+        _isLoading = false;
+        _videoPlayerController =
+            VideoPlayerController.networkUrl(Uri.parse(_tutorInfo.video ?? ''));
+        _chewieController = ChewieController(
+          videoPlayerController: _videoPlayerController!,
+          aspectRatio: 2 / 3,
+          autoPlay: true,
+        );
+      });
+    }
+  }
+
+  // Future<void> _getRecommendedCourses(AuthProvider authProvider) async {
+  //   final String token = authProvider.token?.access?.token as String;
+  //   final result = await TutorService.getRecommendedCourses(
+  //     token: token,
+  //     userId: userId,
+  //   );
+  //   if (mounted) {
+  //     setState(() {
+  //       courses.addAll(result);
+  //     });
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -41,10 +105,22 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
     _chewieController?.dispose();
     super.dispose();
   }
+  // //Fake
+  // List<Course> courses = [
+  //
+  // ];
 
   @override
   Widget build(BuildContext context) {
-    _getTutor();
+    final authProvider = context.watch<AuthProvider>();
+
+    if (_isLoading && authProvider.token != null) {
+      final data = ModalRoute.of(context)?.settings.arguments as Map;
+      userId = data['userId'];
+      feedbacks = data['tutor'].feedbacks;
+
+      _getTutor(authProvider);
+    }
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -53,7 +129,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
           color: Theme.of(context).colorScheme.secondary,
         ),
         title: Text(
-          'Teacher',
+          AppLocalizations(currentLocale).translate('tutor')!,
           style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
@@ -73,15 +149,15 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        // child: Image.network(
-                        //   _tutor.avatar,
-                        //   fit: BoxFit.cover,
-                        //   errorBuilder: (context, url, error) => const Icon(
-                        //     Icons.error_outline_rounded,
-                        //     size: 32,
-                        //     color: Colors.redAccent,
-                        //   ),
-                        // ),
+                        child: CachedNetworkImage(
+                          imageUrl: _tutorInfo.user?.avatar ?? '',
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) => const Icon(
+                            Icons.error_outline_rounded,
+                            size: 32,
+                            color: Colors.red,
+                          ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -89,29 +165,32 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "_tutor.name",
+                              _tutorInfo.user?.name ?? '',
                               style: Theme.of(context).textTheme.displaySmall,
                             ),
                             Text(
-                              "_tutor.country",
+                              countries[_tutorInfo.user?.country] ??
+                                  AppLocalizations(currentLocale)
+                                      .translate('unknownCountry')!,
                               style: const TextStyle(fontSize: 16),
                             ),
-                            _tutor.rating == null
-                                ? const Text(
-                                    'No reviews yet',
-                                    style: TextStyle(
+                            _tutorInfo.rating == null
+                                ? Text(
+                                    AppLocalizations(currentLocale)
+                                        .translate('noReview')!,
+                                    style: const TextStyle(
                                       fontStyle: FontStyle.italic,
                                       color: Colors.grey,
                                     ),
                                   )
                                 : Row(children: [
                                     ...List<Widget>.generate(
-                                      5,
+                                      _tutorInfo.rating?.round() ?? 0,
                                       (index) => const Icon(Icons.star,
                                           color: Colors.amber),
                                     ),
                                     const SizedBox(width: 8),
-                                    Text('1',
+                                    Text('(${_tutorInfo.totalFeedback})',
                                         style: const TextStyle(fontSize: 18))
                                   ])
                           ],
@@ -122,7 +201,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Text(
-                      _tutor.specialties ?? '',
+                      _tutorInfo.bio ?? '',
                       style: const TextStyle(fontSize: 16),
                     ),
                   ),
@@ -130,14 +209,21 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                     children: [
                       Expanded(
                         child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _isFavorite = !_isFavorite;
-                            });
+                          onPressed: () async {
+                            if (authProvider.token != null) {
+                              final String accessToken =
+                                  authProvider.token?.access?.token as String;
+                              await TutorService.addTutorToFavorite(
+                                token: accessToken,
+                                userId: userId,
+                              );
+                              _getTutor(authProvider);
+                            }
+                            // print('IS FAVORITE (DETAIL): ${_tutorInfo.isFavorite}');
                           },
                           child: Column(
                             children: [
-                              _isFavorite
+                              _tutorInfo.isFavorite!
                                   ? const Icon(
                                       Icons.favorite_rounded,
                                       color: Colors.red,
@@ -149,8 +235,9 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                                           .secondary,
                                     ),
                               Text(
-                                'Favorite',
-                                style: TextStyle(
+                                AppLocalizations(currentLocale)
+                                    .translate('favorite')!,
+                                style: const TextStyle(
                                   color: Colors.red,
                                 ),
                               ),
@@ -169,7 +256,9 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                               Icon(Icons.reviews_outlined,
                                   color:
                                       Theme.of(context).colorScheme.secondary),
-                              Text('Reviews',
+                              Text(
+                                  AppLocalizations(currentLocale)
+                                      .translate('review')!,
                                   style: TextStyle(
                                       color: Theme.of(context)
                                           .colorScheme
@@ -185,7 +274,8 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: const Text('Report Success'),
+                                  title: Text(AppLocalizations(currentLocale)
+                                      .translate('reportSuccess')!),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
@@ -203,7 +293,9 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                               Icon(Icons.report_outlined,
                                   color:
                                       Theme.of(context).colorScheme.secondary),
-                              Text('Report',
+                              Text(
+                                  AppLocalizations(currentLocale)
+                                      .translate('report')!,
                                   style: TextStyle(
                                       color: Theme.of(context)
                                           .colorScheme
@@ -219,12 +311,15 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                     height: 300,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                        border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                        border: Border.all(
+                            color: Theme.of(context).colorScheme.secondary,
+                            width: 2),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10))),
-                    child: _chewieController == null
+                    child: _chewieController != null
                         ? Text(
-                            'No Introduction Video',
+                            AppLocalizations(currentLocale)
+                                .translate('noVideo')!,
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w500,
@@ -234,7 +329,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                         : Chewie(controller: _chewieController!),
                   ),
                   subSizedBox,
-                  Text('Languages',
+                  Text(AppLocalizations(currentLocale).translate('language')!,
                       style: Theme.of(context).textTheme.displaySmall),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -242,10 +337,12 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                       spacing: 8,
                       runSpacing: -4,
                       children: List<Widget>.generate(
-                        5,
+                        languages.length,
                         (index) => Chip(
                           label: Text(
-                            '_tutor.language',
+                            languageList[languages[index]]?['name'] ??
+                                AppLocalizations(currentLocale)
+                                    .translate('unknown')!,
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.secondary),
                           ),
@@ -255,7 +352,8 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                     ),
                   ),
                   subSizedBox,
-                  Text('Specialties',
+                  Text(
+                      AppLocalizations(currentLocale).translate('specialties')!,
                       style: Theme.of(context).textTheme.displaySmall),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -276,43 +374,42 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                       ),
                     ),
                   ),
-                  subSizedBox,
-                  Text('Suggested Courses',
-                      style: Theme.of(context).textTheme.displaySmall),
-                  ...courses.map(
-                    (course) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "course.name",
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                          const SizedBox(width: 16),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, Routes.courseDetail);
-                              },
-                              child: const Text('View'))
-                        ],
-                      ),
-                    ),
-                  ),
+                  // Text('Suggested Courses',
+                  //     style: Theme.of(context).textTheme.displaySmall),
+                  // ...courses.map(
+                  //   (course) => Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 12),
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         Text(
+                  //           "course.name",
+                  //           style: Theme.of(context).textTheme.headlineMedium,
+                  //         ),
+                  //         const SizedBox(width: 16),
+                  //         TextButton(
+                  //             onPressed: () {
+                  //               Navigator.pushNamed(
+                  //                   context, Routes.courseDetail);
+                  //             },
+                  //             child: const Text('View'))
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   sizedBox,
-                  Text('Interests',
+                  Text( AppLocalizations(currentLocale).translate('interests')!,
                       style: Theme.of(context).textTheme.displaySmall),
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 8),
-                    child: Text('I love the weather'),
+                    child: Text(_tutorInfo.interests ?? ''),
                   ),
                   sizedBox,
-                  Text('Teaching Experiences',
+                  Text(AppLocalizations(currentLocale).translate('experienceLevel')!,
                       style: Theme.of(context).textTheme.displaySmall),
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 8),
-                    child: Text('I have more than 10 years'),
+                    child: Text(_tutorInfo.experience ?? ''),
                   ),
                   Padding(
                       padding: const EdgeInsets.only(top: 24, bottom: 12),
@@ -334,11 +431,11 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                                 top: Radius.circular(16),
                               ),
                             ),
-                            builder: (context) => TutorScheduleWidget(),
+                            builder: (context) => TutorScheduleWidget(userId: userId),
                           );
                         },
                         child: Text(
-                          'Book This Tutor',
+                          AppLocalizations(currentLocale).translate('book')!,
                           style: TextStyle(
                               fontSize: 18,
                               color: Theme.of(context).colorScheme.secondary),

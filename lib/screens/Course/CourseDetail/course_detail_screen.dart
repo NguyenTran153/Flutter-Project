@@ -8,7 +8,7 @@ import "../../../models/course/course.dart";
 import "../../../providers/auth_provider.dart";
 import "../../../providers/language_provider.dart";
 import "../../../services/course_and_ebook_service.dart";
-import "../Lesson/LessonItem/lesson_item_screen.dart";
+import "../Topic/TopicCard/topic_card_widget.dart";
 
 class CourseDetailScreen extends StatefulWidget {
   const CourseDetailScreen({
@@ -23,6 +23,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   late final String courseId;
   late final Course courseDetail;
 
+  bool _isLoading = true;
+
   late Locale currentLocale;
 
   @override
@@ -35,8 +37,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       });
     });
   }
-
-  bool _isLoading = true;
 
   Future<void> _getCourseDetail(String token) async {
     final result = await CourseService.getCourseDetailById(
@@ -60,7 +60,9 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       _getCourseDetail(accessToken);
     }
 
-    return Scaffold(
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator())
+    : Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
@@ -167,7 +169,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                           color: Theme.of(context).colorScheme.secondary),
                       const SizedBox(width: 8),
                       Text(
-                        '${AppLocalizations(currentLocale).translate('level')!}: ${courseDetail.level ?? '0'}',
+                        '${AppLocalizations(currentLocale).translate('experienceLevel')!}: ${courseDetail.level ?? '0'}',
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                     ],
@@ -204,8 +206,9 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             ),
             ...List<Widget>.generate(
               courseDetail.topics?.length ?? 0,
-              (index) => LessonItemScreen(
+              (index) => TopicCardWidget(
                 index: index,
+                topic: courseDetail.topics![index],
               ),
             ),
           ],

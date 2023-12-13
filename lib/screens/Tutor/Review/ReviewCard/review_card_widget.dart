@@ -3,8 +3,8 @@ import 'package:flutter_project/utils/sized_box.dart';
 
 import '../../../../models/tutor/tutor_feedback.dart';
 
-class ReviewItemWidget extends StatelessWidget {
-  const ReviewItemWidget({
+class ReviewCardWidget extends StatelessWidget {
+  const ReviewCardWidget({
     Key? key,
     required this.feedback,
   }) : super(key: key);

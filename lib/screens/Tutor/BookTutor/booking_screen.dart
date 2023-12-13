@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
+import 'package:provider/provider.dart';
 
+import '../../../l10n.dart';
 import '../../../models/schedule/schedule.dart';
+import '../../../providers/language_provider.dart';
+import '../../Schedule/BookedClass/BookedClassWidget/booked_class_card_widget.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({Key? key, required this.schedule}) : super(key: key);
@@ -13,14 +17,35 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
+  late Locale currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
+  }
 
   String weekdayConverter(int weekday) {
-    List<String> weekdayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    List<String> weekdayNames = [
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+      'sunday'
+    ];
 
     if (weekday >= 1 && weekday <= 7) {
-      return weekdayNames[weekday - 1];
+      return AppLocalizations(currentLocale)
+          .translate(weekdayNames[weekday - 1])!;
     } else {
-      return 'Invalid weekday';
+      return '';
     }
   }
 
@@ -30,6 +55,7 @@ class _BookingScreenState extends State<BookingScreen> {
     final String time = data['selectedHour'];
     final String date = data['selectedDate'].toString().substring(0, 11);
     final String weekday = weekdayConverter(data['weekday']);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -38,7 +64,7 @@ class _BookingScreenState extends State<BookingScreen> {
           color: Theme.of(context).colorScheme.secondary,
         ),
         title: Text(
-          'Booking Details',
+          AppLocalizations(currentLocale).translate('bookingDetail')!,
           style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
@@ -47,44 +73,17 @@ class _BookingScreenState extends State<BookingScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Booking Time', style: Theme.of(context).textTheme.displaySmall),
+            Text(AppLocalizations(currentLocale).translate('bookingTime')!,
+                style: Theme.of(context).textTheme.displaySmall),
             subSizedBox,
             Center(
               child: Text(
                 '$time\n$weekday $date',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22, color: Theme.of(context).colorScheme.secondary),
+                style: TextStyle(
+                    fontSize: 22,
+                    color: Theme.of(context).colorScheme.secondary),
               ),
-            ),
-            sizedBox,
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Balance',
-                    style: Theme.of(context).textTheme.displaySmall,
-                  ),
-                ),
-                Text(
-                  'You have 1 lesson left',
-                  style: TextStyle(fontSize: 17, color: Theme.of(context).colorScheme.secondary),
-                ),
-              ],
-            ),
-            sizedBox,
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Price',
-                    style: Theme.of(context).textTheme.displaySmall,
-                  ),
-                ),
-                Text(
-                  '1 lesson',
-                  style: TextStyle(fontSize: 17, color: Theme.of(context).colorScheme.secondary),
-                ),
-              ],
             ),
             sizedBox,
             Text('Notes', style: Theme.of(context).textTheme.displaySmall),
@@ -106,7 +105,10 @@ class _BookingScreenState extends State<BookingScreen> {
                   backgroundColor: Theme.of(context).colorScheme.secondary,
                 ),
                 onPressed: () async {
+                  final dialogResult = await showBookingResultDialog(context);
+                  if (dialogResult) {
                     Navigator.pop(context);
+                  }
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -118,9 +120,10 @@ class _BookingScreenState extends State<BookingScreen> {
                       size: 32,
                     ),
                     Text(
-                      'BOOK',
+                      AppLocalizations(currentLocale).translate('book')!,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
+                      style: TextStyle(
+                          fontSize: 20, color: Theme.of(context).primaryColor),
                     ),
                   ],
                 ),
@@ -131,4 +134,24 @@ class _BookingScreenState extends State<BookingScreen> {
       ),
     );
   }
+}
+
+Future<bool> showBookingResultDialog(BuildContext context) async {
+  return await showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(AppLocalizations(currentLocale).translate('success')!),
+        content:
+            const Text('You can now study with this tutor at booked time.'),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: const Text('OK')),
+        ],
+      );
+    },
+  ).then((value) => value ?? false);
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 import 'package:provider/provider.dart';
 
-import '../../constants/items_per_page.dart';
+import '../../constants/constant.dart';
 import '../../l10n.dart';
 import '../../models/course/course.dart';
 import '../../providers/auth_provider.dart';
@@ -25,6 +25,7 @@ class _CourseScreenState extends State<CourseScreen> {
   int _perPage = itemsPerPage.first;
   int _count = 0;
   bool _isLoading = false;
+
   late Locale currentLocale;
 
   @override

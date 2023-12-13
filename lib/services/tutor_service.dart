@@ -61,7 +61,8 @@ class TutorService {
     required String userId,
   }) async {
     String url = '$_baseUrl/tutor/$userId';
-    Map<String, String> headers = {'Content-Type': 'application/json',
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     };
 
@@ -128,6 +129,35 @@ class TutorService {
       body: json.encode(
         {
           'tutorId': userId,
+        },
+      ),
+    );
+
+    final jsonDecode = json.decode(response.body);
+    if (response.statusCode != 200) {
+      throw Exception(jsonDecode['message']);
+    }
+  }
+
+  static Future<void> writeReview({
+    required String token,
+    required String bookingId,
+    required String userId,
+    required int rate,
+    required String content,
+  }) async {
+    final response = await post(
+      Uri.parse('$baseUrl/user/feedbackTutor'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(
+        {
+          'bookingId': bookingId,
+          'tutorId': userId,
+          'rate': rate,
+          'content': content,
         },
       ),
     );

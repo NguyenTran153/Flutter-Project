@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-class LessonScreen extends StatelessWidget {
-  const LessonScreen({
+class TopicScreen extends StatelessWidget {
+  const TopicScreen({
     Key? key,
     required this.title,
     required this.url,
@@ -10,6 +10,7 @@ class LessonScreen extends StatelessWidget {
 
   final String title;
   final String url;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

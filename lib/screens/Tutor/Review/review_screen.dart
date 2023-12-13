@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/Tutor/Review/ReviewItem/review_item_widget.dart';
+import 'package:flutter_project/screens/Tutor/Review/ReviewCard/review_card_widget.dart';
 
 import '../../../models/tutor/tutor_feedback.dart';
 
@@ -32,7 +32,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
         child: ListView.builder(
           itemCount: feedbacks.length,
           shrinkWrap: true,
-          itemBuilder: (context, index) => ReviewItemWidget(feedback: feedbacks[feedbacks.length-index-1],),
+          itemBuilder: (context, index) => ReviewCardWidget(feedback: feedbacks[feedbacks.length-index-1],),
         ),
       ),
     );

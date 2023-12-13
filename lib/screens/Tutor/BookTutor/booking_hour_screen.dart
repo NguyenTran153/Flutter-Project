@@ -1,34 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/Tutor/BookTutor/booking_tutor_widget.dart';
+import 'package:flutter_project/screens/Tutor/BookTutor/booking_dialogue.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
+import '../../../l10n.dart';
 import '../../../models/schedule/schedule.dart';
-
-List<Schedule> generateDummySchedules() {
-  return [
-    Schedule(
-      id: "4",
-      tutorId: "101",
-      startTime: "03:00 PM",
-      endTime: "05:00 PM",
-      startTimestamp: DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch,
-      endTimestamp: DateTime.now().add(Duration(days: 1, hours: 2)).millisecondsSinceEpoch,
-      createdAt: "2023-11-26",
-      isBooked: false,
-    ),
-    Schedule(
-      id: "5",
-      tutorId: "202",
-      startTime: "10:00 AM",
-      endTime: "12:00 PM",
-      startTimestamp: DateTime.now().add(Duration(days: 2)).millisecondsSinceEpoch,
-      endTimestamp: DateTime.now().add(Duration(days: 2, hours: 2)).millisecondsSinceEpoch,
-      createdAt: "2023-11-27",
-      isBooked: true,
-    ),
-    // Add more schedule objects here...
-  ];
-}
+import '../../../providers/language_provider.dart';
 
 class BookingHourScreen extends StatefulWidget {
   const BookingHourScreen({
@@ -48,11 +25,20 @@ class _BookingHourScreenState extends State<BookingHourScreen> {
   late final List<Schedule> schedules;
   late final int timestamp;
 
+  late Locale currentLocale;
+
   @override
   void initState() {
     super.initState();
-    schedules = generateDummySchedules();
-    timestamp = DateTime.now().millisecondsSinceEpoch;
+    schedules = widget.schedules;
+    timestamp = widget.timestamp;
+
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
   }
 
   @override
@@ -81,14 +67,14 @@ class _BookingHourScreenState extends State<BookingHourScreen> {
           color: Theme.of(context).colorScheme.secondary,
         ),
         title: Text(
-          'Choose learning time',
+          AppLocalizations(currentLocale).translate('chooseTime')!,
           style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
       body: Column(
         children: [
           Text(
-            'On ${DateFormat.yMMMMEEEEd().format(pickedDate)}',
+            DateFormat.yMMMMEEEEd().format(pickedDate),
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           Expanded(
@@ -99,24 +85,27 @@ class _BookingHourScreenState extends State<BookingHourScreen> {
               crossAxisSpacing: 32,
               childAspectRatio: 3,
               children: List<Widget>.generate(
-                8,
+                validSchedules.length,
                 (index) {
-                  final start = '03:00';
-                  final end = '05:00';
+                  final start = DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(
+                      validSchedules[index].startTimestamp ?? 0));
+                  final end = DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(
+                      validSchedules[index].endTimestamp ?? 0));
 
                   return ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
-                    onPressed: (){
-                            Navigator.pop(context);
-                            showDialog(
-                              context: context,
-                              builder: (context) => BookingTutorWidget(
-                                schedule: schedules[0],
-                              ),
-                            );
-                          },
+                    onPressed: validSchedules[index].isBooked as bool
+                        ? null
+                        : () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => BookingDialogueWidget(
+                          schedule: validSchedules[index],
+                        ),
+                      );
+                    },
                     child: Text(
                       '$start - $end',
                       style: TextStyle(
@@ -132,4 +121,6 @@ class _BookingHourScreenState extends State<BookingHourScreen> {
     );
   }
 }
+
+
 
