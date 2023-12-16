@@ -6,37 +6,55 @@ import 'package:http/http.dart';
 import '../constants/base_url.dart';
 import '../models/user/learn_topic.dart';
 import '../models/user/test_preparation.dart';
+import '../models/user/user.dart';
 
 class UserService {
   static const _baseUrl = baseUrl;
 
-  static Future<Response> changePassword(String oldPassword, String newPassword) async {
+  static Future<Response> changePassword(
+      String oldPassword, String newPassword) async {
     String url = 'https://reqres.in/api/change-password';
     Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'old_password': oldPassword, 'new_password': newPassword};
+    Map<String, String> body = {
+      'old_password': oldPassword,
+      'new_password': newPassword
+    };
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     return response;
   }
 
-  static Future<Response> getInformation() async {
-    String url = 'https://reqres.in/api/get-information';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
+  static Future<User?> getUserInformation(String token) async {
+    String url = '$_baseUrl/user.info';
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
 
     Response response = await get(Uri.parse(url), headers: headers);
 
-    return response;
+    final jsonDecode = json.decode(response.body);
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      return User.fromJson(jsonDecode['user']);
+    }
   }
 
-  static Future<Response> updateInformation(String name, String phoneNumber, String address) async {
+  static Future<Response> updateInformation(
+      String name, String phoneNumber, String address) async {
     String url = 'https://reqres.in/api/update-information';
     Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'name': name, 'phone_number': phoneNumber, 'address': address};
+    Map<String, String> body = {
+      'name': name,
+      'phone_number': phoneNumber,
+      'address': address
+    };
 
-    Response response = await post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     return response;
   }

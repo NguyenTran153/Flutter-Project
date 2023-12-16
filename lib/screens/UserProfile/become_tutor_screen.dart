@@ -1,19 +1,51 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:html';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+
+import '../../l10n.dart';
+import '../../providers/language_provider.dart';
 
 class BecomeTutorScreen extends StatefulWidget {
-  const BecomeTutorScreen({super.key});
+  const BecomeTutorScreen({Key? key}) : super(key: key);
 
   @override
   State<BecomeTutorScreen> createState() => _BecomeTutorScreenState();
 }
 
 class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
+  XFile? avatar;
+  bool isUploaded = false;
   String imageUrl = 'https://as1.ftcdn.net/v2/jpg/01/04/93/90/1000_F_104939054_E7P5jaVoNYcXQI7YBrzsVWH2qZc03sn8.jpg';
+
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        imageUrl = pickedFile.path;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    late Locale currentLocale;
+
+    @override
+    void initState() {
+      super.initState();
+      currentLocale = context.read<LanguageProvider>().currentLocale;
+      context.read<LanguageProvider>().addListener(() {
+        setState(() {
+          currentLocale = context.read<LanguageProvider>().currentLocale;
+        });
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -22,7 +54,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
           color: Colors.blue[600],
         ),
         title: Text(
-          'Become Tutor',
+          AppLocalizations(currentLocale).translate('becomeTutor')!,
           style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
@@ -32,43 +64,30 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Basic Info',
+              AppLocalizations(currentLocale).translate('information')!,
               style: Theme.of(context).textTheme.displaySmall,
             ),
             Row(
               children: [
                 Column(
                   children: [
-                    Container(
-                      width: 108,
-                      height: 108,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
+                    InkWell(
+                      onTap: _pickImage,
+                      child: Image.asset(
+                        'public/images/avatar.png',
+                        width: 100,
+                        height: 100,
                       ),
-                      child: CachedNetworkImage(
-                        imageUrl:
-                        imageUrl,
-                        placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                        const Icon(Icons.person_rounded),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text('Upload'),
                     ),
                   ],
                 ),
-                const SizedBox(width: 16),
+                sizedBox,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Tutoring Name',
+                        AppLocalizations(currentLocale).translate('name')!,
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       const SizedBox(height: 2),
@@ -187,7 +206,8 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                   horizontal: 8,
                 ),
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary, width: 2),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.tertiary, width: 2),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
               ),
@@ -219,7 +239,8 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                   horizontal: 8,
                 ),
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary, width: 2),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.tertiary, width: 2),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
               ),
@@ -242,7 +263,8 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                   horizontal: 8,
                 ),
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary, width: 2),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.tertiary, width: 2),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
               ),
@@ -260,7 +282,8 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                   horizontal: 8,
                 ),
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary, width: 2),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.tertiary, width: 2),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
               ),

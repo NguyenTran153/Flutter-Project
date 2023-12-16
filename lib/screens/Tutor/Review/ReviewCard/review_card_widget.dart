@@ -3,16 +3,36 @@ import 'package:flutter_project/utils/sized_box.dart';
 
 import '../../../../models/tutor/tutor_feedback.dart';
 
-class ReviewCardWidget extends StatelessWidget {
-  const ReviewCardWidget({
-    Key? key,
+class ReviewCardWidget extends StatefulWidget {
+  const ReviewCardWidget({   Key? key,
     required this.feedback,
   }) : super(key: key);
 
   final TutorFeedback feedback;
 
   @override
+  State<ReviewCardWidget> createState() => _ReviewCardWidgetState();
+}
+
+class _ReviewCardWidgetState extends State<ReviewCardWidget> {
+  @override
   Widget build(BuildContext context) {
+    late final TutorFeedback feedback = widget.feedback;
+
+    // late Locale currentLocale;
+    //
+    // @override
+    // void initState() {
+    //   super.initState();
+    //
+    //   currentLocale = context.read<LanguageProvider>().currentLocale;
+    //   context.read<LanguageProvider>().addListener(() {
+    //     setState(() {
+    //       currentLocale = context.read<LanguageProvider>().currentLocale;
+    //     });
+    //   });
+    // }
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       surfaceTintColor: Theme.of(context).primaryColor,
@@ -31,12 +51,12 @@ class ReviewCardWidget extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Image.network(
-                "https://plus.unsplash.com/premium_photo-1658527049634-15142565537a?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                feedback.firstInfo?.avatar ?? '',
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.error_outline_rounded,
                   size: 32,
-                  color: Colors.redAccent,
+                  color: Colors.red,
                 ),
               ),
             ),
@@ -48,7 +68,7 @@ class ReviewCardWidget extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'Trần Lê',
+                        feedback.firstInfo?.name ?? '',
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w600,
@@ -57,7 +77,7 @@ class ReviewCardWidget extends StatelessWidget {
                       subSizedBox,
                       Text(
                         '${DateTime.now().difference(DateTime.parse(feedback.createdAt!)).inDays} days ago',                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
+                          fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey),
                       ),
                     ],
                   ),
@@ -74,7 +94,7 @@ class ReviewCardWidget extends StatelessWidget {
                     ],
                   ),
                   subSizedBox,
-                  Text(feedback.content ?? 'null content')
+                  Text(feedback.content ?? '')
                 ],
               ),
             ),
@@ -84,3 +104,4 @@ class ReviewCardWidget extends StatelessWidget {
     );
   }
 }
+

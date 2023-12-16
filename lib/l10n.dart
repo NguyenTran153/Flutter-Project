@@ -84,6 +84,12 @@ class AppLocalizations {
       'success': 'Success',
       'reviewSent': 'Review was sent',
       'send': 'Send',
+      'becomeTutor': 'Become a tutor',
+      'information': 'Information',
+      'name': 'Name',
+      'profile': 'Profile',
+      'phone': 'Phone Number'
+
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -162,6 +168,11 @@ class AppLocalizations {
       'success': 'Thành công',
       'reviewSent': 'Đánh giá đã được gửi',
       'send': 'Gửi',
+      'becomeTutor': 'Trở thành giảng viên',
+      'information': 'Thông tin',
+      'name': 'Tên',
+      'profile': 'Profile',
+      'phone': 'Số điện thoại'
     },
   };
 
