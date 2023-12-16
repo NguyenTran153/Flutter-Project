@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants/constant.dart';
 import '../../l10n.dart';
@@ -83,6 +81,27 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         imageUrl = pickedFile.path;
       });
     }
+  }
+
+  Future<void> _updateUserProfile(AuthProvider authProvider) async {
+    final String token = authProvider.token?.access?.token as String;
+    final learnTopics = chosenTopics.map((topic) => topic.id.toString()).toList();
+    final testPreparations = chosenTestPreparations.map((test) => test.id.toString()).toList();
+
+    await UserService.updateUserInformation(
+      token: token,
+      name: _nameController.text,
+      country: country,
+      birthday: birthday,
+      level: level,
+      learnTopics: learnTopics,
+      testPreparations: testPreparations,
+      studySchedule: _studyScheduleController.text,
+    );
+    setState(() {
+      _isLoading = true;
+      _isInitiated = false;
+    });
   }
 
   @override
@@ -208,7 +227,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                   subSizedBox,
                   Text(
-                    'Country',
+                    AppLocalizations(currentLocale).translate('country')!,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[900],
@@ -247,7 +266,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                   sizedBox,
                   Text(
-                    'Birthday',
+                    AppLocalizations(currentLocale).translate('birthday')!,
                     style: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).colorScheme.tertiary,
@@ -263,10 +282,140 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     },
                   ),
                   Text(
-                    'Study Schedule',
+                    AppLocalizations(currentLocale).translate('level')!,
                     style: TextStyle(
                       fontSize: 16,
-                      color: Theme.of(context).colorScheme.tertiary,
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                  subSizedBox,
+                  DropdownButtonFormField(
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 8,
+                      ),
+                      hintStyle: TextStyle(color: Colors.grey[400]),
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 2),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ),
+                    value: userLevels[level],
+                    items: userLevels.values
+                        .map((e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(e, overflow: TextOverflow.ellipsis),
+                    ))
+                        .toList(),
+                    onChanged: (value) {
+                      final chosenLevel = userLevels.keys.firstWhere(
+                            (element) => userLevels[element] == value,
+                        orElse: () => 'BEGINNER',
+                      );
+                      setState(() {
+                        level = chosenLevel;
+                      });
+                    },
+                  ),
+                  subSizedBox,
+                  Text(
+                    AppLocalizations(currentLocale).translate('topics')!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                  subSizedBox,
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: -4,
+                    children: List<Widget>.generate(
+                      authProvider.learnTopics.length,
+                          (index) => ChoiceChip(
+                        backgroundColor: Colors.grey[100],
+                        selectedColor: Colors.lightBlue[100],
+                        selected: chosenTopics
+                            .map((e) => e.id)
+                            .toList()
+                            .contains(authProvider.learnTopics[index].id),
+                        label: Text(
+                          authProvider.learnTopics[index].name ?? '',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: chosenTopics
+                                .map((e) => e.id)
+                                .toList()
+                                .contains(authProvider.learnTopics[index].id)
+                                ? Colors.blue[700]
+                                : Colors.black54,
+                          ),
+                        ),
+                        onSelected: (bool selected) {
+                          setState(() {
+                            if (selected) {
+                              chosenTopics.add(authProvider.learnTopics[index]);
+                            } else {
+                              chosenTopics.removeWhere(
+                                    (element) => element.id == authProvider.learnTopics[index].id,
+                              );
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  sizedBox,
+                  Text(
+                    AppLocalizations(currentLocale).translate('testPreparation')!,
+                    style: TextStyle(fontSize: 16, color: Colors.grey[900]),
+                  ),
+                  subSizedBox,
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: -4,
+                    children: List<Widget>.generate(
+                      authProvider.testPreparations.length,
+                          (index) => ChoiceChip(
+                        backgroundColor: Colors.grey[100],
+                        selectedColor: Colors.lightBlue[100],
+                        selected: chosenTestPreparations
+                            .map((e) => e.id)
+                            .toList()
+                            .contains(authProvider.testPreparations[index].id),
+                        label: Text(
+                          authProvider.testPreparations[index].name ?? 'null',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: chosenTestPreparations
+                                .map((e) => e.id)
+                                .toList()
+                                .contains(authProvider.testPreparations[index].id)
+                                ? Colors.blue[700]
+                                : Colors.black54,
+                          ),
+                        ),
+                        onSelected: (bool selected) {
+                          setState(() {
+                            if (selected) {
+                              chosenTestPreparations.add(authProvider.testPreparations[index]);
+                            } else {
+                              chosenTestPreparations.removeWhere(
+                                    (element) => element.id == authProvider.testPreparations[index].id,
+                              );
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  subSizedBox,
+                  Text(
+                    AppLocalizations(currentLocale).translate('studySchedule')!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[900],
                     ),
                   ),
                   subSizedBox,
@@ -287,6 +436,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   sizedBox,
                   TextButton(
                     onPressed: () {
+                      _updateUserProfile(authProvider);
                       Navigator.pop(context);
                     },
                     style: TextButton.styleFrom(
@@ -294,8 +444,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                     child: Text(
-                      'SAVE',
-                      style: TextStyle(
+                      AppLocalizations(currentLocale).translate('save')!,                      style: TextStyle(
                         fontSize: 18,
                         color: Theme.of(context).primaryColor,
                       ),

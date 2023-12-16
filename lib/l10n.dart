@@ -88,8 +88,11 @@ class AppLocalizations {
       'information': 'Information',
       'name': 'Name',
       'profile': 'Profile',
-      'phone': 'Phone Number'
-
+      'phone': 'Phone Number',
+      'birthday': 'Birthday',
+      'save': 'Save',
+      'studySchedule': 'Study schedule',
+      'testPreparation': 'Test preparation',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -172,7 +175,11 @@ class AppLocalizations {
       'information': 'Thông tin',
       'name': 'Tên',
       'profile': 'Profile',
-      'phone': 'Số điện thoại'
+      'phone': 'Số điện thoại',
+      'birthday': 'Ngày sinh',
+      'save': 'Lưu',
+      'studySchedule': 'Lịch học',
+      'testPreparation': 'Chuẩn bị cho kỳ thi',
     },
   };
 
@@ -185,7 +192,7 @@ class AppLocalizations {
       }
     }
 
-    return translation;
+    return translation ?? "[$key]";
   }
 }
 

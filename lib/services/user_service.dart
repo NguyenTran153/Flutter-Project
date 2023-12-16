@@ -27,7 +27,7 @@ class UserService {
   }
 
   static Future<User?> getUserInformation(String token) async {
-    String url = '$_baseUrl/user.info';
+    String url = '$_baseUrl/user/info';
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -43,20 +43,39 @@ class UserService {
     }
   }
 
-  static Future<Response> updateInformation(
-      String name, String phoneNumber, String address) async {
-    String url = 'https://reqres.in/api/update-information';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {
+  static Future<User?> updateUserInformation({
+    required String token,
+    required String name,
+    required String country,
+    required String birthday,
+    required String level,
+    required List<String> learnTopics,
+    required List<String> testPreparations,
+    required String studySchedule,
+  }) async {
+    String url = '$_baseUrl/user/info';
+    Map<String, String> headers = {
+      'Content-Type': 'application/json;encoding=utf-8',
+      'Authorization': 'Bearer $token',
+    };
+    Map<String, dynamic> body = {
       'name': name,
-      'phone_number': phoneNumber,
-      'address': address
+      'country': country,
+      'birthday': birthday,
+      'level': level,
+      'learn_topics': learnTopics,
+      'test_preparations': testPreparations,
+      'study_schedule': studySchedule,
     };
 
     Response response =
-        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
+        await put(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
-    return response;
+    final jsonDecode = json.decode(response.body);
+    if (response.statusCode != 200) {
+      return null;
+    }
+    return User.fromJson(jsonDecode['user']);
   }
 
   static Future<List<LearnTopic>> getLearningTopic(String token) async {
