@@ -19,40 +19,9 @@ class _SettingScreenState extends State<SettingScreen> {
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              width: 120,
-              height: 120,
-              clipBehavior: Clip.hardEdge,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              child: Image.network(
-                'https://as1.ftcdn.net/v2/jpg/01/04/93/90/1000_F_104939054_E7P5jaVoNYcXQI7YBrzsVWH2qZc03sn8.jpg',
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.person_rounded),
-              ),
-            ),
-          ),
-          sizedBox,
-          Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Tran Nguyen',
-                style: Theme.of(context).textTheme.displaySmall,
-              )),
-          //const SizedBox(height: 12),
-          TextButton(
-            onPressed: () {
-              Navigator.pushNamed(context, Routes.userProfile);
-            },
-            child: const Text('Edit Profile'),
-          ),
-          // Functions Starts Here
-          subSizedBox,
+          const SizedBox(height: 48),
           Card(
             surfaceTintColor: Theme.of(context).primaryColor,
             elevation: 2,

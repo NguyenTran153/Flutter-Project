@@ -38,54 +38,64 @@ class _TutorScheduleWidgetState extends State<TutorScheduleWidget> {
   }
 
   Future<void> _getTutorSchedule(String token) async {
-    List<Schedule> result = await ScheduleService.getScheduleByTutorId(
-      token: token,
-      userId: widget.userId,
-    );
+    try {
+      List<Schedule> result = await ScheduleService.getScheduleByTutorId(
+        token: token,
+        userId: widget.userId,
+      );
 
-    // Remove all learning dates before today
-    result = result.where((schedule) {
-      if (schedule.startTimestamp == null) return false;
+      // Remove all learning dates before today
+      result = result.where((schedule) {
+        if (schedule.startTimestamp == null) return false;
 
-      final start =
-          DateTime.fromMillisecondsSinceEpoch(schedule.startTimestamp!);
+        final start =
+        DateTime.fromMillisecondsSinceEpoch(schedule.startTimestamp!);
 
-      // bool isTheSameDate = now.day == start.day && now.month == start.month && now.year == start.year;
-      return start.isAfter(DateTime.now());
-    }).toList();
+        // bool isTheSameDate = now.day == start.day && now.month == start.month && now.year == start.year;
+        return start.isAfter(DateTime.now());
+      }).toList();
 
-    // Sort learning DateTime increasingly
-    result.sort((s1, s2) {
-      if (s1.startTimestamp == null || s2.startTimestamp == null) return 0;
-      return s1.startTimestamp!.compareTo(s2.startTimestamp!);
-    });
+      // Sort learning DateTime increasingly
+      result.sort((s1, s2) {
+        if (s1.startTimestamp == null || s2.startTimestamp == null) return 0;
+        return s1.startTimestamp!.compareTo(s2.startTimestamp!);
+      });
 
-    schedules = result;
+      schedules = result;
 
-    final timestamps =
-        schedules.map((schedule) => schedule.startTimestamp ?? 0).toList();
+      final timestamps =
+      schedules.map((schedule) => schedule.startTimestamp ?? 0).toList();
 
-    for (var timestamp in timestamps) {
-      if (!scheduleStartTimestamps.any((element) {
-        final date1 = DateTime.fromMillisecondsSinceEpoch(timestamp);
-        final date2 = DateTime.fromMillisecondsSinceEpoch(element);
+      for (var timestamp in timestamps) {
+        if (!scheduleStartTimestamps.any((element) {
+          final date1 = DateTime.fromMillisecondsSinceEpoch(timestamp);
+          final date2 = DateTime.fromMillisecondsSinceEpoch(element);
 
-        bool isTheSameDate = date1.day == date2.day &&
-            date1.month == date2.month &&
-            date1.year == date2.year;
-        if (isTheSameDate) {
-          return true;
+          bool isTheSameDate = date1.day == date2.day &&
+              date1.month == date2.month &&
+              date1.year == date2.year;
+          if (isTheSameDate) {
+            return true;
+          }
+          return false;
+        })) {
+          scheduleStartTimestamps.add(timestamp);
         }
-        return false;
-      })) {
-        scheduleStartTimestamps.add(timestamp);
       }
-    }
-    scheduleStartTimestamps.sort();
+      scheduleStartTimestamps.sort();
 
-    setState(() {
-      _isLoading = false;
-    });
+      print('Fetched schedules: $schedules');
+      print('Schedule start timestamps: $scheduleStartTimestamps');
+
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (error) {
+      print('Error fetching tutor schedule: $error');
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override

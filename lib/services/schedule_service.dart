@@ -79,19 +79,16 @@ class ScheduleService {
       'Authorization': 'Bearer $token',
     };
 
-    Map<String, String> body = {'tutorId': userId};
+    Map<String,String> body = {
+      'tutorId': userId,
+    };
 
-    Response response =
-        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
-
+    Response response = await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
     final jsonDecode = json.decode(response.body);
-
     if (response.statusCode != 200) {
-      throw Exception(jsonDecode['message']);
+      throw Exception(jsonDecode(['message']));
     }
-
-    final List<dynamic> schedules = jsonDecode['data']['rows'];
-
+    final schedules = jsonDecode['data'] as List;
     return schedules.map((schedule) => Schedule.fromJson(schedule)).toList();
   }
 
