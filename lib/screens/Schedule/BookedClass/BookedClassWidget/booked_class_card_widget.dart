@@ -1,15 +1,18 @@
 import "package:cached_network_image/cached_network_image.dart";
+import "package:flutter/foundation.dart";
 import 'package:flutter/material.dart';
+import "package:flutter_project/screens/VideoCall/video_call_screen.dart";
 import "package:flutter_project/services/schedule_service.dart";
 import "package:flutter_project/utils/sized_box.dart";
 import "package:intl/intl.dart";
+import 'package:jitsi_meet/jitsi_meet.dart';
 import "package:provider/provider.dart";
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import "../../../../l10n.dart";
 import "../../../../models/schedule/booking_info.dart";
 import "../../../../providers/auth_provider.dart";
 import "../../../../providers/language_provider.dart";
-import "../../../../utils/routes.dart";
 
 late Locale currentLocale;
 
@@ -36,6 +39,7 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
   void initState() {
     super.initState();
     bookingInfo = widget.bookingInfo;
+    onCancel = widget.onCancel;
     currentLocale = context.read<LanguageProvider>().currentLocale;
     context.read<LanguageProvider>().addListener(() {
       setState(() {
@@ -64,9 +68,45 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
     return result;
   }
 
+  bool _isTimeToJoin() {
+    final startTimestamp =
+        bookingInfo.scheduleDetailInfo?.startPeriodTimestamp ?? 0;
+    final startTime = DateTime.fromMillisecondsSinceEpoch(startTimestamp);
+    final now = DateTime.now();
+    return now.isAfter(startTime) || now.isAtSameMomentAs(startTime);
+  }
+
+  void _joinMeeting(String room, String meetingToken) async {
+    Map<FeatureFlagEnum, bool> featureFlags = {
+      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+    };
+    if (!kIsWeb) {
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+      } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+        featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+      }
+    }
+
+    final options = JitsiMeetingOptions(room: room)
+      // ..serverURL = 'https://meet.jit.si/'
+      ..serverURL = "https://meet.lettutor.com"
+      ..token = meetingToken
+      ..audioOnly = true
+      ..audioMuted = true
+      ..videoMuted = true
+      ..featureFlags.addAll(featureFlags);
+    await JitsiMeet.joinMeeting(options);
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+
+    final String meetingToken =
+        bookingInfo.studentMeetingLink?.split('token=')[1] ?? '';
+    Map<String, dynamic> jwtDecoded = JwtDecoder.decode(meetingToken);
+    final String room = jwtDecoded['room'];
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 12),
@@ -204,8 +244,23 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
                 sizedBox,
                 Expanded(
                     child: TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, Routes.videoCall);
+                  onPressed: () async {
+                    if (_isTimeToJoin()) {
+                      _joinMeeting(room, meetingToken);
+                    } else {
+                      final result = await showWaitingRoomDialog(context);
+                      if (result) {
+                        _joinMeeting(room, meetingToken);
+                      } else {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            final start = bookingInfo
+                                .scheduleDetailInfo!.startPeriodTimestamp!;
+                            return VideoCallScreen(startTimestamp: start);
+                          },
+                        ));
+                      }
+                    }
                   },
                   child: Text(
                     AppLocalizations(currentLocale).translate('goToMeeting')!,
@@ -259,5 +314,26 @@ Future<bool> showEditRequestDialog(BuildContext context) {
         ],
       );
     },
+  ).then((value) => value ?? false);
+}
+
+Future<bool> showWaitingRoomDialog(BuildContext context) async {
+  return await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('It is not the time yet'),
+      content: const Text(
+          'Do you want to enter meeting room right now, or enter waiting room?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Waiting Room'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Meeting Room'),
+        ),
+      ],
+    ),
   ).then((value) => value ?? false);
 }

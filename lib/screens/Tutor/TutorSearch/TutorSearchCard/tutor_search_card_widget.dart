@@ -40,17 +40,28 @@ class _TutorSearchCardWidgetState extends State<TutorSearchCardWidget> {
     });
   }
 
+  void _handleTutorDetailView() {
+    Navigator.pushNamed(
+      context,
+      Routes.teacherDetail,
+      arguments: {
+        'userId': widget.tutor.userId,
+        'tutor': widget.tutor,
+      },
+    );
+  }
+
   Future<void> _getTutorInformation(AuthProvider authProvider) async {
     final String token = authProvider.token?.access?.token as String;
 
     final learnTopics = authProvider.learnTopics
         .where((topic) =>
             _tutorInfo?.specialties?.split(',').contains(topic.key) ?? false)
-        .map((e) => e.name ?? 'null');
+        .map((e) => e.name ?? '');
     final testPreparations = authProvider.testPreparations
         .where((test) =>
             _tutorInfo?.specialties?.split(',').contains(test.key) ?? false)
-        .map((e) => e.name ?? 'null');
+        .map((e) => e.name ?? '');
     _specialties = [...learnTopics, ...testPreparations];
 
     final result = await TutorService.getTutorInformationById(
@@ -75,8 +86,7 @@ class _TutorSearchCardWidgetState extends State<TutorSearchCardWidget> {
 
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, Routes.teacherDetail,
-            arguments: widget.tutor);
+        _handleTutorDetailView();
       },
       child: Card(
         surfaceTintColor: Theme.of(context).primaryColor,
@@ -184,13 +194,6 @@ class _TutorSearchCardWidgetState extends State<TutorSearchCardWidget> {
                     ),
                   ),
                 ),
-              ),
-              subSizedBox,
-              Text(
-                widget.tutor.language ??
-                    AppLocalizations(currentLocale).translate('null')!,
-                maxLines: 5,
-                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

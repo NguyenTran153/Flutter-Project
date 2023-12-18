@@ -32,7 +32,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
   late TutorInfo _tutorInfo;
   late final List<String> _specialties;
   late final List<String> languages;
-  late final List<TutorFeedback> feedbacks;
+  late final List<TutorFeedback?> feedbacks;
   late final List<Course> courses = [];
   late String userId;
 
