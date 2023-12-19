@@ -4,7 +4,7 @@ import 'package:flutter_project/screens/Tutor/Review/ReviewCard/review_card_widg
 import '../../../models/tutor/tutor_feedback.dart';
 
 class ReviewScreen extends StatefulWidget {
-  const ReviewScreen({super.key});
+  const ReviewScreen({Key? key}) : super(key: key);
 
   @override
   State<ReviewScreen> createState() => _ReviewScreenState();

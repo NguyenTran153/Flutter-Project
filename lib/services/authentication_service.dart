@@ -10,6 +10,8 @@ import '../models/user/user.dart';
 class AuthenticationService {
   static const _baseUrl = baseUrl;
 
+  static User parseUser(String responseBody) => User.fromJson(jsonDecode(responseBody));
+
   static Future<void> loginWithEmailAndPassword({
     required String email,
     required String password,
@@ -38,9 +40,7 @@ class AuthenticationService {
     required String password,
   }) async {
     String url = '$_baseUrl/auth/register';
-    Map<String, String> headers = {
-      'Content-Type': 'application/json'
-    };
+    Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {
       'email': email,
       'password': password,
@@ -166,5 +166,27 @@ class AuthenticationService {
         await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     return response;
+  }
+
+  static Future<void> continueSession({
+    required String refreshToken,
+    required Function(User, Token) onSuccess,
+  }) async {
+    final response = await post(
+      Uri.parse("$baseUrl/auth/refresh-token"),
+      body: {
+        'refreshToken': refreshToken,
+        'timezone': "7",
+      },
+    );
+
+    final jsonDecode = json.decode(response.body);
+    if (response.statusCode != 200) {
+      throw Exception(jsonDecode['message']);
+    }
+
+    final user = User.fromJson(jsonDecode['user']);
+    final token = Token.fromJson(jsonDecode['tokens']);
+    await onSuccess(user, token);
   }
 }

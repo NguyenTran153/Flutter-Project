@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../../../l10n.dart';
 import '../../../models/schedule/schedule.dart';
 import '../../../providers/language_provider.dart';
-import '../../Schedule/BookedClass/BookedClassWidget/booked_class_card_widget.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({Key? key, required this.schedule}) : super(key: key);
@@ -105,7 +104,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   backgroundColor: Theme.of(context).colorScheme.secondary,
                 ),
                 onPressed: () async {
-                  final dialogResult = await showBookingResultDialog(context);
+                  final dialogResult = await showBookingResultDialog(context, currentLocale);
                   if (dialogResult) {
                     Navigator.pop(context);
                   }
@@ -136,7 +135,7 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 }
 
-Future<bool> showBookingResultDialog(BuildContext context) async {
+Future<bool> showBookingResultDialog(BuildContext context,Locale currentLocale) async {
   return await showDialog(
     context: context,
     builder: (context) {

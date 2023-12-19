@@ -1,20 +1,18 @@
 import "package:cached_network_image/cached_network_image.dart";
-import "package:flutter/foundation.dart";
 import 'package:flutter/material.dart';
 import "package:flutter_project/screens/VideoCall/video_call_screen.dart";
 import "package:flutter_project/services/schedule_service.dart";
 import "package:flutter_project/utils/sized_box.dart";
 import "package:intl/intl.dart";
-import 'package:jitsi_meet/jitsi_meet.dart';
 import "package:provider/provider.dart";
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:jitsi_meet_wrapper/jitsi_meet_wrapper.dart';
+
 
 import "../../../../l10n.dart";
 import "../../../../models/schedule/booking_info.dart";
 import "../../../../providers/auth_provider.dart";
 import "../../../../providers/language_provider.dart";
-
-late Locale currentLocale;
 
 class BookedClassCardWidget extends StatefulWidget {
   const BookedClassCardWidget(
@@ -77,26 +75,40 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
   }
 
   void _joinMeeting(String room, String meetingToken) async {
-    Map<FeatureFlagEnum, bool> featureFlags = {
-      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
-    };
-    if (!kIsWeb) {
-      if (defaultTargetPlatform == TargetPlatform.android) {
-        featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
-      } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-        featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
-      }
+    try {
+      // Map<FeatureFlagEnum, bool> featureFlags = {
+      //   FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+      // };
+      // if (!kIsWeb) {
+      //   if (defaultTargetPlatform == TargetPlatform.android) {
+      //     featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+      //   } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      //     featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+      //   }
+      // }
+      //
+      // final options = JitsiMeetingOptions(room: room)
+      //   ..serverURL = "https://meet.lettutor.com"
+      //   ..token = meetingToken
+      //   ..audioOnly = true
+      //   ..audioMuted = true
+      //   ..videoMuted = true
+      //   ..featureFlags.addAll(featureFlags);
+      // await JitsiMeet.joinMeeting(options);
+      var options = JitsiMeetingOptions(
+        roomNameOrUrl: "learningRoom",
+        serverUrl: "https://meet.lettutor.com",
+        token: meetingToken,
+        isAudioMuted: false,
+        isAudioOnly: true,
+        isVideoMuted: false,
+      );
+
+      await JitsiMeetWrapper.joinMeeting(options: options);
+    } catch (error) {
+      debugPrint("error: $error");
     }
 
-    final options = JitsiMeetingOptions(room: room)
-      // ..serverURL = 'https://meet.jit.si/'
-      ..serverURL = "https://meet.lettutor.com"
-      ..token = meetingToken
-      ..audioOnly = true
-      ..audioMuted = true
-      ..videoMuted = true
-      ..featureFlags.addAll(featureFlags);
-    await JitsiMeet.joinMeeting(options);
   }
 
   @override
@@ -166,7 +178,7 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
                 ),
                 IconButton(
                   onPressed: () async {
-                    await showEditRequestDialog(context);
+                    await showEditRequestDialog(context, currentLocale);
                   },
                   icon: Icon(
                     Icons.edit_note_outlined,
@@ -244,24 +256,25 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
                 sizedBox,
                 Expanded(
                     child: TextButton(
-                  onPressed: () async {
-                    if (_isTimeToJoin()) {
-                      _joinMeeting(room, meetingToken);
-                    } else {
-                      final result = await showWaitingRoomDialog(context);
-                      if (result) {
-                        _joinMeeting(room, meetingToken);
-                      } else {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            final start = bookingInfo
-                                .scheduleDetailInfo!.startPeriodTimestamp!;
-                            return VideoCallScreen(startTimestamp: start);
-                          },
-                        ));
-                      }
-                    }
-                  },
+                      onPressed: () async {
+                        final localContext = context;
+
+                        if (_isTimeToJoin()) {
+                          _joinMeeting(room, meetingToken);
+                        } else {
+                          final result = await showWaitingRoomDialog(localContext, currentLocale);
+                          if (result) {
+                            _joinMeeting(room, meetingToken);
+                          } else {
+                            Navigator.push(localContext, MaterialPageRoute(
+                              builder: (context) {
+                                final start = bookingInfo.scheduleDetailInfo!.startPeriodTimestamp!;
+                                return VideoCallScreen(startTimestamp: start);
+                              },
+                            ));
+                          }
+                        }
+                      },
                   child: Text(
                     AppLocalizations(currentLocale).translate('goToMeeting')!,
                     style: const TextStyle(fontSize: 16),
@@ -276,7 +289,7 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
   }
 }
 
-Future<bool> showEditRequestDialog(BuildContext context) {
+Future<bool> showEditRequestDialog(BuildContext context,  Locale currentLocale) {
   return showDialog<bool>(
     context: context,
     builder: (context) {
@@ -317,21 +330,20 @@ Future<bool> showEditRequestDialog(BuildContext context) {
   ).then((value) => value ?? false);
 }
 
-Future<bool> showWaitingRoomDialog(BuildContext context) async {
+Future<bool> showWaitingRoomDialog(BuildContext context, Locale currentLocale) async {
   return await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('It is not the time yet'),
-      content: const Text(
-          'Do you want to enter meeting room right now, or enter waiting room?'),
+      title: Text(AppLocalizations(currentLocale).translate('itIsNotTheTimeYet')!),
+      content: Text(AppLocalizations(currentLocale).translate('doYouWantToEnterTheClass')!),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: const Text('Waiting Room'),
+          child: Text(AppLocalizations(currentLocale).translate('waitingRoom')!),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, true),
-          child: const Text('Meeting Room'),
+          child: Text(AppLocalizations(currentLocale).translate('meetingRoom')!),
         ),
       ],
     ),

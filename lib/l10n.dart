@@ -93,6 +93,10 @@ class AppLocalizations {
       'save': 'Save',
       'studySchedule': 'Study schedule',
       'testPreparation': 'Test preparation',
+      'itIsNotTheTimeYet': 'It is not the time yet',
+      'doYouWantToEnterTheClass': 'Do you want to enter the class?',
+      'waitingRoom': 'Waiting room',
+      'meetingRoom': 'Meeting room',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -180,6 +184,10 @@ class AppLocalizations {
       'save': 'Lưu',
       'studySchedule': 'Lịch học',
       'testPreparation': 'Chuẩn bị cho kỳ thi',
+      'itIsNotTheTimeYet': 'Chưa đến giờ học',
+      'doYouWantToEnterTheClass': 'Bạn có muốn vào lớp học?',
+      'waitingRoom': 'Phòng chờ',
+      'meetingRoom': 'Phòng học',
     },
   };
 
