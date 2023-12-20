@@ -110,14 +110,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               sizedBox,
-              Text(
-                "Say hello to your English tutors",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              sizedBox,
-              Text(
-                "Become fluent faster through one-on-one video chat lessons tailored to your goals.",
-                style: Theme.of(context).textTheme.titleMedium,
+              Image.asset(
+                'public/images/LetTutor.png',
+                width: 320,
+                height: 320,
               ),
               sizedBox,
               TextFieldInput(
@@ -164,8 +160,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: const Text(
-                      'Already have an account?',
+                    child: Text(
+                      AppLocalizations(currentLocale).translate('haveAccount')!,
                     ),
                   ),
                   GestureDetector(
@@ -175,8 +171,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        ' Login',
-                        style: Theme.of(context).textTheme.titleSmall,
+                        AppLocalizations(currentLocale).translate('login')!,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
                   ),

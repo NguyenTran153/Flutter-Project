@@ -9,6 +9,8 @@ class AppLocalizations {
   static final Map<String, Map<String, String>> _localizedValues = {
     'en': {
       'errorLogin': 'Email or password is incorrect',
+      'login': 'Login',
+      'haveAccount': 'Have an account?',
       'emptyField': 'These fields are required',
       'notValidEmail': 'Email is not valid',
       'passwordTooShort': 'Password is too short',
@@ -97,9 +99,13 @@ class AppLocalizations {
       'doYouWantToEnterTheClass': 'Do you want to enter the class?',
       'waitingRoom': 'Waiting room',
       'meetingRoom': 'Meeting room',
+      'close': 'Close',
+      'sendRecoveryEmailSuccess': 'Send recovery email success',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
+      'login': 'Đăng nhập',
+      'haveAccount': 'Chưa có tài khoản?',
       'emptyField': 'Thông tin bị trống',
       'notValidEmail': 'Email không hợp lệ',
       'passwordTooShort': 'Mật khẩu quá ngắn',
@@ -188,6 +194,8 @@ class AppLocalizations {
       'doYouWantToEnterTheClass': 'Bạn có muốn vào lớp học?',
       'waitingRoom': 'Phòng chờ',
       'meetingRoom': 'Phòng học',
+      'close': 'Đóng',
+      'sendRecoveryEmailSuccess': 'Gửi email khôi phục thành công',
     },
   };
 

@@ -56,15 +56,18 @@ class AuthenticationService {
     }
   }
 
-  static Future<Response> forgotPassword(String email) async {
-    String url = '$_baseUrl/forgot-password';
+  static Future<void> forgotPassword(String email) async {
+    String url = '$_baseUrl/user/forgotPassword';
     Map<String, String> headers = {'Content-Type': 'application/json'};
     Map<String, String> body = {'email': email};
 
     Response response =
         await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
-    return response;
+    final jsonDecode = json.decode(response.body);
+    if (response.statusCode != 200) {
+      throw Exception(jsonDecode['message']);
+    }
   }
 
   static Future<Response> loginByPhoneNumber(String phoneNumber) async {

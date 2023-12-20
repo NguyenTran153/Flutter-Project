@@ -123,38 +123,43 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               sizedBox,
               sizedBox,
-              Text(
-                "Say hello to your English tutors",
-                style: Theme.of(context).textTheme.displayMedium,
-              ),
-              sizedBox,
-              Text(
-                "Become fluent faster through one-on-one video chat lessons tailored to your goals.",
-                style: TextStyle(fontSize: 24, color: Colors.grey),
+              Image.asset(
+                'public/images/LetTutor.png',
+                width: 320,
+                height: 320,
               ),
               sizedBox,
               TextFieldInput(
                   textEditingController: _emailController,
-                  hintText: "Enter your email",
+                  hintText: AppLocalizations(currentLocale)
+                      .translate('enterEmail')!,
                   textInputType: TextInputType.emailAddress),
               sizedBox,
               TextFieldInput(
                 textEditingController: _passwordController,
-                hintText: "Enter your password",
+                hintText: AppLocalizations(currentLocale)
+                    .translate('enterPassword')!,
                 textInputType: TextInputType.text,
                 isPass: true,
               ),
               sizedBox,
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, Routes.forgotPassword);
-                },
-                child: const Text("Forgot Password",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.green,
-                        decoration: TextDecoration.underline)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, Routes.forgotPassword);
+                    },
+                    child: const Text("Forgot Password",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.green,
+                            decoration: TextDecoration.underline
+                        )),
+                  ),
+                ],
               ),
+              subSizedBox,
               InkWell(
                 onTap: () {
                   _loginWithEmailAndPassword(authProvider);
@@ -165,9 +170,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
-                  child: const Text("Login"),
+                  child: Text(AppLocalizations(currentLocale)
+                      .translate('login')!),
                 ),
               ),
               const Text("Or continue with"),
@@ -207,8 +213,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(' Register.',
-                          style: Theme.of(context).textTheme.titleSmall),
+                      child: Text(AppLocalizations(currentLocale)
+                          .translate('register')!,
+                          style: Theme.of(context).textTheme.titleMedium),
                     ),
                   ),
                 ],

@@ -17,10 +17,12 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
-        android:label="Flutter App"
+        android:label="LetTutor"
         android:name="${applicationName}"
         tools:replace="android:label"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round">
+
 
         <activity
             android:name=".MainActivity"

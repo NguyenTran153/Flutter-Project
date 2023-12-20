@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_project/services/authentication_service.dart';
+import 'package:provider/provider.dart';
 
+import '../../l10n.dart';
+import '../../providers/language_provider.dart';
 import '../../utils/routes.dart';
 import '../../utils/sized_box.dart';
 import '../../widgets/text_field.dart';
@@ -15,78 +18,63 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
 
-  Future<void> _getNewPassword() async {
-    String email = _emailController.text;
+  late Locale currentLocale;
 
-    if (email.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Please enter your email'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Close'),
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    }
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? storedEmail = prefs.getString('email');
-
-    if (storedEmail == null || storedEmail != email) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Email does not exist'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Close'),
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    }
-
-    String newPassword = "12345";
-    await prefs.setString('password', newPassword);
-    showResetPasswordConfirmationDialog();
+  @override
+  void initState() {
+    super.initState();
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
   }
 
-  void showResetPasswordConfirmationDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Reset Password'),
-          content: const Text('An email with instructions to reset your password has been sent.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, Routes.login);
-              },
-              child: const Text('OK'),
-            ),
-          ],
+  Future<void> _getNewPassword() async {
+    final email = _emailController.text;
+    final emailRegExp = RegExp(
+        r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
+
+    if (email.isEmpty || !emailRegExp.hasMatch(_emailController.text)) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+                AppLocalizations(currentLocale).translate('notValidEmail')!),
+            content:
+                Text(AppLocalizations(currentLocale).translate('enterEmail')!),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child:
+                    Text(AppLocalizations(currentLocale).translate('close')!),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+    try {
+      await AuthenticationService.forgotPassword(email);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(AppLocalizations(currentLocale)
+                  .translate('sendRecoveryEmailSuccess')!)),
         );
-      },
-    );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error Reset Password: ${e.toString()}')),
+      );
+    }
   }
 
   @override
@@ -108,19 +96,16 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               sizedBox,
-              Text(
-                "Say hello to your English tutors",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              sizedBox,
-              Text(
-                "Become fluent faster through one-on-one video chat lessons tailored to your goals.",
-                style: Theme.of(context).textTheme.titleMedium,
+              Image.asset(
+                'public/images/LetTutor.png',
+                width: 320,
+                height: 320,
               ),
               sizedBox,
               TextFieldInput(
                   textEditingController: _emailController,
-                  hintText: "Enter your email",
+                  hintText: AppLocalizations(currentLocale)
+                      .translate('enterEmail')!,
                   textInputType: TextInputType.emailAddress),
               sizedBox,
               InkWell(
@@ -135,7 +120,8 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                     borderRadius: BorderRadius.circular(10.0),
                     color: Theme.of(context).colorScheme.secondary,
                   ),
-                  child: const Text("Send Email"),
+                  child: Text(AppLocalizations(currentLocale)
+                      .translate('send')!),
                 ),
               ),
               sizedBox,
@@ -144,8 +130,9 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: const Text(
-                      'Already have an account?',
+                    child: Text(
+                      AppLocalizations(currentLocale)
+                          .translate('haveAccount')!,
                     ),
                   ),
                   GestureDetector(
@@ -155,8 +142,9 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        ' Login',
-                        style: Theme.of(context).textTheme.titleSmall,
+                        AppLocalizations(currentLocale)
+                            .translate('login')!,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
                   ),

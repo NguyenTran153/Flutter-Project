@@ -76,25 +76,6 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
 
   void _joinMeeting(String room, String meetingToken) async {
     try {
-      // Map<FeatureFlagEnum, bool> featureFlags = {
-      //   FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
-      // };
-      // if (!kIsWeb) {
-      //   if (defaultTargetPlatform == TargetPlatform.android) {
-      //     featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
-      //   } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-      //     featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
-      //   }
-      // }
-      //
-      // final options = JitsiMeetingOptions(room: room)
-      //   ..serverURL = "https://meet.lettutor.com"
-      //   ..token = meetingToken
-      //   ..audioOnly = true
-      //   ..audioMuted = true
-      //   ..videoMuted = true
-      //   ..featureFlags.addAll(featureFlags);
-      // await JitsiMeet.joinMeeting(options);
       var options = JitsiMeetingOptions(
         roomNameOrUrl: "learningRoom",
         serverUrl: "https://meet.lettutor.com",
