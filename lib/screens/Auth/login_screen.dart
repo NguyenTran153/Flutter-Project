@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 import 'package:flutter_project/widgets/text_field.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,6 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isAuthenticating = true;
   bool _isAuthenticated = false;
+
+  final _googleSignIn = GoogleSignIn();
 
   late Locale currentLocale;
 
@@ -100,6 +104,58 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _loginByGoogle(AuthProvider authProvider) async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      final String? accessToken = googleAuth?.accessToken;
+      if (accessToken != null) {
+        try {
+          await AuthenticationService.loginByGoogle(
+              accessToken: accessToken,
+              onSuccess: (user, token) async {
+                authProvider.logIn(user, token);
+
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString(
+                  'refresh_token',
+                  authProvider.token!.refresh!.token!,
+                );
+
+                setState(() {
+                  _isAuthenticated = true;
+                  _isAuthenticating = false;
+                });
+
+                Future.delayed(const Duration(seconds: 1), () {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    Routes.main,
+                    (route) => false,
+                  );
+                });
+              });
+        } catch (e) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error Login with Google: ${e.toString()}')),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error Login with Google: ${e.toString()}')),
+      );
+    }
+  }
+
+  Future<void> _loginByFacebook(AuthProvider authProvider) async {
+
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -131,14 +187,14 @@ class _LoginScreenState extends State<LoginScreen> {
               sizedBox,
               TextFieldInput(
                   textEditingController: _emailController,
-                  hintText: AppLocalizations(currentLocale)
-                      .translate('enterEmail')!,
+                  hintText:
+                      AppLocalizations(currentLocale).translate('enterEmail')!,
                   textInputType: TextInputType.emailAddress),
               sizedBox,
               TextFieldInput(
                 textEditingController: _passwordController,
-                hintText: AppLocalizations(currentLocale)
-                    .translate('enterPassword')!,
+                hintText:
+                    AppLocalizations(currentLocale).translate('enterPassword')!,
                 textInputType: TextInputType.text,
                 isPass: true,
               ),
@@ -154,8 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(
                             fontSize: 16,
                             color: Colors.green,
-                            decoration: TextDecoration.underline
-                        )),
+                            decoration: TextDecoration.underline)),
                   ),
                 ],
               ),
@@ -172,8 +227,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(10.0),
                     color: Theme.of(context).colorScheme.secondary,
                   ),
-                  child: Text(AppLocalizations(currentLocale)
-                      .translate('login')!),
+                  child:
+                      Text(AppLocalizations(currentLocale).translate('login')!),
                 ),
               ),
               const Text("Or continue with"),
@@ -186,7 +241,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     iconSize: 32.0,
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      _loginByGoogle(authProvider);
+                    },
                     icon: Image.asset('public/icons/google.png'),
                     iconSize: 32.0,
                   ),
@@ -213,8 +270,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(AppLocalizations(currentLocale)
-                          .translate('register')!,
+                      child: Text(
+                          AppLocalizations(currentLocale)
+                              .translate('register')!,
                           style: Theme.of(context).textTheme.titleMedium),
                     ),
                   ),
