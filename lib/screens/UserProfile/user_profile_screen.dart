@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 import 'package:image_picker/image_picker.dart';
@@ -147,11 +149,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                           ),
-                          child: Image.network(
+                          child: imageUrl.isNotEmpty
+                              ? Image.file(
+                            File(imageUrl),
+                            fit: BoxFit.cover,
+                          )
+                              : Image.network(
                             authProvider.currentUser.avatar ?? '',
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.person_rounded),
+                            const Icon(Icons.person_rounded),
                           ),
                         ),
                         Positioned(
@@ -218,14 +225,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   subSizedBox,
                   Text(phoneNumber),
                   sizedBox,
-                  Text(
-                    'Country',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                  ),
-                  subSizedBox,
                   Text(
                     AppLocalizations(currentLocale).translate('country')!,
                     style: TextStyle(
@@ -435,9 +434,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                   sizedBox,
                   TextButton(
-                    onPressed: () {
-                      _updateUserProfile(authProvider);
-                      Navigator.pop(context);
+                    onPressed: () async {
+                      await _updateUserProfile(authProvider);
                     },
                     style: TextButton.styleFrom(
                       minimumSize: const Size.fromHeight(48),

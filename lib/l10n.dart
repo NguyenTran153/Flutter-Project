@@ -101,6 +101,7 @@ class AppLocalizations {
       'meetingRoom': 'Meeting room',
       'close': 'Close',
       'sendRecoveryEmailSuccess': 'Send recovery email success',
+      'country': 'Country',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -196,6 +197,7 @@ class AppLocalizations {
       'meetingRoom': 'Phòng học',
       'close': 'Đóng',
       'sendRecoveryEmailSuccess': 'Gửi email khôi phục thành công',
+      'country': 'Quốc gia',
     },
   };
 

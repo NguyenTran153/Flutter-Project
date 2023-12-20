@@ -63,9 +63,9 @@ class UserService {
       'country': country,
       'birthday': birthday,
       'level': level,
-      'learn_topics': learnTopics,
-      'test_preparations': testPreparations,
-      'study_schedule': studySchedule,
+      'learnTopics': learnTopics,
+      'testPreparations': testPreparations,
+      'studySchedule': studySchedule,
     };
 
     Response response =
@@ -73,7 +73,7 @@ class UserService {
 
     final jsonDecode = json.decode(response.body);
     if (response.statusCode != 200) {
-      return null;
+      throw Exception(json.decode(response.body)['message']);
     }
     return User.fromJson(jsonDecode['user']);
   }
