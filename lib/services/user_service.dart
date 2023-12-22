@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:http/http.dart';
 
@@ -76,6 +77,51 @@ class UserService {
       throw Exception(json.decode(response.body)['message']);
     }
     return User.fromJson(jsonDecode['user']);
+  }
+
+  static Future<User?> updateAvatar({
+    required String token,
+    required File avatar,
+  }) async {
+    String url = '$_baseUrl/user/uploadAvatar';
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+    };
+
+    try {
+      var request = MultipartRequest('POST', Uri.parse(url));
+      request.headers.addAll(headers);
+
+      var bytes = await avatar.readAsBytes();
+      String? base64Image = base64Encode(bytes);
+
+      if (base64Image != null) {
+        // Use MultipartFile to attach the image
+        request.files.add(MultipartFile(
+          'avatar',
+          ByteStream.fromBytes(base64Decode(base64Image)),
+          bytes.length,
+          filename: 'avatar.jpg', // You can set the desired filename here
+        ));
+
+        var response = await request.send();
+
+        if (response.statusCode == 200) {
+          // Handle the response if needed
+          var jsonResponse = await response.stream.bytesToString();
+          var jsonDecode = json.decode(jsonResponse);
+          return User.fromJson(jsonDecode['user']);
+        } else {
+          throw Exception('Failed to upload avatar. Status code: ${response.statusCode}');
+        }
+      } else {
+        print('Base64 image is null');
+        return null; // or handle the error appropriately
+      }
+    } catch (e) {
+      print('Error uploading avatar: $e');
+      return null; // or handle the error appropriately
+    }
   }
 
   static Future<List<LearnTopic>> getLearningTopic(String token) async {

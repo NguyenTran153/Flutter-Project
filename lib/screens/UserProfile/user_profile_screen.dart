@@ -85,10 +85,40 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
+  Future<void> _uploadAvatar(AuthProvider authProvider) async {
+    if (imageUrl.isEmpty) {
+      return;
+    }
+    try {
+      final String token = authProvider.token?.access?.token as String;
+      final avatarFile = File(imageUrl);
+
+      if (!avatarFile.existsSync()) {
+        print('Avatar file does not exist.');
+        return;
+      }
+      if (avatarFile.lengthSync() == 0) {
+        print('Avatar file is empty.');
+        return;
+      }
+
+      final user = await UserService.updateAvatar(
+        token: token,
+        avatar: avatarFile,
+      );
+    } catch (e) {
+      print(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error Uploading Avatar: ${e.toString()}')));
+    }
+  }
+
   Future<void> _updateUserProfile(AuthProvider authProvider) async {
     final String token = authProvider.token?.access?.token as String;
-    final learnTopics = chosenTopics.map((topic) => topic.id.toString()).toList();
-    final testPreparations = chosenTestPreparations.map((test) => test.id.toString()).toList();
+    final learnTopics =
+        chosenTopics.map((topic) => topic.id.toString()).toList();
+    final testPreparations =
+        chosenTestPreparations.map((test) => test.id.toString()).toList();
 
     await UserService.updateUserInformation(
       token: token,
@@ -151,15 +181,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                           child: imageUrl.isNotEmpty
                               ? Image.file(
-                            File(imageUrl),
-                            fit: BoxFit.cover,
-                          )
+                                  File(imageUrl),
+                                  fit: BoxFit.cover,
+                                )
                               : Image.network(
-                            authProvider.currentUser.avatar ?? '',
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.person_rounded),
-                          ),
+                                  authProvider.currentUser.avatar ?? '',
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.person_rounded),
+                                ),
                         ),
                         Positioned(
                           bottom: 0,
@@ -304,13 +334,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     value: userLevels[level],
                     items: userLevels.values
                         .map((e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(e, overflow: TextOverflow.ellipsis),
-                    ))
+                              value: e,
+                              child: Text(e, overflow: TextOverflow.ellipsis),
+                            ))
                         .toList(),
                     onChanged: (value) {
                       final chosenLevel = userLevels.keys.firstWhere(
-                            (element) => userLevels[element] == value,
+                        (element) => userLevels[element] == value,
                         orElse: () => 'BEGINNER',
                       );
                       setState(() {
@@ -332,7 +362,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     runSpacing: -4,
                     children: List<Widget>.generate(
                       authProvider.learnTopics.length,
-                          (index) => ChoiceChip(
+                      (index) => ChoiceChip(
                         backgroundColor: Colors.grey[100],
                         selectedColor: Colors.lightBlue[100],
                         selected: chosenTopics
@@ -344,9 +374,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           style: TextStyle(
                             fontSize: 14,
                             color: chosenTopics
-                                .map((e) => e.id)
-                                .toList()
-                                .contains(authProvider.learnTopics[index].id)
+                                    .map((e) => e.id)
+                                    .toList()
+                                    .contains(
+                                        authProvider.learnTopics[index].id)
                                 ? Colors.blue[700]
                                 : Colors.black54,
                           ),
@@ -357,7 +388,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               chosenTopics.add(authProvider.learnTopics[index]);
                             } else {
                               chosenTopics.removeWhere(
-                                    (element) => element.id == authProvider.learnTopics[index].id,
+                                (element) =>
+                                    element.id ==
+                                    authProvider.learnTopics[index].id,
                               );
                             }
                           });
@@ -367,7 +400,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                   sizedBox,
                   Text(
-                    AppLocalizations(currentLocale).translate('testPreparation')!,
+                    AppLocalizations(currentLocale)
+                        .translate('testPreparation')!,
                     style: TextStyle(fontSize: 16, color: Colors.grey[900]),
                   ),
                   subSizedBox,
@@ -376,7 +410,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     runSpacing: -4,
                     children: List<Widget>.generate(
                       authProvider.testPreparations.length,
-                          (index) => ChoiceChip(
+                      (index) => ChoiceChip(
                         backgroundColor: Colors.grey[100],
                         selectedColor: Colors.lightBlue[100],
                         selected: chosenTestPreparations
@@ -388,9 +422,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           style: TextStyle(
                             fontSize: 14,
                             color: chosenTestPreparations
-                                .map((e) => e.id)
-                                .toList()
-                                .contains(authProvider.testPreparations[index].id)
+                                    .map((e) => e.id)
+                                    .toList()
+                                    .contains(
+                                        authProvider.testPreparations[index].id)
                                 ? Colors.blue[700]
                                 : Colors.black54,
                           ),
@@ -398,10 +433,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         onSelected: (bool selected) {
                           setState(() {
                             if (selected) {
-                              chosenTestPreparations.add(authProvider.testPreparations[index]);
+                              chosenTestPreparations
+                                  .add(authProvider.testPreparations[index]);
                             } else {
                               chosenTestPreparations.removeWhere(
-                                    (element) => element.id == authProvider.testPreparations[index].id,
+                                (element) =>
+                                    element.id ==
+                                    authProvider.testPreparations[index].id,
                               );
                             }
                           });
@@ -435,6 +473,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   sizedBox,
                   TextButton(
                     onPressed: () async {
+                      await _uploadAvatar(authProvider);
                       await _updateUserProfile(authProvider);
                     },
                     style: TextButton.styleFrom(
@@ -442,7 +481,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                     child: Text(
-                      AppLocalizations(currentLocale).translate('save')!,                      style: TextStyle(
+                      AppLocalizations(currentLocale).translate('save')!,
+                      style: TextStyle(
                         fontSize: 18,
                         color: Theme.of(context).primaryColor,
                       ),
