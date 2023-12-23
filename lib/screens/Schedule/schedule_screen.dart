@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/Schedule/UpcomingClass/upcoming_class_screen.dart';
+import 'package:flutter_project/screens/Schedule/BookedClass/booked_class_screen.dart';
 import 'package:flutter_project/utils/sized_box.dart';
+import 'package:provider/provider.dart';
 
+import '../../l10n.dart';
+import '../../providers/language_provider.dart';
 import 'History/history_screen.dart';
 
 class ScheduleScreen extends StatefulWidget {
@@ -12,6 +15,19 @@ class ScheduleScreen extends StatefulWidget {
 }
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
+  late Locale currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +47,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       ),
                       subSizedBox,
                       Text(
-                        'Upcoming',
+                        AppLocalizations(currentLocale).translate('bookedClasses')!,
                         style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       )
                     ],
@@ -47,7 +63,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'History',
+                        AppLocalizations(currentLocale).translate('history')!,
                         style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       )
                     ],
@@ -58,7 +74,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             const Expanded(
               child: TabBarView(
                 children: [
-                  UpcomingClassScreen(),
+                  BookedClassScreen(),
                   HistoryScreen(),
                 ],
               ),

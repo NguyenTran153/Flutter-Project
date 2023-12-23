@@ -48,6 +48,13 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   http: ^1.1.0
   flutter_localization: ^0.1.14
+  file_picker: ^6.1.1
+  jwt_decoder: ^2.0.1
+  jitsi_meet_wrapper: ^0.2.0+1
+  flutter_config: ^2.0.2
+  flutter_facebook_auth: ^6.0.3
+  google_sign_in: ^6.1.6
+  injectable: ^2.3.2
 
 dev_dependencies:
   flutter_test:

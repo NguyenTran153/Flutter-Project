@@ -1,16 +1,96 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project/providers/auth_provider.dart';
+import 'package:flutter_project/services/become_teacher_service.dart';
 import 'package:flutter_project/utils/sized_box.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+
+import '../../l10n.dart';
+import '../../providers/language_provider.dart';
 
 class BecomeTutorScreen extends StatefulWidget {
-  const BecomeTutorScreen({super.key});
+  const BecomeTutorScreen({Key? key}) : super(key: key);
 
   @override
   State<BecomeTutorScreen> createState() => _BecomeTutorScreenState();
 }
 
 class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
-  String imageUrl = 'https://as1.ftcdn.net/v2/jpg/01/04/93/90/1000_F_104939054_E7P5jaVoNYcXQI7YBrzsVWH2qZc03sn8.jpg';
+  TextEditingController nameController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
+  TextEditingController birthdayController = TextEditingController();
+  TextEditingController interestsController = TextEditingController();
+  TextEditingController educationController = TextEditingController();
+  TextEditingController experienceController = TextEditingController();
+  TextEditingController professionController = TextEditingController();
+  TextEditingController languagesController = TextEditingController();
+  TextEditingController bioController = TextEditingController();
+  TextEditingController targetStudentsController = TextEditingController();
+  TextEditingController specialtiesController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  File? avatar;
+  File? video;
+  bool isUploaded = false;
+  String imageUrl =
+      'https://as1.ftcdn.net/v2/jpg/01/04/93/90/1000_F_104939054_E7P5jaVoNYcXQI7YBrzsVWH2qZc03sn8.jpg';
+  late Locale currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        imageUrl = pickedFile.path;
+      });
+    }
+  }
+
+  Future<void> _submitForm(AuthProvider authProvider) async {
+    try {
+      await BecomeTeacherService.becomeTeacher(
+        name: nameController.text,
+        country: countryController.text,
+        birthday: birthdayController.text,
+        interests: interestsController.text,
+        education: educationController.text,
+        experience: experienceController.text,
+        profession: professionController.text,
+        languages: languagesController.text,
+        bio: bioController.text,
+        targetStudents: targetStudentsController.text,
+        specialties: specialtiesController.text,
+        avatar: avatar,
+        video: video,
+        price: priceController.text,
+        token: authProvider.token?.access?.token as String,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(AppLocalizations(currentLocale).translate('success')!),
+      ));
+    } catch (error) {
+      // Xử lý khi gặp lỗi
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            '${AppLocalizations(currentLocale).translate('error')!} $error'),
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +99,10 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
         elevation: 0,
         backgroundColor: Colors.white,
         leading: BackButton(
-          color: Colors.blue[600],
+          color: Theme.of(context).colorScheme.secondary,
         ),
         title: Text(
-          'Become Tutor',
+          AppLocalizations(currentLocale).translate('becomeTutor')!,
           style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
@@ -31,286 +111,132 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Basic Info',
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            Row(
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      width: 108,
-                      height: 108,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: CachedNetworkImage(
-                        imageUrl:
-                        imageUrl,
-                        placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                        const Icon(Icons.person_rounded),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text('Upload'),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Tutoring Name',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      const SizedBox(height: 2),
-                      const TextField(
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 4,
-                            horizontal: 8,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 2),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'I am from',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      subSizedBox,
-                      const TextField(
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 4,
-                            horizontal: 8,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 2),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                        ),
-                      ),
-                      subSizedBox,
-                      Text(
-                        'Date of Birth',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      subSizedBox,
-                    ],
-                  ),
-                )
-              ],
-            ),
-            sizedBox,
-            Text(
-              'CV',
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            subSizedBox,
-            Text(
-              'Interests',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            subSizedBox,
-            const TextField(
+            TextFormField(
+              controller: nameController,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+                labelText: AppLocalizations(currentLocale).translate('name')!,
               ),
             ),
-            subSizedBox,
-            Text(
-              'Education',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            subSizedBox,
-            const TextField(
+            SizedBox(height: 16),
+            TextFormField(
+              controller: countryController,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+                labelText:
+                    AppLocalizations(currentLocale).translate('country')!,
               ),
             ),
-            subSizedBox,
-            Text(
-              'Experience',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            subSizedBox,
-            const TextField(
+            SizedBox(height: 16),
+            TextFormField(
+              controller: birthdayController,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+                labelText:
+                    AppLocalizations(currentLocale).translate('birthday')!,
               ),
             ),
-            subSizedBox,
-            Text(
-              'Current or Previous Profession',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            subSizedBox,
-            TextField(
+            SizedBox(height: 16),
+            TextFormField(
+              controller: interestsController,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+                labelText:
+                    AppLocalizations(currentLocale).translate('interests')!,
               ),
             ),
-            subSizedBox,
-            Text(
-              'Certificate',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text('Add New Certificate'),
-            ),
-            sizedBox,
-            Text(
-              'Languages I speak',
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            subSizedBox,
-            Text(
-              'Languages',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            subSizedBox,
-            TextField(
+            SizedBox(height: 16),
+            TextFormField(
+              controller: educationController,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+                labelText:
+                    AppLocalizations(currentLocale).translate('education')!,
               ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              'Who I teach',
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Introduction',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            subSizedBox,
-            TextField(
+            SizedBox(height: 16),
+            TextFormField(
+              controller: experienceController,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+                labelText:
+                    AppLocalizations(currentLocale).translate('experience')!,
               ),
             ),
-            sizedBox,
-            Text(
-              'I am best at teaching students who are',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            subSizedBox,
-            TextField(
+            SizedBox(height: 16),
+            TextFormField(
+              controller: professionController,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+                labelText:
+                    AppLocalizations(currentLocale).translate('profession')!,
               ),
             ),
-            sizedBox,
-            Text(
-              'My specialties are',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            subSizedBox,
-            TextField(
+            SizedBox(height: 16),
+            TextFormField(
+              controller: languagesController,
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.tertiary, width: 2),
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                ),
+                labelText:
+                    AppLocalizations(currentLocale).translate('languages')!,
               ),
             ),
-            sizedBox,
-            Text(
-              'Introduction Video',
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: TextButton(
-                onPressed: () {},
-                child: const Text('Choose Video'),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: bioController,
+              decoration: InputDecoration(
+                labelText: AppLocalizations(currentLocale).translate('bio')!,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 24, bottom: 12),
-              child: TextButton(
-                style: TextButton.styleFrom(
-                    minimumSize: const Size.fromHeight(48),
-                    backgroundColor: Theme.of(context).colorScheme.secondary),
-                onPressed: () {},
-                child: Text(
-                  'Done',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: targetStudentsController,
+              decoration: InputDecoration(
+                labelText: AppLocalizations(currentLocale)
+                    .translate('targetStudents')!,
               ),
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: specialtiesController,
+              decoration: InputDecoration(
+                labelText:
+                    AppLocalizations(currentLocale).translate('specialties')!,
+              ),
+            ),
+            SizedBox(height: 16),
+            // FilePicker for Avatar
+            ElevatedButton(
+              onPressed: () async {
+                FilePickerResult? result =
+                    await FilePicker.platform.pickFiles(type: FileType.image);
+                if (result != null) {
+                  setState(() {
+                    avatar = File(result.files.single.path!);
+                  });
+                }
+              },
+              child: Text('Pick Avatar'),
+            ),
+            SizedBox(height: 16),
+            // FilePicker for Video
+            ElevatedButton(
+              onPressed: () async {
+                FilePickerResult? result =
+                    await FilePicker.platform.pickFiles(type: FileType.video);
+                if (result != null) {
+                  setState(() {
+                    video = File(result.files.single.path!);
+                  });
+                }
+              },
+              child: Text('Pick Video'),
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: priceController,
+              decoration: InputDecoration(
+                labelText: AppLocalizations(currentLocale).translate('price')!,
+              ),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                _submitForm;
+              },
+              child: Text('Submit'),
             ),
           ],
         ),

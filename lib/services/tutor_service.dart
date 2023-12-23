@@ -5,11 +5,31 @@ import 'package:flutter_project/constants/base_url.dart';
 import 'package:http/http.dart';
 
 import '../models/tutor/tutor.dart';
+import '../models/tutor/tutor_info.dart';
+import '../models/user/learn_topic.dart';
+import '../models/user/test_preparation.dart';
 
 class TutorService {
-  Future<void> getListTutor() async {
-    String url = 'https://reqres.in/api/users?page=2';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
+  static const _baseUrl = baseUrl;
+
+  static Future<List<LearnTopic>> getTopics() async {
+    return <LearnTopic>[];
+  }
+
+  static Future<List<TestPreparation>> getTestPreparations() async {
+    return <TestPreparation>[];
+  }
+
+  static Future<List<Tutor>> getListTutorWithPagination({
+    required int page,
+    required int perPage,
+    required String token,
+  }) async {
+    String url = '$_baseUrl/tutor/more?perPage=$perPage&page=$page';
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
 
     Response response = await get(Uri.parse(url), headers: headers);
 
@@ -18,6 +38,9 @@ class TutorService {
     if (response.statusCode != 200) {
       throw Exception(jsonDecode['message']);
     }
+
+    final List<dynamic> tutors = jsonDecode['tutors']['rows'];
+    return tutors.map((tutor) => Tutor.fromJson(tutor)).toList();
   }
 
   Future<void> writeReviewForTutor() async {
@@ -33,9 +56,15 @@ class TutorService {
     }
   }
 
-  Future<void> getTutorInformationById() async {
-    String url = 'https://reqres.in/api/users?page=2';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
+  static Future<TutorInfo> getTutorInformationById({
+    required String token,
+    required String userId,
+  }) async {
+    String url = '$_baseUrl/tutor/$userId';
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
 
     Response response = await get(Uri.parse(url), headers: headers);
 
@@ -44,6 +73,8 @@ class TutorService {
     if (response.statusCode != 200) {
       throw Exception(jsonDecode['message']);
     }
+
+    return TutorInfo.fromJson(jsonDecode);
   }
 
   static Future<Map<String, dynamic>> searchTutor({
@@ -55,7 +86,7 @@ class TutorService {
     required List<String> specialties,
   }) async {
     final response = await post(
-      Uri.parse('$baseUrl/tutor/search'),
+      Uri.parse('$_baseUrl/tutor/search'),
       headers: {
         'Content-Type': 'application/json;encoding=utf-8',
         'Authorization': 'Bearer $token',
@@ -98,6 +129,35 @@ class TutorService {
       body: json.encode(
         {
           'tutorId': userId,
+        },
+      ),
+    );
+
+    final jsonDecode = json.decode(response.body);
+    if (response.statusCode != 200) {
+      throw Exception(jsonDecode['message']);
+    }
+  }
+
+  static Future<void> writeReview({
+    required String token,
+    required String bookingId,
+    required String userId,
+    required int rate,
+    required String content,
+  }) async {
+    final response = await post(
+      Uri.parse('$baseUrl/user/feedbackTutor'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(
+        {
+          'bookingId': bookingId,
+          'tutorId': userId,
+          'rate': rate,
+          'content': content,
         },
       ),
     );

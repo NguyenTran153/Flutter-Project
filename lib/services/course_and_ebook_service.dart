@@ -4,12 +4,23 @@ import 'dart:convert';
 import 'package:flutter_project/constants/base_url.dart';
 import 'package:http/http.dart';
 
+import '../models/course/course.dart';
+
 class CourseService {
-  Future<void> getListCourse({
-    required Function(List) onSuccess,
+  static const _baseUrl = baseUrl;
+
+  static Future<Map<String, dynamic>> getListCourseWithPagination({
+    required String token,
+    required int page,
+    required int size,
+    required String search,
   }) async {
-    String url = '$baseUrl/course';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
+    String url =
+        '$_baseUrl/course?page=$page&size=$size${search.isNotEmpty ? '&q=$search' : ''}';
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
 
     Response response = await get(Uri.parse(url), headers: headers);
 
@@ -19,16 +30,20 @@ class CourseService {
       throw Exception(jsonDecode['message']);
     }
 
-    final listCourse = jsonDecode['data'];
-    await onSuccess(listCourse);
+    final List<dynamic> courses = jsonDecode['data']['rows'];
+    return {
+      'count': jsonDecode['data']['count'],
+      'courses': courses.map((e) => Course.fromJson(e)).toList(),
+    };
   }
 
-  Future<void> getCourseDetailById({
-    required String id,
-    required Function(Map) onSuccess,
-  }) async {
-    String url = '$baseUrl/course/$id';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
+  static Future<Course> getCourseDetailById(
+      {required String token, required String courseId}) async {
+    String url = '$_baseUrl/course/$courseId';
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
 
     Response response = await get(Uri.parse(url), headers: headers);
 
@@ -38,7 +53,6 @@ class CourseService {
       throw Exception(jsonDecode['message']);
     }
 
-    final courseDetail = jsonDecode['data'];
-    await onSuccess(courseDetail);
+    return Course.fromJson(jsonDecode['data']);
   }
 }

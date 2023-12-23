@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/models/tutor.dart';
-import 'package:flutter_project/screens/Tutor/TutorSearch/TutorSearchItem/tutor_search_item.dart';
+import 'package:flutter_project/screens/Tutor/TutorSearch/TutorSearchCard/tutor_search_card_widget.dart';
 import 'package:flutter_project/utils/sized_box.dart';
+import 'package:provider/provider.dart';
 
-import '../../../constants/items_per_page.dart';
+import '../../../constants/constant.dart';
+import '../../../l10n.dart';
+import '../../../models/tutor/tutor.dart';
+import '../../../providers/auth_provider.dart';
+import '../../../providers/language_provider.dart';
+import '../../../services/tutor_service.dart';
 
 class TutorResultScreen extends StatefulWidget {
   const TutorResultScreen({Key? key}) : super(key: key);
@@ -17,67 +22,46 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
   int _perPage = itemsPerPage.first;
   bool _isLoading = true;
   int _count = 0;
-  List<Tutor> _tutors = getTutors();
+  List<Tutor> _tutors = [];
   int? _selectedSortOption;
   bool _defaultSorting = true;
+  List<Tutor> _originalTutors = [];
   List<Tutor> _filteredTutors = [];
+  late Locale currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
+  }
 
   Future<void> _searchTutors(
+    String accessToken,
     String name,
     bool isVietnamese,
     List<String> specialties,
   ) async {
-    List<Tutor> tutors = getTutors();
-
-    // Sử dụng biến result kiểu Map để lưu kết quả tìm kiếm
-    Map<String, dynamic> result = {
-      'search': name,
-      'nationality': isVietnamese,
-      'specialties': specialties,
-      'count': 0,
-      'tutors': [],
-    };
-
-    List<Tutor> results = tutors.where((tutor) {
-      bool nameCondition =
-          tutor.name.toLowerCase().contains(name.toLowerCase());
-      bool nationalityCondition =
-          isVietnamese ? tutor.country == 'Vietnam' : true;
-
-      // Chuyển đổi specialties của Tutor thành danh sách
-      List<String> tutorSpecialties = tutor.specialties
-              ?.split(',')
-              .map((e) => e.trim().toLowerCase())
-              .toList() ??
-          [];
-
-      // Kiểm tra xem có ít nhất một giá trị trong specialties trùng với chuyên môn của gia sư không
-      bool specialtiesCondition = specialties.isEmpty ||
-          (tutorSpecialties.isNotEmpty &&
-              specialties.any((specialty) => tutorSpecialties.contains(
-                    specialty.toLowerCase(),
-                  )));
-
-      return nameCondition &&
-          nationalityCondition &&
-          (isVietnamese ? true : tutor.country != 'Vietnam') &&
-          specialtiesCondition;
-    }).toList();
-
-    // Gán kết quả vào biến result
-    result['count'] = results.length;
-    result['tutors'] = results;
+    final result = await TutorService.searchTutor(
+      token: accessToken,
+      search: name,
+      page: _page,
+      perPage: _perPage,
+      nationality: {'isVietNamese': isVietnamese},
+      specialties: specialties,
+    );
 
     setState(() {
       _count = result['count'];
       _tutors = result['tutors'];
+      _originalTutors = result['tutors'];
+      _filteredTutors = result['tutors'];
       _isLoading = false;
-      _filteredTutors = List.from(_tutors); // Lưu trạng thái trước khi sắp xếp
     });
-
-    if (_selectedSortOption != null && !_defaultSorting) {
-      _sortTutors();
-    }
   }
 
   bool _isDescending = false;
@@ -86,35 +70,75 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
   void _sortTutors() {
     setState(() {
       if (_selectedSortOption == 0) {
-        _tutors.sort((a, b) {
-          return _isDescending
-              ? b.rating.compareTo(a.rating)
-              : a.rating.compareTo(b.rating);
-        });
+        _sortTutorsByRating();
+      } else if (_selectedSortOption == 1) {
+        _sortTutorsByFavorite();
       } else {
-        // Nếu không có lựa chọn sắp xếp, trở về trạng thái mặc định (theo vị trí ban đầu)
-        _tutors = List.from(_filteredTutors);
+        _sortTutorsDefault();
       }
 
-      _sortIcon = _isDescending ? Icons.arrow_downward : Icons.arrow_upward;
+      _sortIcon = _isDescending ? Icons.arrow_upward : Icons.arrow_downward;
+      _isDescending = !_isDescending; // Toggle for next sort
     });
+  }
+
+  void _sortTutorsByRating() {
+    _filteredTutors.sort((a, b) {
+      if (a.rating == null && b.rating == null) return 0;
+      if (a.rating == null) return 1;
+      if (b.rating == null) return -1;
+
+      int result = a.rating!.compareTo(b.rating!);
+      return _isDescending ? -result : result;
+    });
+    setState(() {
+      _tutors = List.from(_filteredTutors);
+    });
+  }
+
+  void _sortTutorsByFavorite() {
+    _tutors = List.from(_filteredTutors);
+  }
+
+  // void _sortTutorsDefault() {
+  //   setState(() {
+  //     _originalTutors.sort((a, b) {
+  //       return a.name?.compareTo(b.name ?? '') ?? 0;
+  //     });
+  //     _tutors = _originalTutors;
+  //   });
+  // }
+
+  void _sortTutorsDefault() {
+    setState(() {
+      _tutors = List.from(_originalTutors);
+    });
+  }
+
+bool _checkIfTutorIsFavorite(Tutor tutor) {
+    // Replace this with your own logic to determine if a tutor is a favorite
+    // For example, you can use a separate data structure to store favorite tutor IDs
+    // and check if the current tutor's ID is in that list.
+    // For simplicity, I'm using a placeholder condition here.
+    return tutor.rating != null && tutor.rating! > 4.5;
   }
 
   @override
   Widget build(BuildContext context) {
-    final data =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    final authProvider = context.watch<AuthProvider>();
+    final data = ModalRoute.of(context)?.settings.arguments as Map;
 
     if (_isLoading) {
       _searchTutors(
+        data['token'],
         data['search'],
-        data['nationality'] ?? false,
-        data['specialties'] ?? [],
+        data['nationality'],
+        data['specialties'],
       );
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search Results'),
+        title: Text(AppLocalizations(currentLocale).translate('result')!),
       ),
       body: _isLoading
           ? const Center(
@@ -127,43 +151,41 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                 children: [
                   Text(
                     _tutors.isEmpty
-                        ? 'No Matches Found'
+                        ? AppLocalizations(currentLocale)
+                            .translate('noMatchesFound')!
                         : 'Found $_count result(s)',
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   _count > 0
                       ? Container(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
                                 flex: 6,
                                 child: PopupMenuButton<int>(
-                                  icon: Icon(Icons.sort),
+                                  icon: const Icon(Icons.sort),
                                   initialValue: _selectedSortOption,
                                   onSelected: (value) {
                                     setState(() {
-                                      if (value == 0) {
-                                        _selectedSortOption = value;
-                                        _isDescending = !_isDescending;
-                                        _defaultSorting = false;
-                                        _sortTutors();
-                                      } else {
-                                        _selectedSortOption = value;
-                                        _defaultSorting = true;
-                                        _sortTutors();
-                                      }
+                                      _selectedSortOption = value;
+                                      _isDescending = !_isDescending;
+                                      _defaultSorting = false;
+                                      _sortTutors();
                                     });
                                   },
-                                  itemBuilder: (BuildContext context) =>
-                                      <PopupMenuEntry<int>>[
-                                    PopupMenuItem<int>(
+                                  itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+                                    const PopupMenuItem<int>(
                                       value: 0,
                                       child: Text('Sort by Rating'),
                                     ),
-                                    PopupMenuItem<int>(
+                                    const PopupMenuItem<int>(
                                       value: 1,
+                                      child: Text('Sort by Favorite'),
+                                    ),
+                                    const PopupMenuItem<int>(
+                                      value: 2,
                                       child: Text('Default Sorting'),
                                     ),
                                   ],
@@ -172,10 +194,11 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                               const SizedBox(
                                 width: 8,
                               ),
-                              const Expanded(
+                              Expanded(
                                 flex: 20,
                                 child: Text(
-                                  'Tutors per page',
+                                  AppLocalizations(currentLocale)
+                                      .translate('perPage')!,
                                   textAlign: TextAlign.right,
                                 ),
                               ),
@@ -235,7 +258,8 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(24)),
                                     ),
-                                    floatingLabelAlignment: FloatingLabelAlignment.center,
+                                    floatingLabelAlignment:
+                                        FloatingLabelAlignment.center,
                                   ),
                                   alignment: Alignment.center,
                                 ),
@@ -247,7 +271,7 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                   subSizedBox,
                   ...List<Widget>.generate(
                     _tutors.length,
-                    (index) => TutorSearchItemScreen(tutor: _tutors[index]),
+                    (index) => TutorSearchCardWidget(tutor: _tutors[index]),
                   ),
                   _count > 0
                       ? Row(

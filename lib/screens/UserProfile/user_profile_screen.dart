@@ -1,57 +1,82 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/sized_box.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
+import '../../constants/constant.dart';
+import '../../l10n.dart';
+import '../../models/user/learn_topic.dart';
+import '../../models/user/test_preparation.dart';
+import '../../models/user/user.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/language_provider.dart';
+import '../../services/user_service.dart';
 import '../../widgets/select_date.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({super.key});
+  const UserProfileScreen({Key? key}) : super(key: key);
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _countryController = TextEditingController();
+  User? user;
 
+  final _nameController = TextEditingController();
   final _studyScheduleController = TextEditingController();
-  String name = '';
   String emailAddress = '';
   String phoneNumber = '';
   String birthday = '';
   String country = '';
   String level = '';
-  String? chosenLevel;
-  String imageUrl = 'https://as1.ftcdn.net/v2/jpg/01/04/93/90/1000_F_104939054_E7P5jaVoNYcXQI7YBrzsVWH2qZc03sn8.jpg';
+  String imageUrl = '';
+  List<LearnTopic> chosenTopics = [];
+  List<TestPreparation> chosenTestPreparations = [];
 
-  Future<void> loadUserDataFromLocal() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool _isInitiated = false;
+  bool _isLoading = true;
+
+  late Locale currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
+  }
+
+  void _loadUserProfile(AuthProvider authProvider) async {
+    final String token = authProvider.token?.access?.token as String;
+    final result = await UserService.getUserInformation(token);
+
+    _nameController.text = result?.name ?? '';
+    emailAddress = result?.email ?? '';
+    phoneNumber = result?.phone ?? '';
+    birthday = result?.birthday ?? '';
+    country = result?.country ?? '';
+    level = result?.level ?? '';
+    _studyScheduleController.text = result?.studySchedule ?? '';
+
+    chosenTopics = result?.learnTopics ?? [];
+    chosenTestPreparations = result?.testPreparations ?? [];
 
     setState(() {
-      emailAddress = prefs.getString('email') ?? 'nguyen@gmail.com';
-      phoneNumber = prefs.getString('phone') ?? '0388455212';
-      country = prefs.getString('country') ?? 'Vietnam';
-      name = prefs.getString('name') ?? 'Tran Nguyen';
-
-      // Add default values for other fields if they are empty
-      birthday = prefs.getString('birthday') ?? '';
-      level = prefs.getString('level') ?? '';
-      chosenLevel = prefs.getString('chosenLevel') ?? '';
-      _nameController.text = name;
-      _emailController.text = emailAddress;
-      _phoneController.text = phoneNumber;
-      _countryController.text = country;
-      _studyScheduleController.text = prefs.getString('studySchedule') ?? '';
+      user = result;
+      _isInitiated = true;
+      _isLoading = false;
     });
   }
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
@@ -59,28 +84,66 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       });
     }
   }
-  Future<void> saveUserDataToLocal() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString('name', _nameController.text);
-    await prefs.setString('email', _emailController.text);
-    await prefs.setString('phone', _phoneController.text);
-    await prefs.setString('country', _countryController.text);
+  Future<void> _uploadAvatar(AuthProvider authProvider) async {
+    if (imageUrl.isEmpty) {
+      return;
+    }
+    try {
+      final String token = authProvider.token?.access?.token as String;
+      final avatarFile = File(imageUrl);
+
+      if (!avatarFile.existsSync()) {
+        print('Avatar file does not exist.');
+        return;
+      }
+      if (avatarFile.lengthSync() == 0) {
+        print('Avatar file is empty.');
+        return;
+      }
+
+      final user = await UserService.updateAvatar(
+        token: token,
+        avatar: avatarFile,
+      );
+    } catch (e) {
+      print(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error Uploading Avatar: ${e.toString()}')));
+    }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    loadUserDataFromLocal();
+  Future<void> _updateUserProfile(AuthProvider authProvider) async {
+    final String token = authProvider.token?.access?.token as String;
+    final learnTopics =
+        chosenTopics.map((topic) => topic.id.toString()).toList();
+    final testPreparations =
+        chosenTestPreparations.map((test) => test.id.toString()).toList();
 
-    _nameController.text = name;
-    _emailController.text = emailAddress;
-    _phoneController.text = phoneNumber;
-    _countryController.text = country;
+    await UserService.updateUserInformation(
+      token: token,
+      name: _nameController.text,
+      country: country,
+      birthday: birthday,
+      level: level,
+      learnTopics: learnTopics,
+      testPreparations: testPreparations,
+      studySchedule: _studyScheduleController.text,
+    );
+    setState(() {
+      _isLoading = true;
+      _isInitiated = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+
+    if (!_isInitiated) {
+      _loadUserProfile(authProvider);
+    }
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -92,206 +155,342 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           },
         ),
         title: Text(
-          'Profile',
+          AppLocalizations(currentLocale).translate('profile')!,
           style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Stack(
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Container(
-                    width: 108,
-                    height: 108,
-                    clipBehavior: Clip.hardEdge,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          imageUrl,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.person_rounded),
-                      fit: BoxFit.cover,
+                  Align(
+                    alignment: Alignment.center,
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: 108,
+                          height: 108,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: imageUrl.isNotEmpty
+                              ? Image.file(
+                                  File(imageUrl),
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.network(
+                                  authProvider.currentUser.avatar ?? '',
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.person_rounded),
+                                ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: () {
+                              _pickImage();
+                            },
+                            child: CircleAvatar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.tertiary,
+                              radius: 18,
+                              child: const Icon(
+                                Icons.camera_alt,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: () {
-                        _pickImage();
-                      },
-                      child: CircleAvatar(
-                        backgroundColor: Theme.of(context).colorScheme.tertiary,
-                        radius: 18,
-                        child: const Icon(
-                          Icons.camera_alt,
-                          color: Colors.grey,
+                  sizedBox,
+                  Text(
+                    AppLocalizations(currentLocale).translate('name')!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                  ),
+                  subSizedBox,
+                  TextField(
+                    controller: _nameController,
+                    autocorrect: false,
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 8,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 2),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ),
+                  ),
+                  sizedBox,
+                  Text(
+                    'Email',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.tertiary),
+                  ),
+                  subSizedBox,
+                  Text(emailAddress),
+                  sizedBox,
+                  Text(
+                    AppLocalizations(currentLocale).translate('phone')!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                  ),
+                  subSizedBox,
+                  Text(phoneNumber),
+                  sizedBox,
+                  Text(
+                    AppLocalizations(currentLocale).translate('country')!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  DropdownButtonFormField(
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 8,
+                      ),
+                      hintStyle: TextStyle(color: Colors.grey[400]),
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 2),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ),
+                    value: countries[country],
+                    items: countries.values
+                        .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(e, overflow: TextOverflow.ellipsis),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      final chosenCountry = countries.keys.firstWhere(
+                        (element) => countries[element] == value,
+                        orElse: () => 'US',
+                      );
+                      setState(() {
+                        country = chosenCountry;
+                      });
+                    },
+                  ),
+                  sizedBox,
+                  Text(
+                    AppLocalizations(currentLocale).translate('birthday')!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                  ),
+                  subSizedBox,
+                  SelectDate(
+                    initialValue: birthday,
+                    onChanged: (newValue) {
+                      setState(() {
+                        birthday = newValue;
+                      });
+                    },
+                  ),
+                  Text(
+                    AppLocalizations(currentLocale).translate('level')!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                  subSizedBox,
+                  DropdownButtonFormField(
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 8,
+                      ),
+                      hintStyle: TextStyle(color: Colors.grey[400]),
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 2),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ),
+                    value: userLevels[level],
+                    items: userLevels.values
+                        .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(e, overflow: TextOverflow.ellipsis),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      final chosenLevel = userLevels.keys.firstWhere(
+                        (element) => userLevels[element] == value,
+                        orElse: () => 'BEGINNER',
+                      );
+                      setState(() {
+                        level = chosenLevel;
+                      });
+                    },
+                  ),
+                  subSizedBox,
+                  Text(
+                    AppLocalizations(currentLocale).translate('topics')!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                  subSizedBox,
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: -4,
+                    children: List<Widget>.generate(
+                      authProvider.learnTopics.length,
+                      (index) => ChoiceChip(
+                        backgroundColor: Colors.grey[100],
+                        selectedColor: Colors.lightBlue[100],
+                        selected: chosenTopics
+                            .map((e) => e.id)
+                            .toList()
+                            .contains(authProvider.learnTopics[index].id),
+                        label: Text(
+                          authProvider.learnTopics[index].name ?? '',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: chosenTopics
+                                    .map((e) => e.id)
+                                    .toList()
+                                    .contains(
+                                        authProvider.learnTopics[index].id)
+                                ? Colors.blue[700]
+                                : Colors.black54,
+                          ),
                         ),
+                        onSelected: (bool selected) {
+                          setState(() {
+                            if (selected) {
+                              chosenTopics.add(authProvider.learnTopics[index]);
+                            } else {
+                              chosenTopics.removeWhere(
+                                (element) =>
+                                    element.id ==
+                                    authProvider.learnTopics[index].id,
+                              );
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  sizedBox,
+                  Text(
+                    AppLocalizations(currentLocale)
+                        .translate('testPreparation')!,
+                    style: TextStyle(fontSize: 16, color: Colors.grey[900]),
+                  ),
+                  subSizedBox,
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: -4,
+                    children: List<Widget>.generate(
+                      authProvider.testPreparations.length,
+                      (index) => ChoiceChip(
+                        backgroundColor: Colors.grey[100],
+                        selectedColor: Colors.lightBlue[100],
+                        selected: chosenTestPreparations
+                            .map((e) => e.id)
+                            .toList()
+                            .contains(authProvider.testPreparations[index].id),
+                        label: Text(
+                          authProvider.testPreparations[index].name ?? 'null',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: chosenTestPreparations
+                                    .map((e) => e.id)
+                                    .toList()
+                                    .contains(
+                                        authProvider.testPreparations[index].id)
+                                ? Colors.blue[700]
+                                : Colors.black54,
+                          ),
+                        ),
+                        onSelected: (bool selected) {
+                          setState(() {
+                            if (selected) {
+                              chosenTestPreparations
+                                  .add(authProvider.testPreparations[index]);
+                            } else {
+                              chosenTestPreparations.removeWhere(
+                                (element) =>
+                                    element.id ==
+                                    authProvider.testPreparations[index].id,
+                              );
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  subSizedBox,
+                  Text(
+                    AppLocalizations(currentLocale).translate('studySchedule')!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                  subSizedBox,
+                  TextField(
+                    controller: _studyScheduleController,
+                    autocorrect: false,
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 8,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 2),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ),
+                  ),
+                  sizedBox,
+                  TextButton(
+                    onPressed: () async {
+                      await _uploadAvatar(authProvider);
+                      await _updateUserProfile(authProvider);
+                    },
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                    ),
+                    child: Text(
+                      AppLocalizations(currentLocale).translate('save')!,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   )
                 ],
               ),
             ),
-            sizedBox,
-            Text(
-              'Name',
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-            ),
-            subSizedBox,
-            TextField(
-              controller: _nameController,
-              autocorrect: false,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-            ),
-            sizedBox,
-            Text(
-              'Email Address',
-              style: TextStyle(
-                  fontSize: 16, color: Theme.of(context).colorScheme.tertiary),
-            ),
-            subSizedBox,
-            TextField(
-              controller: _emailController,
-              autocorrect: false,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-            ),
-            sizedBox,
-            Text(
-              'Phone Number',
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-            ),
-            subSizedBox,
-            TextField(
-              controller: _phoneController,
-              autocorrect: false,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-            ),
-            sizedBox,
-            Text(
-              'Country',
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-            ),
-            subSizedBox,
-            TextField(
-              controller: _countryController,
-              autocorrect: false,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-            ),
-            sizedBox,
-            Text(
-              'Birthday',
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-            ),
-            subSizedBox,
-            SelectDate(
-              initialValue: birthday,
-              onChanged: (newValue) {
-                setState(() {
-                  birthday = newValue;
-                });
-              },
-            ),
-            Text(
-              'Study Schedule',
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-            ),
-            subSizedBox,
-            TextField(
-              controller: _studyScheduleController,
-              autocorrect: false,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-            ),
-            sizedBox,
-            TextButton(
-              onPressed: () {
-                saveUserDataToLocal();
-                Navigator.pop(context);
-              },
-              style: TextButton.styleFrom(
-                minimumSize: const Size.fromHeight(48),
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-              ),
-              child: Text(
-                'SAVE',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
     );
   }
 }
