@@ -102,6 +102,10 @@ class AppLocalizations {
       'close': 'Close',
       'sendRecoveryEmailSuccess': 'Send recovery email success',
       'country': 'Country',
+      'education': 'Education',
+      'experience': 'Experience',
+      'bio': 'Bio',
+      'price': 'Price',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -198,6 +202,10 @@ class AppLocalizations {
       'close': 'Đóng',
       'sendRecoveryEmailSuccess': 'Gửi email khôi phục thành công',
       'country': 'Quốc gia',
+      'education': 'Học vấn',
+      'experience': 'Kinh nghiệm',
+      'bio': 'Giới thiệu',
+      'price': 'Giá',
     },
   };
 

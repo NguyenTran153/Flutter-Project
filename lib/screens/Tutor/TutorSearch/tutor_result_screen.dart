@@ -25,6 +25,7 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
   List<Tutor> _tutors = [];
   int? _selectedSortOption;
   bool _defaultSorting = true;
+  List<Tutor> _originalTutors = [];
   List<Tutor> _filteredTutors = [];
   late Locale currentLocale;
 
@@ -38,64 +39,6 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
       });
     });
   }
-
-  // Future<void> _searchTutors(
-  //   String name,
-  //   bool isVietnamese,
-  //   List<String> specialties,
-  // ) async {
-  //   List<Tutor> tutors = getTutors();
-  //
-  //   // Sử dụng biến result kiểu Map để lưu kết quả tìm kiếm
-  //   Map<String, dynamic> result = {
-  //     'search': name,
-  //     'nationality': isVietnamese,
-  //     'specialties': specialties,
-  //     'count': 0,
-  //     'tutors': [],
-  //   };
-  //
-  //   List<Tutor> results = tutors.where((tutor) {
-  //     bool nameCondition =
-  //         tutor.name.toLowerCase().contains(name.toLowerCase());
-  //     bool nationalityCondition =
-  //         isVietnamese ? tutor.country == 'Vietnam' : true;
-  //
-  //     // Chuyển đổi specialties của Tutor thành danh sách
-  //     List<String> tutorSpecialties = tutor.specialties
-  //             ?.split(',')
-  //             .map((e) => e.trim().toLowerCase())
-  //             .toList() ??
-  //         [];
-  //
-  //     // Kiểm tra xem có ít nhất một giá trị trong specialties trùng với chuyên môn của gia sư không
-  //     bool specialtiesCondition = specialties.isEmpty ||
-  //         (tutorSpecialties.isNotEmpty &&
-  //             specialties.any((specialty) => tutorSpecialties.contains(
-  //                   specialty.toLowerCase(),
-  //                 )));
-  //
-  //     return nameCondition &&
-  //         nationalityCondition &&
-  //         (isVietnamese ? true : tutor.country != 'Vietnam') &&
-  //         specialtiesCondition;
-  //   }).toList();
-  //
-  //   // Gán kết quả vào biến result
-  //   result['count'] = results.length;
-  //   result['tutors'] = results;
-  //
-  //   setState(() {
-  //     _count = result['count'];
-  //     _tutors = result['tutors'];
-  //     _isLoading = false;
-  //     _filteredTutors = List.from(_tutors); // Lưu trạng thái trước khi sắp xếp
-  //   });
-  //
-  //   if (_selectedSortOption != null && !_defaultSorting) {
-  //     _sortTutors();
-  //   }
-  // }
 
   Future<void> _searchTutors(
     String accessToken,
@@ -115,6 +58,8 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
     setState(() {
       _count = result['count'];
       _tutors = result['tutors'];
+      _originalTutors = result['tutors'];
+      _filteredTutors = result['tutors'];
       _isLoading = false;
     });
   }
@@ -122,22 +67,61 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
   bool _isDescending = false;
   IconData _sortIcon = Icons.sort;
 
-  // void _sortTutors() {
+  void _sortTutors() {
+    setState(() {
+      if (_selectedSortOption == 0) {
+        _sortTutorsByRating();
+      } else if (_selectedSortOption == 1) {
+        _sortTutorsByFavorite();
+      } else {
+        _sortTutorsDefault();
+      }
+
+      _sortIcon = _isDescending ? Icons.arrow_upward : Icons.arrow_downward;
+      _isDescending = !_isDescending; // Toggle for next sort
+    });
+  }
+
+  void _sortTutorsByRating() {
+    _filteredTutors.sort((a, b) {
+      if (a.rating == null && b.rating == null) return 0;
+      if (a.rating == null) return 1;
+      if (b.rating == null) return -1;
+
+      int result = a.rating!.compareTo(b.rating!);
+      return _isDescending ? -result : result;
+    });
+    setState(() {
+      _tutors = List.from(_filteredTutors);
+    });
+  }
+
+  void _sortTutorsByFavorite() {
+    _tutors = List.from(_filteredTutors);
+  }
+
+  // void _sortTutorsDefault() {
   //   setState(() {
-  //     if (_selectedSortOption == 0) {
-  //       _tutors.sort((a, b) {
-  //         return _isDescending
-  //             ? b.rating.compareTo(a.rating)
-  //             : a.rating.compareTo(b.rating);
-  //       });
-  //     } else {
-  //       // Nếu không có lựa chọn sắp xếp, trở về trạng thái mặc định (theo vị trí ban đầu)
-  //       _tutors = List.from(_filteredTutors);
-  //     }
-  //
-  //     _sortIcon = _isDescending ? Icons.arrow_downward : Icons.arrow_upward;
+  //     _originalTutors.sort((a, b) {
+  //       return a.name?.compareTo(b.name ?? '') ?? 0;
+  //     });
+  //     _tutors = _originalTutors;
   //   });
   // }
+
+  void _sortTutorsDefault() {
+    setState(() {
+      _tutors = List.from(_originalTutors);
+    });
+  }
+
+bool _checkIfTutorIsFavorite(Tutor tutor) {
+    // Replace this with your own logic to determine if a tutor is a favorite
+    // For example, you can use a separate data structure to store favorite tutor IDs
+    // and check if the current tutor's ID is in that list.
+    // For simplicity, I'm using a placeholder condition here.
+    return tutor.rating != null && tutor.rating! > 4.5;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,30 +165,27 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                               Expanded(
                                 flex: 6,
                                 child: PopupMenuButton<int>(
-                                  icon: Icon(Icons.sort),
+                                  icon: const Icon(Icons.sort),
                                   initialValue: _selectedSortOption,
                                   onSelected: (value) {
                                     setState(() {
-                                      if (value == 0) {
-                                        _selectedSortOption = value;
-                                        _isDescending = !_isDescending;
-                                        _defaultSorting = false;
-                                        // _sortTutors();
-                                      } else {
-                                        _selectedSortOption = value;
-                                        _defaultSorting = true;
-                                        // _sortTutors();
-                                      }
+                                      _selectedSortOption = value;
+                                      _isDescending = !_isDescending;
+                                      _defaultSorting = false;
+                                      _sortTutors();
                                     });
                                   },
-                                  itemBuilder: (BuildContext context) =>
-                                      <PopupMenuEntry<int>>[
-                                    PopupMenuItem<int>(
+                                  itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+                                    const PopupMenuItem<int>(
                                       value: 0,
                                       child: Text('Sort by Rating'),
                                     ),
-                                    PopupMenuItem<int>(
+                                    const PopupMenuItem<int>(
                                       value: 1,
+                                      child: Text('Sort by Favorite'),
+                                    ),
+                                    const PopupMenuItem<int>(
+                                      value: 2,
                                       child: Text('Default Sorting'),
                                     ),
                                   ],
