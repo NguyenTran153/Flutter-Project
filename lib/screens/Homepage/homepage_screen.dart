@@ -1,12 +1,15 @@
 import "package:flutter/material.dart";
 import "package:flutter_project/screens/Homepage/TutorCard/tutor_card_widget.dart";
+import "package:flutter_project/screens/Schedule/BookedClass/BookedClassWidget/booked_class_card_widget.dart";
 import "package:provider/provider.dart";
 
 import "../../l10n.dart";
+import "../../models/schedule/booking_info.dart";
 import "../../models/tutor/tutor.dart";
 import "../../models/tutor/tutor_info.dart";
 import "../../providers/auth_provider.dart";
 import "../../providers/language_provider.dart";
+import "../../services/schedule_service.dart";
 import "../../services/tutor_service.dart";
 import "../../services/user_service.dart";
 
@@ -20,6 +23,8 @@ class HomepageScreen extends StatefulWidget {
 class _HomepageScreenState extends State<HomepageScreen> {
   List<Tutor> _tutors = [];
   final List<TutorInfo> _information = [];
+  List<BookingInfo> bookedClasses = [];
+
   bool _isLoading = true;
 
   late Locale currentLocale;
@@ -71,16 +76,59 @@ class _HomepageScreenState extends State<HomepageScreen> {
     }
   }
 
+  void _getBookedClasses(AuthProvider authProvider) async {
+    final String token = authProvider.token?.access?.token as String;
+
+    final result = await ScheduleService.getBookedClasses(
+      token: token,
+      page: 1,
+      perPage: 1,
+    );
+
+    setState(() {
+      bookedClasses = result['classes'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     if (_isLoading && authProvider.token != null) {
+      _getBookedClasses(authProvider);
       _getRecommendedTutors(authProvider);
     }
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(
+              AppLocalizations(currentLocale).translate('upcomingClass')!,
+              style: Theme.of(context).textTheme.displaySmall,
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: bookedClasses.isEmpty
+                ? Center(
+                    child: Text(
+                      AppLocalizations(currentLocale)
+                          .translate('noBookedClasses')!,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  )
+                : BookedClassCardWidget(
+                    bookingInfo: bookedClasses[0],
+                    onCancel: (value) {
+                      if (value) {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                      }
+                    },
+                  ),
+          ),
           Padding(
             padding: const EdgeInsets.all(12),
             child: Text(

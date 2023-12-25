@@ -43,11 +43,27 @@ class TutorService {
     return tutors.map((tutor) => Tutor.fromJson(tutor)).toList();
   }
 
-  Future<void> writeReviewForTutor() async {
-    String url = 'https://reqres.in/api/users?page=2';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
+  static Future<void> writeReviewForTutor({
+    required String token,
+    required String bookingId,
+    required String userId,
+    required int rate,
+    required String content,
+  }) async {
+    String url = '$_baseUrl/tutor/feedbackTutor';
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
 
-    Response response = await get(Uri.parse(url), headers: headers);
+    Map<String, dynamic> body = {
+      'bookingId': bookingId,
+      'tutorId': userId,
+      'rate': rate,
+      'content': content
+    };
+
+    Response response = await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     final jsonDecode = json.decode(response.body);
 
@@ -129,35 +145,6 @@ class TutorService {
       body: json.encode(
         {
           'tutorId': userId,
-        },
-      ),
-    );
-
-    final jsonDecode = json.decode(response.body);
-    if (response.statusCode != 200) {
-      throw Exception(jsonDecode['message']);
-    }
-  }
-
-  static Future<void> writeReview({
-    required String token,
-    required String bookingId,
-    required String userId,
-    required int rate,
-    required String content,
-  }) async {
-    final response = await post(
-      Uri.parse('$baseUrl/user/feedbackTutor'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: json.encode(
-        {
-          'bookingId': bookingId,
-          'tutorId': userId,
-          'rate': rate,
-          'content': content,
         },
       ),
     );

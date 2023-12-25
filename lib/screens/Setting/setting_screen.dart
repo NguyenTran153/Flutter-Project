@@ -22,117 +22,98 @@ class _SettingScreenState extends State<SettingScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 48),
-          Card(
-            surfaceTintColor: Theme.of(context).primaryColor,
-            elevation: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: const [
-                  Icon(Icons.manage_accounts, size: 30),
-                  SizedBox(width: 12),
-                  Text(
-                    'Account',
-                    style: TextStyle(fontSize: 16),
-                  )
-                ],
-              ),
-            ),
+          buildSettingCard(
+            icon: Icons.manage_accounts,
+            label: 'Account',
+            onTap: () {
+              // Handle onTap for Account
+            },
           ),
           subSizedBox,
-          Card(
-            surfaceTintColor: Theme.of(context).primaryColor,
-            elevation: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: const [
-                  Icon(Icons.language, size: 30),
-                  SizedBox(width: 12),
-                  Text(
-                    'Language',
-                    style: TextStyle(fontSize: 16),
-                  )
-                ],
-              ),
-            ),
+          buildSettingCard(
+            icon: Icons.language,
+            label: 'Language',
+            onTap: () {
+              // Handle onTap for Language
+            },
           ),
           subSizedBox,
-          InkWell(
-            onTap: () => {
-            Provider.of<ThemeProvider>(context).toggleMode()
-          },
-            child: Card(
-              surfaceTintColor: Theme.of(context).primaryColor,
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: const [
-                    Icon(Icons.dark_mode, size: 30),
-                    sizedBox,
-                    Text(
-                      'Change theme',
-                      style: TextStyle(fontSize: 16),
-                    )
-                  ],
-                ),
-              ),
-            ),
+          buildSettingCard(
+            icon: Icons.dark_mode,
+            label: 'Change theme',
+            onTap: () {
+              Provider.of<ThemeProvider>(context, listen: false).toggleMode();
+            },
           ),
           subSizedBox,
-          InkWell(
+          buildSettingCard(
+            icon: Icons.assignment,
+            label: 'Become A Tutor',
             onTap: () {
               Navigator.pushNamed(context, Routes.becomeTutor);
             },
-            child: Card(
-              surfaceTintColor: Theme.of(context).primaryColor,
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: const [
-                    Icon(Icons.assignment, size: 30),
-                    sizedBox,
-                    Text(
-                      'Become A Tutor',
-                      style: TextStyle(fontSize: 16),
-                    )
-                  ],
-                ),
-              ),
-            ),
           ),
           subSizedBox,
           const SizedBox(height: 48),
-          TextButton(
-            onPressed: () async {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                Routes.login,
-                (route) => false,
-              );
-            },
-            style: TextButton.styleFrom(
-              minimumSize: const Size.fromHeight(44),
-              backgroundColor: const Color.fromRGBO(255, 0, 0, 0.2),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.logout, color: Colors.red),
-                SizedBox(width: 8),
-                Text(
-                  'Log Out',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.red,
-                  ),
-                ),
-              ],
+          buildLogoutButton(),
+          const SizedBox(height: 48),
+        ],
+      ),
+    );
+  }
+
+  Widget buildSettingCard({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Card(
+        surfaceTintColor: Theme.of(context).primaryColor,
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Icon(icon, size: 30),
+              sizedBox,
+              Text(
+                label,
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildLogoutButton() {
+    return TextButton(
+      onPressed: () async {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.login,
+              (route) => false,
+        );
+      },
+      style: TextButton.styleFrom(
+        minimumSize: const Size.fromHeight(44),
+        backgroundColor: const Color.fromRGBO(255, 0, 0, 0.2),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.logout, color: Colors.red),
+          SizedBox(width: 8),
+          Text(
+            'Log Out',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.red,
             ),
           ),
-          const SizedBox(height: 48),
         ],
       ),
     );

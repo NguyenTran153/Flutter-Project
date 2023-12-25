@@ -97,7 +97,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
         leading: BackButton(
           color: Theme.of(context).colorScheme.secondary,
         ),
@@ -117,7 +117,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                 labelText: AppLocalizations(currentLocale).translate('name')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             TextFormField(
               controller: countryController,
               decoration: InputDecoration(
@@ -125,7 +125,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                     AppLocalizations(currentLocale).translate('country')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             TextFormField(
               controller: birthdayController,
               decoration: InputDecoration(
@@ -133,7 +133,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                     AppLocalizations(currentLocale).translate('birthday')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             TextFormField(
               controller: interestsController,
               decoration: InputDecoration(
@@ -141,7 +141,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                     AppLocalizations(currentLocale).translate('interests')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             TextFormField(
               controller: educationController,
               decoration: InputDecoration(
@@ -149,7 +149,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                     AppLocalizations(currentLocale).translate('education')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             TextFormField(
               controller: experienceController,
               decoration: InputDecoration(
@@ -157,7 +157,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                     AppLocalizations(currentLocale).translate('experience')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             TextFormField(
               controller: professionController,
               decoration: InputDecoration(
@@ -165,7 +165,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                     AppLocalizations(currentLocale).translate('profession')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             TextFormField(
               controller: languagesController,
               decoration: InputDecoration(
@@ -173,14 +173,14 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                     AppLocalizations(currentLocale).translate('languages')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             TextFormField(
               controller: bioController,
               decoration: InputDecoration(
                 labelText: AppLocalizations(currentLocale).translate('bio')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             TextFormField(
               controller: targetStudentsController,
               decoration: InputDecoration(
@@ -188,7 +188,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                     .translate('targetStudents')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             TextFormField(
               controller: specialtiesController,
               decoration: InputDecoration(
@@ -196,7 +196,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                     AppLocalizations(currentLocale).translate('specialties')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             // FilePicker for Avatar
             ElevatedButton(
               onPressed: () async {
@@ -210,7 +210,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
               },
               child: Text('Pick Avatar'),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             // FilePicker for Video
             ElevatedButton(
               onPressed: () async {
@@ -224,14 +224,14 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
               },
               child: Text('Pick Video'),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             TextFormField(
               controller: priceController,
               decoration: InputDecoration(
                 labelText: AppLocalizations(currentLocale).translate('price')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             ElevatedButton(
               onPressed: () {
                 _submitForm;

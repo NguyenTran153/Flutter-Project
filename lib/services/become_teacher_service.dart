@@ -44,14 +44,19 @@ class BecomeTeacherService {
       'specialties': specialties,
       'price': price,
     };
-    Response response =
-        await put(Uri.parse(url), headers: headers, body: jsonEncode(body));
-    final jsonDecode = json.decode(response.body);
+    try {
+      Response response =
+      await put(Uri.parse(url), headers: headers, body: jsonEncode(body));
+      final jsonDecode = json.decode(response.body);
 
-    if (response.statusCode != 200) {
-      throw Exception(jsonDecode['message']);
+      if (response.statusCode != 200) {
+        throw Exception(jsonDecode['message']);
+      }
+      print(response.body);
+      return response;
+    } catch (e) {
+      print(e);
+      throw Exception(e);
     }
-
-    return response;
   }
 }

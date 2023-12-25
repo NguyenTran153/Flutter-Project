@@ -106,6 +106,9 @@ class AppLocalizations {
       'experience': 'Experience',
       'bio': 'Bio',
       'price': 'Price',
+      'upcomingClass': 'Upcoming class',
+      'error': 'Error',
+      'reviewError': 'Error when sending review',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -206,6 +209,9 @@ class AppLocalizations {
       'experience': 'Kinh nghiệm',
       'bio': 'Giới thiệu',
       'price': 'Giá',
+      'upcomingClass': 'Lớp học sắp tới',
+      'error': 'Lỗi',
+      'reviewError': 'Lỗi khi gửi đánh giá',
     },
   };
 
