@@ -29,6 +29,8 @@ class BecomeTeacherService {
     String url = '${_baseUrl}tutor/register';
     Map<String, String> headers = {
       'Authorization': 'Bearer $token',
+      "content-type": "multipart/form-data",
+      "Accept": "/",
     };
     Map<String, String> body = {
       'name': name,
@@ -52,11 +54,11 @@ class BecomeTeacherService {
       if (response.statusCode != 200) {
         throw Exception(jsonDecode['message']);
       }
-      print(response.body);
       return response;
     } catch (e) {
-      print(e);
       throw Exception(e);
     }
   }
+
+
 }

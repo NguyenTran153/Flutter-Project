@@ -79,12 +79,33 @@ class ScheduleService {
       'Authorization': 'Bearer $token',
     };
 
-    Map<String,String> body = {
+    Map<String, String> body = {
       'tutorId': userId,
     };
 
-    Response response = await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
+    Response response =
+        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
     final jsonDecode = json.decode(response.body);
+    if (response.statusCode != 200) {
+      throw Exception(jsonDecode(['message']));
+    }
+    final schedules = jsonDecode['data'] as List;
+    return schedules.map((schedule) => Schedule.fromJson(schedule)).toList();
+  }
+
+  static Future<List<Schedule>> getTutorScheduleById({
+    required String token,
+    required String userId,
+    required int startDate,
+    required int endDate,
+  }) async {
+    final response = await get(
+        Uri.parse(
+            '$_baseUrl/schedule?tutorId=$userId&startTimestamp=$startDate&endTimestamp=$endDate'),
+        headers: {'Authorization': 'Bearer $token'});
+
+    final jsonDecode = json.decode(response.body);
+
     if (response.statusCode != 200) {
       throw Exception(jsonDecode(['message']));
     }
