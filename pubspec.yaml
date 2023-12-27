@@ -55,6 +55,7 @@ dependencies:
   flutter_facebook_auth: ^6.0.3
   google_sign_in: ^6.1.6
   injectable: ^2.3.2
+  dio: ^5.4.0
 
 dev_dependencies:
   flutter_test:

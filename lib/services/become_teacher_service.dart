@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'dart:async';
 import 'dart:io';
 
-import 'package:http/http.dart';
+import 'package:dio/dio.dart';
 
 import '../constants/base_url.dart';
 
@@ -23,16 +22,13 @@ class BecomeTeacherService {
     required String specialties,
     File? avatar,
     File? video,
-    required String price,
+    required int price,
     required String token,
   }) async {
     String url = '${_baseUrl}tutor/register';
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $token',
-      "content-type": "multipart/form-data",
-      "Accept": "/",
-    };
-    Map<String, String> body = {
+
+    // Create FormData
+    FormData formData = FormData.fromMap({
       'name': name,
       'country': country,
       'birthday': birthday,
@@ -45,11 +41,25 @@ class BecomeTeacherService {
       'targetStudents': targetStudents,
       'specialties': specialties,
       'price': price,
+      'avatar': await MultipartFile.fromFile(avatar?.path ?? '', filename: 'avatar.jpg'),
+      'video': await MultipartFile.fromFile(video?.path ?? '', filename: 'video.mp4'),
+    });
+
+    // Create Dio instance
+    Dio dio = Dio();
+
+    // Set headers
+    dio.options.headers = {
+      'Authorization': 'Bearer $token',
+      'content-type': 'multipart/form-data',
+      'Accept': '/',
     };
+
     try {
-      Response response =
-      await put(Uri.parse(url), headers: headers, body: jsonEncode(body));
-      final jsonDecode = json.decode(response.body);
+      // Send request
+      Response response = await dio.put(url, data: formData);
+
+      final jsonDecode = json.decode(response.toString());
 
       if (response.statusCode != 200) {
         throw Exception(jsonDecode['message']);
@@ -59,6 +69,4 @@ class BecomeTeacherService {
       throw Exception(e);
     }
   }
-
-
 }

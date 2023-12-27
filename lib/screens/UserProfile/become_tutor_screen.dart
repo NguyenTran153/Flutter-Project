@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:flutter_project/services/become_teacher_service.dart';
 import 'package:flutter_project/utils/sized_box.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../l10n.dart';
@@ -49,19 +48,10 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
     });
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        imageUrl = pickedFile.path;
-      });
-    }
-  }
-
   Future<void> _submitForm(AuthProvider authProvider) async {
     try {
+      int price = int.tryParse(priceController.text) ?? 0;
+
       await BecomeTeacherService.becomeTeacher(
         name: nameController.text,
         country: countryController.text,
@@ -76,7 +66,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
         specialties: specialtiesController.text,
         avatar: avatar,
         video: video,
-        price: priceController.text,
+        price: price,
         token: authProvider.token?.access?.token as String,
       );
 
@@ -94,6 +84,8 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -208,7 +200,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                   });
                 }
               },
-              child: Text('Pick Avatar'),
+              child: Text(AppLocalizations(currentLocale).translate('pickAvatar')!),
             ),
             sizedBox,
             // FilePicker for Video
@@ -222,7 +214,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                   });
                 }
               },
-              child: Text('Pick Video'),
+              child: Text(AppLocalizations(currentLocale).translate('pickVideo')!),
             ),
             sizedBox,
             TextFormField(
@@ -234,9 +226,9 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
             sizedBox,
             ElevatedButton(
               onPressed: () {
-                _submitForm;
+                _submitForm(authProvider);
               },
-              child: Text('Submit'),
+              child: Text(AppLocalizations(currentLocale).translate('submit')!),
             ),
           ],
         ),
