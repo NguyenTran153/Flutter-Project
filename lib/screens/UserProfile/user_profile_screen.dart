@@ -94,11 +94,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       final avatarFile = File(imageUrl);
 
       if (!avatarFile.existsSync()) {
-        print('Avatar file does not exist.');
         return;
       }
       if (avatarFile.lengthSync() == 0) {
-        print('Avatar file is empty.');
         return;
       }
 

@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'dart:async';
 import 'dart:io';
 
-import 'package:http/http.dart';
+import 'package:dio/dio.dart';
 
 import '../constants/base_url.dart';
 
@@ -23,14 +22,13 @@ class BecomeTeacherService {
     required String specialties,
     File? avatar,
     File? video,
-    required String price,
+    required int price,
     required String token,
   }) async {
-    String url = '${_baseUrl}tutor/register';
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $token',
-    };
-    Map<String, String> body = {
+    String url = '$_baseUrl/tutor/register';
+
+    // Create FormData
+    FormData formData = FormData.fromMap({
       'name': name,
       'country': country,
       'birthday': birthday,
@@ -43,15 +41,35 @@ class BecomeTeacherService {
       'targetStudents': targetStudents,
       'specialties': specialties,
       'price': price,
+      'avatar': avatar != null ? await MultipartFile.fromFile(avatar.path, filename: 'avatar.jpg') : null,
+      'video': video != null ? await MultipartFile.fromFile(video.path, filename: 'video.mp4') : null,
+    });
+
+    formData.fields.removeWhere((element) => element.value == null);
+
+    // Create Dio instance
+    Dio dio = Dio();
+
+    // Set headers
+    dio.options.headers = {
+      'Authorization': 'Bearer $token',
+      'content-type': 'multipart/form-data',
+      'Accept': '/',
     };
-    Response response =
-        await put(Uri.parse(url), headers: headers, body: jsonEncode(body));
-    final jsonDecode = json.decode(response.body);
 
-    if (response.statusCode != 200) {
-      throw Exception(jsonDecode['message']);
+    try {
+      // Send request
+      Response response = await dio.put(url, data: formData);
+
+      final jsonDecode = json.decode(response.toString());
+
+      if (response.statusCode != 200) {
+        throw Exception(jsonDecode['message']);
+      }
+      return response;
+    } catch (e) {
+      print(e);
+      throw Exception(e);
     }
-
-    return response;
   }
 }

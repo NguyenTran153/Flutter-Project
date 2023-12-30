@@ -20,7 +20,7 @@ class TutorDetailScreen extends StatefulWidget {
   const TutorDetailScreen({
     Key? key,
   }) : super(key: key);
-
+  
   @override
   State<TutorDetailScreen> createState() => _TutorDetailScreenState();
 }
@@ -86,19 +86,6 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
     }
   }
 
-  // Future<void> _getRecommendedCourses(AuthProvider authProvider) async {
-  //   final String token = authProvider.token?.access?.token as String;
-  //   final result = await TutorService.getRecommendedCourses(
-  //     token: token,
-  //     userId: userId,
-  //   );
-  //   if (mounted) {
-  //     setState(() {
-  //       courses.addAll(result);
-  //     });
-  //   }
-  // }
-
   @override
   void dispose() {
     _videoPlayerController?.dispose();
@@ -117,7 +104,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
     if (_isLoading && authProvider.token != null) {
       final data = ModalRoute.of(context)?.settings.arguments as Map;
       userId = data['userId'];
-      feedbacks = data['tutor'].feedbacks;
+      feedbacks = data['tutor'].feedbacks ?? [];
 
       _getTutor(authProvider);
     }

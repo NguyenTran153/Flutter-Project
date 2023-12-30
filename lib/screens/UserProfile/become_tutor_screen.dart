@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:flutter_project/services/become_teacher_service.dart';
 import 'package:flutter_project/utils/sized_box.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../l10n.dart';
 import '../../providers/language_provider.dart';
+import '../../widgets/video_container.dart';
 
 class BecomeTutorScreen extends StatefulWidget {
   const BecomeTutorScreen({Key? key}) : super(key: key);
@@ -49,19 +49,10 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
     });
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        imageUrl = pickedFile.path;
-      });
-    }
-  }
-
   Future<void> _submitForm(AuthProvider authProvider) async {
     try {
+      int price = int.tryParse(priceController.text) ?? 0;
+
       await BecomeTeacherService.becomeTeacher(
         name: nameController.text,
         country: countryController.text,
@@ -76,7 +67,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
         specialties: specialtiesController.text,
         avatar: avatar,
         video: video,
-        price: priceController.text,
+        price: price,
         token: authProvider.token?.access?.token as String,
       );
 
@@ -94,10 +85,12 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
         leading: BackButton(
           color: Theme.of(context).colorScheme.secondary,
         ),
@@ -111,107 +104,18 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextFormField(
-              controller: nameController,
-              decoration: InputDecoration(
-                labelText: AppLocalizations(currentLocale).translate('name')!,
-              ),
+            // Video Stack
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                if (video != null)
+                  VideoWidget(videoPath: video!.path)
+                else
+                  Container(),
+              ],
             ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: countryController,
-              decoration: InputDecoration(
-                labelText:
-                    AppLocalizations(currentLocale).translate('country')!,
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: birthdayController,
-              decoration: InputDecoration(
-                labelText:
-                    AppLocalizations(currentLocale).translate('birthday')!,
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: interestsController,
-              decoration: InputDecoration(
-                labelText:
-                    AppLocalizations(currentLocale).translate('interests')!,
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: educationController,
-              decoration: InputDecoration(
-                labelText:
-                    AppLocalizations(currentLocale).translate('education')!,
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: experienceController,
-              decoration: InputDecoration(
-                labelText:
-                    AppLocalizations(currentLocale).translate('experience')!,
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: professionController,
-              decoration: InputDecoration(
-                labelText:
-                    AppLocalizations(currentLocale).translate('profession')!,
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: languagesController,
-              decoration: InputDecoration(
-                labelText:
-                    AppLocalizations(currentLocale).translate('languages')!,
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: bioController,
-              decoration: InputDecoration(
-                labelText: AppLocalizations(currentLocale).translate('bio')!,
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: targetStudentsController,
-              decoration: InputDecoration(
-                labelText: AppLocalizations(currentLocale)
-                    .translate('targetStudents')!,
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: specialtiesController,
-              decoration: InputDecoration(
-                labelText:
-                    AppLocalizations(currentLocale).translate('specialties')!,
-              ),
-            ),
-            SizedBox(height: 16),
-            // FilePicker for Avatar
-            ElevatedButton(
-              onPressed: () async {
-                FilePickerResult? result =
-                    await FilePicker.platform.pickFiles(type: FileType.image);
-                if (result != null) {
-                  setState(() {
-                    avatar = File(result.files.single.path!);
-                  });
-                }
-              },
-              child: Text('Pick Avatar'),
-            ),
-            SizedBox(height: 16),
-            // FilePicker for Video
+            sizedBox,
+            // Add a button to pick video
             ElevatedButton(
               onPressed: () async {
                 FilePickerResult? result =
@@ -222,21 +126,171 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
                   });
                 }
               },
-              child: Text('Pick Video'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .secondary, // Set the background color to blue
+              ),
+              child: Text(
+                AppLocalizations(currentLocale).translate('pickVideo')!,
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .tertiary, // Set the text color to black
+                ),
+              ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
+            // Image Stack
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                if (avatar != null)
+                  CircleAvatar(
+                    radius: 72,
+                    backgroundImage: FileImage(avatar!),
+                  )
+                else
+                  Container(),
+              ],
+            ),
+            sizedBox,
+            // Add a button to pick image
+            ElevatedButton(
+              onPressed: () async {
+                FilePickerResult? result =
+                    await FilePicker.platform.pickFiles(type: FileType.image);
+                if (result != null) {
+                  setState(() {
+                    avatar = File(result.files.single.path!);
+                  });
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .secondary, // Set the background color to blue
+              ),
+              child: Text(
+                AppLocalizations(currentLocale).translate('pickAvatar')!,
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .tertiary, // Set the text color to black
+                ),
+              ),
+            ),
+            sizedBox,
+            TextFormField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: AppLocalizations(currentLocale).translate('name')!,
+              ),
+            ),
+            sizedBox,
+            TextFormField(
+              controller: countryController,
+              decoration: InputDecoration(
+                labelText:
+                    AppLocalizations(currentLocale).translate('country')!,
+              ),
+            ),
+            sizedBox,
+            TextFormField(
+              controller: birthdayController,
+              decoration: InputDecoration(
+                labelText:
+                    AppLocalizations(currentLocale).translate('birthday')!,
+              ),
+            ),
+            sizedBox,
+            TextFormField(
+              controller: interestsController,
+              decoration: InputDecoration(
+                labelText:
+                    AppLocalizations(currentLocale).translate('interests')!,
+              ),
+            ),
+            sizedBox,
+            TextFormField(
+              controller: educationController,
+              decoration: InputDecoration(
+                labelText:
+                    AppLocalizations(currentLocale).translate('education')!,
+              ),
+            ),
+            sizedBox,
+            TextFormField(
+              controller: experienceController,
+              decoration: InputDecoration(
+                labelText:
+                    AppLocalizations(currentLocale).translate('experience')!,
+              ),
+            ),
+            sizedBox,
+            TextFormField(
+              controller: professionController,
+              decoration: InputDecoration(
+                labelText:
+                    AppLocalizations(currentLocale).translate('profession')!,
+              ),
+            ),
+            sizedBox,
+            TextFormField(
+              controller: languagesController,
+              decoration: InputDecoration(
+                labelText:
+                    AppLocalizations(currentLocale).translate('languages')!,
+              ),
+            ),
+            sizedBox,
+            TextFormField(
+              controller: bioController,
+              decoration: InputDecoration(
+                labelText: AppLocalizations(currentLocale).translate('bio')!,
+              ),
+            ),
+            sizedBox,
+            TextFormField(
+              controller: targetStudentsController,
+              decoration: InputDecoration(
+                labelText: AppLocalizations(currentLocale)
+                    .translate('targetStudents')!,
+              ),
+            ),
+            sizedBox,
+            TextFormField(
+              controller: specialtiesController,
+              decoration: InputDecoration(
+                labelText:
+                    AppLocalizations(currentLocale).translate('specialties')!,
+              ),
+            ),
+            sizedBox,
             TextFormField(
               controller: priceController,
               decoration: InputDecoration(
                 labelText: AppLocalizations(currentLocale).translate('price')!,
               ),
             ),
-            SizedBox(height: 16),
+            sizedBox,
             ElevatedButton(
               onPressed: () {
-                _submitForm;
+                _submitForm(authProvider);
               },
-              child: Text('Submit'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .secondary, // Set the background color to blue
+              ),
+              child: Text(
+                AppLocalizations(currentLocale).translate('submit')!,
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .tertiary, // Set the text color to black
+                ),
+              ),
             ),
           ],
         ),

@@ -104,6 +104,10 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 12),
       surfaceTintColor: Theme.of(context).primaryColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+        side: BorderSide(color: Theme.of(context).colorScheme.tertiary, width: 1),
+      ),
       elevation: 2,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),

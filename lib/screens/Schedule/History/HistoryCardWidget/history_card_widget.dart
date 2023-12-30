@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../../l10n.dart';
 import '../../../../providers/language_provider.dart';
 import '../../../../utils/routes.dart';
+import '../../../Tutor/Review/writing_review_screen.dart';
 
 class HistoryCardWidget extends StatefulWidget {
   const HistoryCardWidget({Key? key, required this.bookingInfo})
@@ -58,11 +59,27 @@ class _HistoryCardWidgetState extends State<HistoryCardWidget> {
               children: [
                 Row(
                   children: [
-                    const CircleAvatar(
-                      backgroundImage: AssetImage('assets/tutor/keegan-avatar.png'),
-                      radius: 32,
+                    Container(
+                      width: 72,
+                      height: 72,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: bookingInfo.scheduleDetailInfo!.scheduleInfo!
+                            .tutorInfo!.avatar ??
+                            '',
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.error_outline_rounded,
+                          size: 32,
+                          color: Colors.red,
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 12),
+
+                    sizedBox,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,6 +152,10 @@ class _HistoryCardWidgetState extends State<HistoryCardWidget> {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 12),
       surfaceTintColor: Theme.of(context).primaryColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+        side: BorderSide(color: Theme.of(context).colorScheme.tertiary, width: 1),
+      ),
       elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -221,8 +242,12 @@ class _HistoryCardWidgetState extends State<HistoryCardWidget> {
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, Routes.review);
-                    },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WritingReviewScreen(bookingId: bookingInfo.id),
+                        ),
+                      );                    },
                     child: Text(
                       AppLocalizations(currentLocale).translate('review')!,
                       style: const TextStyle(fontSize: 16),

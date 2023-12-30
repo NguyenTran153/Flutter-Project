@@ -16,4 +16,5 @@ class Routes {
   static const tutorSearchResult = '/tutor_search_result';
   static const topicDetail = '/topic_detail';
   static const review = '/review';
+  static const writeReview = '/write_review';
 }

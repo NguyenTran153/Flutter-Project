@@ -13,16 +13,26 @@ class UserService {
   static const _baseUrl = baseUrl;
 
   static Future<Response> changePassword(
-      String oldPassword, String newPassword) async {
-    String url = 'https://reqres.in/api/change-password';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
+      {required String token,
+      required String oldPassword,
+      required String newPassword}) async {
+    String url = '$_baseUrl/auth/change-password';
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
     Map<String, String> body = {
-      'old_password': oldPassword,
-      'new_password': newPassword
+      'password': oldPassword,
+      'newPassword': newPassword
     };
 
     Response response =
         await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
+    final jsonDecode = json.decode(response.body);
+
+    if (response.statusCode != 200) {
+      throw Exception(jsonDecode['message']);
+    }
 
     return response;
   }
@@ -86,40 +96,39 @@ class UserService {
     String url = '$_baseUrl/user/uploadAvatar';
     Map<String, String> headers = {
       'Authorization': 'Bearer $token',
+      'Accept': '/',
+      'Content-Type': 'multipart/form-data',
     };
 
     try {
       var request = MultipartRequest('POST', Uri.parse(url));
       request.headers.addAll(headers);
 
+      String filename = avatar.path.split('/').last;
+
       var bytes = await avatar.readAsBytes();
       String? base64Image = base64Encode(bytes);
 
-      if (base64Image != null) {
-        // Use MultipartFile to attach the image
-        request.files.add(MultipartFile(
-          'avatar',
-          ByteStream.fromBytes(base64Decode(base64Image)),
-          bytes.length,
-          filename: 'avatar.jpg', // You can set the desired filename here
-        ));
+      // Use MultipartFile to attach the image
+      request.files.add(MultipartFile(
+        'avatar',
+        ByteStream.fromBytes(base64Decode(base64Image)),
+        bytes.length,
+        filename: filename, // You can set the desired filename here
+      ));
 
-        var response = await request.send();
+      var response = await request.send();
 
-        if (response.statusCode == 200) {
-          // Handle the response if needed
-          var jsonResponse = await response.stream.bytesToString();
-          var jsonDecode = json.decode(jsonResponse);
-          return User.fromJson(jsonDecode['user']);
-        } else {
-          throw Exception('Failed to upload avatar. Status code: ${response.statusCode}');
-        }
+      if (response.statusCode == 200) {
+        // Handle the response if needed
+        var jsonResponse = await response.stream.bytesToString();
+        var jsonDecode = json.decode(jsonResponse);
+        return User.fromJson(jsonDecode['user']);
       } else {
-        print('Base64 image is null');
-        return null; // or handle the error appropriately
+        throw Exception(
+            'Failed to upload avatar. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error uploading avatar: $e');
       return null; // or handle the error appropriately
     }
   }
