@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_project/utils/sized_box.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../l10n.dart';
+import '../../providers/language_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../utils/routes.dart';
 
@@ -13,8 +17,23 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  late Locale currentLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    currentLocale = context.read<LanguageProvider>().currentLocale;
+    context.read<LanguageProvider>().addListener(() {
+      setState(() {
+        currentLocale = context.read<LanguageProvider>().currentLocale;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Column(
@@ -47,6 +66,14 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           subSizedBox,
           buildSettingCard(
+            icon: Icons.password_outlined,
+            label: 'Change Password',
+            onTap: () {
+              Navigator.pushNamed(context, Routes.changePassword);
+            },
+          ),
+          subSizedBox,
+          buildSettingCard(
             icon: Icons.assignment,
             label: 'Become A Tutor',
             onTap: () {
@@ -55,7 +82,7 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           subSizedBox,
           const SizedBox(height: 48),
-          buildLogoutButton(),
+          buildLogoutButton(authProvider),
           const SizedBox(height: 48),
         ],
       ),
@@ -80,7 +107,7 @@ class _SettingScreenState extends State<SettingScreen> {
               sizedBox,
               Text(
                 label,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
             ],
           ),
@@ -89,13 +116,17 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  Widget buildLogoutButton() {
+  Widget buildLogoutButton(AuthProvider authProvider) {
     return TextButton(
       onPressed: () async {
+        final prefs = await SharedPreferences.getInstance();
+        prefs.remove('refresh_token');
+        authProvider.token = null;
+
         Navigator.pushNamedAndRemoveUntil(
           context,
           Routes.login,
-              (route) => false,
+          (route) => false,
         );
       },
       style: TextButton.styleFrom(
@@ -104,12 +135,12 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Icon(Icons.logout, color: Colors.red),
-          SizedBox(width: 8),
+        children: [
+          const Icon(Icons.logout, color: Colors.red),
+          subSizedBox,
           Text(
-            'Log Out',
-            style: TextStyle(
+            AppLocalizations(currentLocale).translate('logout')!,
+            style: const TextStyle(
               fontSize: 18,
               color: Colors.red,
             ),

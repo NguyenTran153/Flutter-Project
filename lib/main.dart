@@ -5,6 +5,7 @@ import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:flutter_project/providers/language_provider.dart';
 import 'package:flutter_project/screens/Tutor/Review/review_screen.dart';
 import 'package:flutter_project/screens/UserProfile/become_tutor_screen.dart';
+import 'package:flutter_project/screens/UserProfile/change_password_screen.dart';
 import 'package:flutter_project/screens/UserProfile/user_profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_project/screens/Auth/forget_password_screen.dart';
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
               Routes.userProfile: (context) => const UserProfileScreen(),
               Routes.review: (context) => const ReviewScreen(),
               Routes.becomeTutor: (context) => const BecomeTutorScreen(),
+              Routes.changePassword: (context) => const ChangePasswordScreen(),
             },
           ),
         ));

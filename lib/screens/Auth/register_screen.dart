@@ -86,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations(currentLocale)
-              .translate('registerError')!),
+              .translate('registerError $e')!),
         ));
       }
     } else {

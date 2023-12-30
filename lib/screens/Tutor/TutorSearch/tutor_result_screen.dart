@@ -24,7 +24,6 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
   int _count = 0;
   List<Tutor> _tutors = [];
   int? _selectedSortOption;
-  bool _defaultSorting = true;
   List<Tutor> _originalTutors = [];
   List<Tutor> _filteredTutors = [];
   late Locale currentLocale;
@@ -111,6 +110,9 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
 
   void _sortTutorsDefault() {
     setState(() {
+      _originalTutors.sort((a, b) {
+        return a.name?.compareTo(b.name ?? '') ?? 0;
+      });
       _tutors = List.from(_originalTutors);
     });
   }
@@ -171,7 +173,6 @@ bool _checkIfTutorIsFavorite(Tutor tutor) {
                                     setState(() {
                                       _selectedSortOption = value;
                                       _isDescending = !_isDescending;
-                                      _defaultSorting = false;
                                       _sortTutors();
                                     });
                                   },

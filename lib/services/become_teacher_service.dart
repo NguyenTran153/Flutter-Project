@@ -25,7 +25,7 @@ class BecomeTeacherService {
     required int price,
     required String token,
   }) async {
-    String url = '${_baseUrl}tutor/register';
+    String url = '$_baseUrl/tutor/register';
 
     // Create FormData
     FormData formData = FormData.fromMap({
@@ -41,9 +41,11 @@ class BecomeTeacherService {
       'targetStudents': targetStudents,
       'specialties': specialties,
       'price': price,
-      'avatar': await MultipartFile.fromFile(avatar?.path ?? '', filename: 'avatar.jpg'),
-      'video': await MultipartFile.fromFile(video?.path ?? '', filename: 'video.mp4'),
+      'avatar': avatar != null ? await MultipartFile.fromFile(avatar.path, filename: 'avatar.jpg') : null,
+      'video': video != null ? await MultipartFile.fromFile(video.path, filename: 'video.mp4') : null,
     });
+
+    formData.fields.removeWhere((element) => element.value == null);
 
     // Create Dio instance
     Dio dio = Dio();
@@ -66,6 +68,7 @@ class BecomeTeacherService {
       }
       return response;
     } catch (e) {
+      print(e);
       throw Exception(e);
     }
   }

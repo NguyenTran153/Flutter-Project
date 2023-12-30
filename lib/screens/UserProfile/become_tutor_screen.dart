@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../l10n.dart';
 import '../../providers/language_provider.dart';
+import '../../widgets/video_container.dart';
 
 class BecomeTutorScreen extends StatefulWidget {
   const BecomeTutorScreen({Key? key}) : super(key: key);
@@ -103,6 +104,83 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Video Stack
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                if (video != null)
+                  VideoWidget(videoPath: video!.path)
+                else
+                  Container(),
+              ],
+            ),
+            sizedBox,
+            // Add a button to pick video
+            ElevatedButton(
+              onPressed: () async {
+                FilePickerResult? result =
+                    await FilePicker.platform.pickFiles(type: FileType.video);
+                if (result != null) {
+                  setState(() {
+                    video = File(result.files.single.path!);
+                  });
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .secondary, // Set the background color to blue
+              ),
+              child: Text(
+                AppLocalizations(currentLocale).translate('pickVideo')!,
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .tertiary, // Set the text color to black
+                ),
+              ),
+            ),
+            sizedBox,
+            // Image Stack
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                if (avatar != null)
+                  CircleAvatar(
+                    radius: 72,
+                    backgroundImage: FileImage(avatar!),
+                  )
+                else
+                  Container(),
+              ],
+            ),
+            sizedBox,
+            // Add a button to pick image
+            ElevatedButton(
+              onPressed: () async {
+                FilePickerResult? result =
+                    await FilePicker.platform.pickFiles(type: FileType.image);
+                if (result != null) {
+                  setState(() {
+                    avatar = File(result.files.single.path!);
+                  });
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .secondary, // Set the background color to blue
+              ),
+              child: Text(
+                AppLocalizations(currentLocale).translate('pickAvatar')!,
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .tertiary, // Set the text color to black
+                ),
+              ),
+            ),
+            sizedBox,
             TextFormField(
               controller: nameController,
               decoration: InputDecoration(
@@ -189,34 +267,6 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
               ),
             ),
             sizedBox,
-            // FilePicker for Avatar
-            ElevatedButton(
-              onPressed: () async {
-                FilePickerResult? result =
-                    await FilePicker.platform.pickFiles(type: FileType.image);
-                if (result != null) {
-                  setState(() {
-                    avatar = File(result.files.single.path!);
-                  });
-                }
-              },
-              child: Text(AppLocalizations(currentLocale).translate('pickAvatar')!),
-            ),
-            sizedBox,
-            // FilePicker for Video
-            ElevatedButton(
-              onPressed: () async {
-                FilePickerResult? result =
-                    await FilePicker.platform.pickFiles(type: FileType.video);
-                if (result != null) {
-                  setState(() {
-                    video = File(result.files.single.path!);
-                  });
-                }
-              },
-              child: Text(AppLocalizations(currentLocale).translate('pickVideo')!),
-            ),
-            sizedBox,
             TextFormField(
               controller: priceController,
               decoration: InputDecoration(
@@ -228,7 +278,19 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
               onPressed: () {
                 _submitForm(authProvider);
               },
-              child: Text(AppLocalizations(currentLocale).translate('submit')!),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .secondary, // Set the background color to blue
+              ),
+              child: Text(
+                AppLocalizations(currentLocale).translate('submit')!,
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .tertiary, // Set the text color to black
+                ),
+              ),
             ),
           ],
         ),
