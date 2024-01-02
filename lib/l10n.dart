@@ -118,6 +118,7 @@ class AppLocalizations {
       'pickVideo': 'Pick video',
       'pickAvatar': 'Pick avatar',
       'submit': 'Submit',
+      'dontHaveAnAccount': 'Don\'t have an account?',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -229,6 +230,7 @@ class AppLocalizations {
       'pickVideo': 'Chọn video',
       'pickAvatar': 'Chọn ảnh đại diện',
       'submit': 'Gửi',
+      'dontHaveAnAccount': 'Chưa có tài khoản?',
     },
   };
 

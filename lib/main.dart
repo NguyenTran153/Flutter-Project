@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:flutter_project/providers/language_provider.dart';
+import 'package:flutter_project/screens/Auth/login_phone_screen.dart';
 import 'package:flutter_project/screens/Tutor/Review/review_screen.dart';
 import 'package:flutter_project/screens/UserProfile/become_tutor_screen.dart';
 import 'package:flutter_project/screens/UserProfile/change_password_screen.dart';
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             routes: {
               Routes.login: (context) => const LoginScreen(),
+              Routes.loginByPhone: (context) => const LoginByPhoneScreen(),
               Routes.register: (context) => const RegisterScreen(),
               Routes.forgotPassword: (context) => const ForgotPasswordScreen(),
               Routes.main: (context) => const NavigationScreen(),

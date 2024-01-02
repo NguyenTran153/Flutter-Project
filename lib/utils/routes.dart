@@ -1,6 +1,7 @@
 class Routes {
   // Authentication
   static const login = '/login/';
+  static const loginByPhone = '/login_by_phone/';
   static const register = '/register/';
   static const forgotPassword = '/forgot_password/';
   static const changePassword = '/change_password/';
