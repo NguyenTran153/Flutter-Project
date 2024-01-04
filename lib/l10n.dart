@@ -119,6 +119,8 @@ class AppLocalizations {
       'pickAvatar': 'Pick avatar',
       'submit': 'Submit',
       'dontHaveAnAccount': 'Don\'t have an account?',
+      'alreadyTeacher': 'Already a teacher?',
+      'changeTheme': 'Change theme',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -231,6 +233,8 @@ class AppLocalizations {
       'pickAvatar': 'Chọn ảnh đại diện',
       'submit': 'Gửi',
       'dontHaveAnAccount': 'Chưa có tài khoản?',
+      'alreadyTeacher': 'Đã là giảng viên?',
+      'changeTheme': 'Đổi giao diện',
     },
   };
 

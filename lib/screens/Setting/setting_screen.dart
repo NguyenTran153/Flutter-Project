@@ -17,6 +17,12 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  final List<Map<String, String>> supportedLanguages = [
+    {'code': 'en', 'name': 'English'},
+    {'code': 'vi', 'name': 'Tiếng Việt'},
+    // Add more languages as needed
+  ];
+
   late Locale currentLocale;
 
   @override
@@ -30,6 +36,56 @@ class _SettingScreenState extends State<SettingScreen> {
     });
   }
 
+  Future<void> _showLanguageDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).primaryColor,
+          title: Text(
+            'Select Language',
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          ),
+          content: Container(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: supportedLanguages.length,
+              itemBuilder: (BuildContext context, int index) {
+                final language = supportedLanguages[index];
+                return ListTile(
+                  title: Text(
+                    language['name'] ?? '',
+                    style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                  ),
+                  onTap: () {
+                    _changeLanguage(language['code'] ?? '');
+                    Navigator.pop(context);
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _changeLanguage(String languageCode) async {
+    try {
+      final languageProvider = context.read<LanguageProvider>();
+      languageProvider.setLocale(Locale(languageCode));
+
+      // Save selected language to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('selected_language', languageCode);
+    } catch (error) {
+      // Xử lý lỗi ở đây
+      print('Error changing language: $error');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
@@ -41,25 +97,25 @@ class _SettingScreenState extends State<SettingScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 48),
-          buildSettingCard(
-            icon: Icons.manage_accounts,
-            label: 'Account',
-            onTap: () {
-              // Handle onTap for Account
-            },
-          ),
-          subSizedBox,
+          // buildSettingCard(
+          //   icon: Icons.manage_accounts,
+          //   label: 'Account',
+          //   onTap: () {
+          //     // Handle onTap for Account
+          //   },
+          // ),
+          // subSizedBox,
           buildSettingCard(
             icon: Icons.language,
-            label: 'Language',
+            label: AppLocalizations(currentLocale).translate('language')!,
             onTap: () {
-              // Handle onTap for Language
+              _showLanguageDialog(context);
             },
           ),
           subSizedBox,
           buildSettingCard(
             icon: Icons.dark_mode,
-            label: 'Change theme',
+            label: AppLocalizations(currentLocale).translate('changeTheme')!,
             onTap: () {
               Provider.of<ThemeProvider>(context, listen: false).toggleMode();
             },
@@ -67,7 +123,7 @@ class _SettingScreenState extends State<SettingScreen> {
           subSizedBox,
           buildSettingCard(
             icon: Icons.password_outlined,
-            label: 'Change Password',
+            label: AppLocalizations(currentLocale).translate('changePassword')!,
             onTap: () {
               Navigator.pushNamed(context, Routes.changePassword);
             },
@@ -75,7 +131,7 @@ class _SettingScreenState extends State<SettingScreen> {
           subSizedBox,
           buildSettingCard(
             icon: Icons.assignment,
-            label: 'Become A Tutor',
+            label: AppLocalizations(currentLocale).translate('becomeTutor')!,
             onTap: () {
               Navigator.pushNamed(context, Routes.becomeTutor);
             },

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:flutter_project/providers/language_provider.dart';
 import 'package:flutter_project/screens/Auth/login_phone_screen.dart';
@@ -56,6 +58,8 @@ class MyApp extends StatelessWidget {
             ],
             localizationsDelegates: const [
               AppLocalizationsDelegate(),
+              GlobalMaterialLocalizations.delegate, // Thêm dòng này
+              GlobalWidgetsLocalizations.delegate,
             ],
             theme:
                 themeProvider.mode == ThemeMode.light ? lightTheme : darkTheme,

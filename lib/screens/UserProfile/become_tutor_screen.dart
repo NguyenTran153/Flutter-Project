@@ -70,15 +70,16 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
         price: price,
         token: authProvider.token?.access?.token as String,
       );
-
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(AppLocalizations(currentLocale).translate('success')!),
       ));
     } catch (error) {
       // Xử lý khi gặp lỗi
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
-            '${AppLocalizations(currentLocale).translate('error')!} $error'),
+            AppLocalizations(currentLocale).translate('alreadyTeacher')!),
       ));
     }
   }
