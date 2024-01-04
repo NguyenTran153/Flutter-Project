@@ -1,8 +1,13 @@
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - "master"
+      - "milestone-4"
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - "master"
+      - "milestone-4"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,7 +19,7 @@ jobs:
           java-version: "12.x"
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "2.10.0" # Chọn phiên bản Flutter tương thích
+          flutter-version: "2.10.0"
           channel: 'stable'
       - name: Get dependencies
         run: flutter pub get
