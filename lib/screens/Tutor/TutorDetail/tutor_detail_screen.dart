@@ -15,12 +15,13 @@ import "../../../models/tutor/tutor_info.dart";
 import "../../../providers/language_provider.dart";
 import "../../../services/tutor_service.dart";
 import "../../../utils/routes.dart";
+import "../Messenger/messenger_screen.dart";
 
 class TutorDetailScreen extends StatefulWidget {
   const TutorDetailScreen({
     Key? key,
   }) : super(key: key);
-  
+
   @override
   State<TutorDetailScreen> createState() => _TutorDetailScreenState();
 }
@@ -108,21 +109,21 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
 
       _getTutor(authProvider);
     }
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: BackButton(
-          color: Theme.of(context).colorScheme.secondary,
-        ),
-        title: Text(
-          AppLocalizations(currentLocale).translate('tutor')!,
-          style: Theme.of(context).textTheme.displayMedium,
-        ),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Theme.of(context).primaryColor,
+              leading: BackButton(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              title: Text(
+                AppLocalizations(currentLocale).translate('tutor')!,
+                style: Theme.of(context).textTheme.displayMedium,
+              ),
+            ),
+            body: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,6 +251,33 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .secondary))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {
+                            // Navigate to MessengerScreen
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const MessengerScreen()));
+                          },
+                          child: Column(
+                            children: [
+                              Icon(Icons.message,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                              Text(
+                                AppLocalizations(currentLocale)
+                                    .translate('messenger')!,
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              )
                             ],
                           ),
                         ),
@@ -385,14 +413,16 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                   //   ),
                   // ),
                   sizedBox,
-                  Text( AppLocalizations(currentLocale).translate('interests')!,
+                  Text(AppLocalizations(currentLocale).translate('interests')!,
                       style: Theme.of(context).textTheme.displaySmall),
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 8),
                     child: Text(_tutorInfo.interests ?? ''),
                   ),
                   sizedBox,
-                  Text(AppLocalizations(currentLocale).translate('experienceLevel')!,
+                  Text(
+                      AppLocalizations(currentLocale)
+                          .translate('experienceLevel')!,
                       style: Theme.of(context).textTheme.displaySmall),
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 8),
@@ -418,7 +448,8 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                                 top: Radius.circular(16),
                               ),
                             ),
-                            builder: (context) => TutorScheduleWidget(userId: userId),
+                            builder: (context) =>
+                                TutorScheduleWidget(userId: userId),
                           );
                         },
                         child: Text(
@@ -431,6 +462,6 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                 ],
               ),
             ),
-    );
+          );
   }
 }

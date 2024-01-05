@@ -121,6 +121,7 @@ class AppLocalizations {
       'dontHaveAnAccount': 'Don\'t have an account?',
       'alreadyTeacher': 'Already a teacher?',
       'changeTheme': 'Change theme',
+      'messenger': 'Messenger',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -184,6 +185,7 @@ class AppLocalizations {
       'language': 'Ngôn ngữ',
       'unknown': 'Không xác định',
       'interests': 'Sở thích',
+      'home': 'Trang chủ',
       'chooseDate': 'Chọn ngày học',
       'chooseTime': 'Chọn thời gian học',
       'monday': 'Thứ Hai',
@@ -235,6 +237,7 @@ class AppLocalizations {
       'dontHaveAnAccount': 'Chưa có tài khoản?',
       'alreadyTeacher': 'Đã là giảng viên?',
       'changeTheme': 'Đổi giao diện',
+      'messenger': 'Tin nhắn',
     },
   };
 

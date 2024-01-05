@@ -56,6 +56,7 @@ dependencies:
   google_sign_in: ^6.1.6
   injectable: ^2.3.2
   dio: ^5.4.0
+  flutter_chat_ui: ^1.6.10
 
 dev_dependencies:
   flutter_test:
