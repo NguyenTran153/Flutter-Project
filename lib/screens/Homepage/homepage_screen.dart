@@ -3,7 +3,7 @@ import "package:flutter_project/screens/Homepage/TutorCard/tutor_card_widget.dar
 import "package:flutter_project/screens/Schedule/BookedClass/BookedClassWidget/booked_class_card_widget.dart";
 import "package:provider/provider.dart";
 
-import "../../l10n.dart";
+import '../../l10n/l10n.dart';
 import "../../models/schedule/booking_info.dart";
 import "../../models/tutor/tutor.dart";
 import "../../models/tutor/tutor_info.dart";

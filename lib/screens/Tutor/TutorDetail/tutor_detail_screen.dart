@@ -9,7 +9,7 @@ import "package:provider/provider.dart";
 import "package:video_player/video_player.dart";
 
 import "../../../constants/constant.dart";
-import "../../../l10n.dart";
+import '../../../l10n/l10n.dart';
 import "../../../models/course/course.dart";
 import "../../../models/tutor/tutor_info.dart";
 import "../../../providers/language_provider.dart";

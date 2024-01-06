@@ -21,7 +21,7 @@ import 'package:flutter_project/screens/Navigation/navigation_screen.dart';
 import 'package:flutter_project/utils/routes.dart';
 import 'package:flutter_project/providers/theme_provider.dart';
 
-import 'l10n.dart';
+import 'l10n/l10n.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override

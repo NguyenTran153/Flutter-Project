@@ -7,7 +7,7 @@ import 'package:flutter_project/services/become_teacher_service.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 import 'package:provider/provider.dart';
 
-import '../../l10n.dart';
+import '../../l10n/l10n.dart';
 import '../../providers/language_provider.dart';
 import '../../widgets/video_container.dart';
 

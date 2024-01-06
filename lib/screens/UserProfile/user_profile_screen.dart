@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/constant.dart';
-import '../../l10n.dart';
+import '../../l10n/l10n.dart';
 import '../../models/user/learn_topic.dart';
 import '../../models/user/test_preparation.dart';
 import '../../models/user/user.dart';

@@ -6,7 +6,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import "package:flutter_project/utils/routes.dart";
 import "package:provider/provider.dart";
 
-import "../../l10n.dart";
+import '../../l10n/l10n.dart';
 import "../../providers/auth_provider.dart";
 import "../../providers/language_provider.dart";
 import "../Course/course_screen.dart";

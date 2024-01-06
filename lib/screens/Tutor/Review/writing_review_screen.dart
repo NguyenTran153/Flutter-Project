@@ -3,7 +3,7 @@ import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 import 'package:provider/provider.dart';
 
-import '../../../l10n.dart';
+import '../../../l10n/l10n.dart';
 import '../../../providers/language_provider.dart';
 import '../../../services/tutor_service.dart';
 import '../../../services/user_service.dart';

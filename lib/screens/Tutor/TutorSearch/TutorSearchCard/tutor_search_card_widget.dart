@@ -3,7 +3,7 @@ import 'package:flutter_project/utils/sized_box.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../constants/constant.dart';
-import '../../../../l10n.dart';
+import '../../../../l10n/l10n.dart';
 import '../../../../models/tutor/tutor.dart';
 import '../../../../models/tutor/tutor_info.dart';
 import '../../../../providers/auth_provider.dart';

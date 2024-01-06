@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../../l10n.dart';
+import '../../../l10n/l10n.dart';
 import '../../../models/messenger/message.dart';
 import '../../../providers/language_provider.dart';
 import '../../../services/messenger_service.dart';

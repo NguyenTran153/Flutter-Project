@@ -3,7 +3,7 @@ import 'package:flutter_project/screens/Schedule/BookedClass/booked_class_screen
 import 'package:flutter_project/utils/sized_box.dart';
 import 'package:provider/provider.dart';
 
-import '../../l10n.dart';
+import '../../l10n/l10n.dart';
 import '../../providers/language_provider.dart';
 import 'History/history_screen.dart';
 
