@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
             ],
             localizationsDelegates: const [
               AppLocalizationsDelegate(),
-              GlobalMaterialLocalizations.delegate, // Thêm dòng này
+              GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
             ],
             theme:

@@ -104,56 +104,64 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _loginByGoogle(AuthProvider authProvider) async {
+  void _loginByGoogle(AuthProvider authProvider) async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+      final prefs = await SharedPreferences.getInstance();
+      prefs.clear();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(
+        scopes: [
+          'email',
+          'https://www.googleapis.com/auth/contacts.readonly',
+        ],
+      ).signIn();
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
       final String? accessToken = googleAuth?.accessToken;
+
       if (accessToken != null) {
         try {
           await AuthenticationService.loginByGoogle(
-              accessToken: accessToken,
-              onSuccess: (user, token) async {
-                authProvider.logIn(user, token);
+            accessToken: accessToken,
+            onSuccess: (user, token) async {
+              authProvider.logIn(user, token);
 
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.setString(
-                  'refresh_token',
-                  authProvider.token!.refresh!.token!,
-                );
+              await prefs.setString(
+                'refresh_token',
+                authProvider.token!.refresh!.token!,
+              );
 
-                setState(() {
-                  _isAuthenticated = true;
-                  _isAuthenticating = false;
-                });
-
-                Future.delayed(const Duration(seconds: 1), () {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    Routes.main,
-                    (route) => false,
-                  );
-                });
+              setState(() {
+                _isAuthenticating = false;
+                _isAuthenticated = true;
               });
+
+              Future.delayed(const Duration(seconds: 1), () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  Routes.main,
+                      (route) => false,
+                );
+              });
+            },
+          );
         } catch (e) {
           if (mounted) {
+            print(e);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text('Error Login with Google: ${e.toString()}')),
+              SnackBar(content: Text('Error Login with Google: ${e.toString()}')),
             );
           }
         }
       }
     } catch (e) {
+      print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error Login with Google: ${e.toString()}')),
       );
     }
   }
 
-  Future<void> _loginByFacebook(AuthProvider authProvider) async {
+  void _loginByFacebook(AuthProvider authProvider) async {
     final result = await FacebookAuth.instance.login();
 
     if (result.status == LoginStatus.success) {
@@ -185,11 +193,17 @@ class _LoginScreenState extends State<LoginScreen> {
             });
       } catch (e) {
         if (mounted) {
+          print(e);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content: Text('Error Login with Facebook: ${e.toString()}')),
           );
-        } else {}
+        } else {
+          print(e);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error Login with Facebook: ${e.toString()}')),
+          );
+        }
       }
     }
   }
