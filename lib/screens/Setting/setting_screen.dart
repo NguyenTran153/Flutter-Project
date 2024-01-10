@@ -43,7 +43,9 @@ class _SettingScreenState extends State<SettingScreen> {
         return AlertDialog(
           backgroundColor: Theme.of(context).primaryColor,
           title: Text(
-            'Select Language',
+            AppLocalizations(currentLocale).translate(
+              'selectLanguage',
+            )!,
             style: TextStyle(color: Theme.of(context).colorScheme.secondary),
           ),
           content: Container(
@@ -56,7 +58,8 @@ class _SettingScreenState extends State<SettingScreen> {
                 return ListTile(
                   title: Text(
                     language['name'] ?? '',
-                    style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.tertiary),
                   ),
                   onTap: () {
                     _changeLanguage(language['code'] ?? '');
@@ -80,11 +83,9 @@ class _SettingScreenState extends State<SettingScreen> {
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('selected_language', languageCode);
     } catch (error) {
-      // Xử lý lỗi ở đây
-      print('Error changing language: $error');
+      return;
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

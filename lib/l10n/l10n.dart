@@ -122,6 +122,7 @@ class AppLocalizations {
       'alreadyTeacher': 'Already a teacher?',
       'changeTheme': 'Change theme',
       'messenger': 'Messenger',
+      'selectLanguage': 'Select language',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -238,6 +239,7 @@ class AppLocalizations {
       'alreadyTeacher': 'Đã là giảng viên?',
       'changeTheme': 'Đổi giao diện',
       'messenger': 'Tin nhắn',
+      'selectLanguage': 'Chọn ngôn ngữ',
     },
   };
 
