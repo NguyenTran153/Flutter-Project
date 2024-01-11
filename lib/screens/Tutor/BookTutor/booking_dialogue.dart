@@ -10,7 +10,8 @@ import '../../../providers/language_provider.dart';
 import '../../../utils/sized_box.dart';
 
 class BookingDialogueWidget extends StatefulWidget {
-  const BookingDialogueWidget({Key? key, required this.schedule}) : super(key: key);
+  const BookingDialogueWidget({Key? key, required this.schedule})
+      : super(key: key);
 
   final Schedule schedule;
 
@@ -32,8 +33,8 @@ class _BookingDialogueWidgetState extends State<BookingDialogueWidget> {
     super.initState();
     start = widget.schedule.startTime ?? '00:00';
     end = widget.schedule.endTime ?? '00:00';
-    date = DateFormat.yMMMMEEEEd()
-        .format(DateTime.fromMillisecondsSinceEpoch(widget.schedule.startTimestamp!));
+    date = DateFormat.yMMMMEEEEd().format(
+        DateTime.fromMillisecondsSinceEpoch(widget.schedule.startTimestamp!));
 
     currentLocale = context.read<LanguageProvider>().currentLocale;
     context.read<LanguageProvider>().addListener(() {
@@ -42,21 +43,20 @@ class _BookingDialogueWidgetState extends State<BookingDialogueWidget> {
       });
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final accessToken = authProvider.token?.access?.token ?? '';
 
     return AlertDialog(
-      title: Text(AppLocalizations(currentLocale)
-          .translate('book')!),
+      title: Text(AppLocalizations(currentLocale).translate('book')!),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            AppLocalizations(currentLocale)
-                .translate('bookingTime')!,
+            AppLocalizations(currentLocale).translate('bookingTime')!,
             style: Theme.of(context).textTheme.displaySmall,
           ),
           subSizedBox,
@@ -83,7 +83,8 @@ class _BookingDialogueWidgetState extends State<BookingDialogueWidget> {
               decoration: InputDecoration(
                 hintText: AppLocalizations(currentLocale)
                     .translate('requestForLesson')!,
-                hintStyle: const TextStyle(fontWeight: FontWeight.w300, color: Colors.grey),
+                hintStyle: const TextStyle(
+                    fontWeight: FontWeight.w300, color: Colors.grey),
                 contentPadding: const EdgeInsets.all(12),
                 border: const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
@@ -99,14 +100,15 @@ class _BookingDialogueWidgetState extends State<BookingDialogueWidget> {
               Navigator.pop(context);
             },
             child: Text(
-              AppLocalizations(currentLocale)
-                  .translate('cancel')!,
+              AppLocalizations(currentLocale).translate('cancel')!,
               style: const TextStyle(color: Colors.red),
             )),
         TextButton(
             onPressed: () async {
               await ScheduleService.bookAClass(
-                scheduleDetailIds: [widget.schedule.scheduleDetails?.first.id ?? ''],
+                scheduleDetailIds: [
+                  widget.schedule.scheduleDetails?.first.id ?? ''
+                ],
                 note: _controller.text,
                 token: accessToken,
               );
@@ -116,8 +118,7 @@ class _BookingDialogueWidgetState extends State<BookingDialogueWidget> {
                 Navigator.pop(context);
               }
             },
-            child: Text(AppLocalizations(currentLocale)
-                .translate('book')!)),
+            child: Text(AppLocalizations(currentLocale).translate('book')!)),
       ],
     );
   }

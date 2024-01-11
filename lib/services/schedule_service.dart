@@ -96,12 +96,16 @@ class ScheduleService {
   static Future<List<Schedule>> getTutorScheduleById({
     required String token,
     required String userId,
-    required int startDate,
-    required int endDate,
   }) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    final endDate = DateTime.fromMillisecondsSinceEpoch(now)
+        .add(Duration(days: 90))
+        .millisecondsSinceEpoch;
+
     final response = await get(
         Uri.parse(
-            '$_baseUrl/schedule?tutorId=$userId&startTimestamp=$startDate&endTimestamp=$endDate'),
+            '$_baseUrl/schedule?tutorId=$userId&startTimestamp=$now&endTimestamp=$endDate'),
         headers: {'Authorization': 'Bearer $token'});
 
     final jsonDecode = json.decode(response.body);

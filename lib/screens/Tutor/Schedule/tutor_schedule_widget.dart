@@ -84,14 +84,10 @@ class _TutorScheduleWidgetState extends State<TutorScheduleWidget> {
       }
       scheduleStartTimestamps.sort();
 
-      print('Fetched schedules: $schedules');
-      print('Schedule start timestamps: $scheduleStartTimestamps');
-
       setState(() {
         _isLoading = false;
       });
     } catch (error) {
-      print('Error fetching tutor schedule: $error');
       setState(() {
         _isLoading = false;
       });
