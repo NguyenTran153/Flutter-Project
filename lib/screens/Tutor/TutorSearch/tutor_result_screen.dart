@@ -96,7 +96,11 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
   }
 
   void _sortTutorsByFavorite() {
-    _tutors = List.from(_filteredTutors);
+    setState(() {
+      _tutors = List.from(_originalTutors);
+      _filteredTutors =
+          List.from(_originalTutors); // Ensure filtered list is updated
+    });
   }
 
   // void _sortTutorsDefault() {
@@ -115,14 +119,6 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
       });
       _tutors = List.from(_originalTutors);
     });
-  }
-
-bool _checkIfTutorIsFavorite(Tutor tutor) {
-    // Replace this with your own logic to determine if a tutor is a favorite
-    // For example, you can use a separate data structure to store favorite tutor IDs
-    // and check if the current tutor's ID is in that list.
-    // For simplicity, I'm using a placeholder condition here.
-    return tutor.rating != null && tutor.rating! > 4.5;
   }
 
   @override
@@ -164,39 +160,42 @@ bool _checkIfTutorIsFavorite(Tutor tutor) {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(
-                                flex: 6,
-                                child: PopupMenuButton<int>(
-                                  icon: const Icon(Icons.sort),
-                                  initialValue: _selectedSortOption,
-                                  onSelected: (value) {
-                                    setState(() {
-                                      _selectedSortOption = value;
-                                      _isDescending = !_isDescending;
-                                      _sortTutors();
-                                    });
-                                  },
-                                  itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                                    const PopupMenuItem<int>(
-                                      value: 0,
-                                      child: Text('Sort by Rating'),
-                                    ),
-                                    const PopupMenuItem<int>(
-                                      value: 1,
-                                      child: Text('Sort by Favorite'),
-                                    ),
-                                    const PopupMenuItem<int>(
-                                      value: 2,
-                                      child: Text('Default Sorting'),
-                                    ),
-                                  ],
+                              Align(
+                                child: Expanded(
+                                  flex: 1,
+                                  child: PopupMenuButton<int>(
+                                    icon: const Icon(Icons.sort),
+                                    initialValue: _selectedSortOption,
+                                    onSelected: (value) {
+                                      setState(() {
+                                        _selectedSortOption = value;
+                                        _isDescending = !_isDescending;
+                                        _sortTutors();
+                                      });
+                                    },
+                                    itemBuilder: (BuildContext context) =>
+                                        <PopupMenuEntry<int>>[
+                                      const PopupMenuItem<int>(
+                                        value: 0,
+                                        child: Text('Sort by Rating'),
+                                      ),
+                                      const PopupMenuItem<int>(
+                                        value: 1,
+                                        child: Text('Sort by Favorite'),
+                                      ),
+                                      const PopupMenuItem<int>(
+                                        value: 2,
+                                        child: Text('Default Sorting'),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               const SizedBox(
-                                width: 8,
+                                width: 128,
                               ),
                               Expanded(
-                                flex: 20,
+                                flex: 1,
                                 child: Text(
                                   AppLocalizations(currentLocale)
                                       .translate('perPage')!,
@@ -207,27 +206,25 @@ bool _checkIfTutorIsFavorite(Tutor tutor) {
                                 width: 8,
                               ),
                               Expanded(
-                                flex: 6,
+                                flex: 1,
                                 child: DropdownButtonFormField<int>(
                                   isDense: true,
                                   isExpanded: true,
                                   value: _perPage,
                                   items: itemsPerPage
-                                      .map(
-                                        (itemPerPage) => DropdownMenuItem<int>(
-                                          value: itemPerPage,
-                                          child: Text(
-                                            '$itemPerPage',
-                                            style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .tertiary,
-                                              fontSize: 16,
+                                      .map((itemPerPage) =>
+                                          DropdownMenuItem<int>(
+                                            value: itemPerPage,
+                                            child: Text(
+                                              '$itemPerPage',
+                                              style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .tertiary,
+                                                fontSize: 16,
+                                              ),
                                             ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      )
+                                          ))
                                       .toList(),
                                   onChanged: (value) {
                                     setState(() {
@@ -247,13 +244,13 @@ bool _checkIfTutorIsFavorite(Tutor tutor) {
                                     filled: true,
                                     fillColor:
                                         Theme.of(context).colorScheme.secondary,
-                                    enabledBorder: const OutlineInputBorder(
+                                    enabledBorder: OutlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.transparent),
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(24)),
                                     ),
-                                    focusedBorder: const OutlineInputBorder(
+                                    focusedBorder: OutlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.transparent),
                                       borderRadius:
