@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:617902821534:android:a1bbf2c319779af9b86b8f",
         "android_client_info": {
-          "package_name": "com.example.lettutor"
+          "package_name": "com.app.lettutor"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "617902821534-9vh00c31drk63kam7t1uahhb1ksabj05.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.lettutor",
+            "package_name": "com.app.lettutor",
             "certificate_hash": "0dd25dda61566188e1ce86dbfc3c48a9aba842f7"
           }
         },

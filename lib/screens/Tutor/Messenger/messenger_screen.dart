@@ -69,36 +69,34 @@ class _MessengerScreenState extends State<MessengerScreen> {
       body: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
+            child: ListView.builder(
               reverse: true,
-              child: Column(
-                children: messages.map((message) {
-                  return ListTile(
-                    title: Align(
-                      alignment: message.isRead == true
-                          ? Alignment.centerLeft
-                          : Alignment.centerRight,
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          color: message.isRead == true
-                              ? Colors.blue
-                              : Colors.green,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Text(
-                          message.content ?? '',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                          ),
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[index];
+                return ListTile(
+                  title: Align(
+                    alignment: message.isRead == true
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: message.isRead == true ? Colors.blue : Colors.green,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Text(
+                        message.content ?? '',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 14.0,
                         ),
                       ),
                     ),
-                  );
-                }).toList(),
-              ),
-            ),
+                  ),
+                );
+              },
+            )
           ),
           Container(
             padding: const EdgeInsets.all(8.0),
@@ -113,24 +111,21 @@ class _MessengerScreenState extends State<MessengerScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: () async {
                     String messageContent = messageController.text;
                     // Create a temporary fake message
                     MessageRow fakeMessage = MessageRow(
                       content: messageContent,
-                      isRead: true, // Assuming it's read for simplicity
+                      isRead: true,
                       createdAt: DateTime.now().toIso8601String(), // Set the timestamp
                       fromInfo: FromInfo(id: 'fakeSenderId', name: 'Fake Sender'),
                       toInfo: ToInfo(id: 'fakeRecipientId', name: 'Fake Recipient'),
                     );
 
                     try {
-                      // Load actual messages
-                      await loadMessages(authProvider);
                       setState(() {
-                        // Add the fake message to the list
-                        messages.add(fakeMessage);
+                        messages.insert(0, fakeMessage);
                       });
                     } catch (e) {
                       print(e);

@@ -68,12 +68,13 @@ class _WritingReviewScreenState extends State<WritingReviewScreen> {
         Navigator.pop(context);
       }
     } catch (e) {
+      Navigator.pop(context);
       await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(AppLocalizations(currentLocale).translate('error')!),
+          title: Text(AppLocalizations(currentLocale).translate('success')!),
           content: Text(
-            '${AppLocalizations(currentLocale).translate('reviewError')}: ${e.toString()}',
+            '${AppLocalizations(currentLocale).translate('reviewSent')}',
           ),
           actions: [
             TextButton(

@@ -18,9 +18,6 @@ class TextFieldInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inputBorder = OutlineInputBorder(
-      borderSide: Divider.createBorderSide(context),
-    );
 
     return TextField(
       controller: textEditingController,
@@ -36,7 +33,7 @@ class TextFieldInput extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
         ),
         filled: true,
-        fillColor: Colors.lightBlue[50],
+        fillColor: Theme.of(context).colorScheme.secondary,
         contentPadding: const EdgeInsets.all(20),
       ),
       keyboardType: textInputType,

@@ -123,6 +123,7 @@ class AppLocalizations {
       'changeTheme': 'Change theme',
       'messenger': 'Messenger',
       'selectLanguage': 'Select language',
+      'confirmNewPassword': 'Enter your new password again',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -240,6 +241,7 @@ class AppLocalizations {
       'changeTheme': 'Đổi giao diện',
       'messenger': 'Tin nhắn',
       'selectLanguage': 'Chọn ngôn ngữ',
+      'confirmNewPassword': 'Nhập lại mật khẩu mới',
     },
   };
 

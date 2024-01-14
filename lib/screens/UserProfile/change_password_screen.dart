@@ -148,7 +148,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     color: Theme.of(context).colorScheme.secondary,
                   ),
                   child: Text(
-                    AppLocalizations(currentLocale).translate('change')!,
+                    AppLocalizations(currentLocale).translate('submit')!,
                   ),
                 ),
               ),

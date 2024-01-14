@@ -46,6 +46,7 @@ class _HistoryCardWidgetState extends State<HistoryCardWidget> {
         bookingInfo.scheduleDetailInfo!.endPeriodTimestamp ?? 0));
     return result;
   }
+
   Future<bool> showReportDialog(BuildContext context) async {
     return showDialog<bool>(
       context: context,

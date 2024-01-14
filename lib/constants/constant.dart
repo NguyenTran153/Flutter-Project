@@ -439,10 +439,10 @@ const languageList = {
 };
 
 const itemsPerPage = [
-  5,
   10,
-  15,
   20,
+  30,
+  40,
 ];
 
 const courseLevels = {

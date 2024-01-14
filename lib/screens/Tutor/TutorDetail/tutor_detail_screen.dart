@@ -93,10 +93,106 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
     _chewieController?.dispose();
     super.dispose();
   }
-  // //Fake
-  // List<Course> courses = [
-  //
-  // ];
+
+  Future<bool> showReportDialog(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(AppLocalizations(currentLocale).translate('report')!),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 72,
+                      height: 72,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl:  _tutorInfo.user?.avatar ?? '',
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.error_outline_rounded,
+                          size: 32,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+
+                    sizedBox,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _tutorInfo.user?.name ?? '',
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          subSizedBox,
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                sizedBox,
+                Text(
+                  'Please tell us what went wrong',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                subSizedBox,
+                TextField(
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(12),
+                      border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(10))),
+                ),
+                subSizedBox,
+                TextField(
+                  minLines: 3,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                      hintText: 'Additional Notes',
+                      contentPadding: const EdgeInsets.all(12),
+                      border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(10))),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: Text(
+                AppLocalizations(currentLocale)
+                    .translate('cancel')!,
+                style: const TextStyle(fontSize: 18),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: const Text(
+                'OK',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        );
+      },
+    ).then((value) => value ?? false);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -284,24 +380,8 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                       ),
                       Expanded(
                         child: TextButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text(AppLocalizations(currentLocale)
-                                      .translate('reportSuccess')!),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                          onPressed: () async {
+                            await showReportDialog(context);
                           },
                           child: Column(
                             children: [
