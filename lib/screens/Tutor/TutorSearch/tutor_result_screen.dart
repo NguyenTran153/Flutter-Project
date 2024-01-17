@@ -164,6 +164,7 @@ class _TutorResultScreenState extends State<TutorResultScreen> {
                                 child: Expanded(
                                   flex: 1,
                                   child: PopupMenuButton<int>(
+                                    position: PopupMenuPosition.under,
                                     icon: const Icon(Icons.sort),
                                     initialValue: _selectedSortOption,
                                     onSelected: (value) {

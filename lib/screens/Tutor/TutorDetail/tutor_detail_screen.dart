@@ -354,12 +354,11 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                       Expanded(
                         child: TextButton(
                           onPressed: () {
-                            // Navigate to MessengerScreen
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const MessengerScreen()));
+                                        MessengerScreen(tutorId: userId,)));
                           },
                           child: Column(
                             children: [

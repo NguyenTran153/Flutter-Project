@@ -209,16 +209,6 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    _handleTutorDetailView();
-                  },
-                  icon: const Icon(Icons.edit_calendar),
-                  label: Text(AppLocalizations(currentLocale).translate('book')!),
-                ),
-              )
             ],
           ),
         ));

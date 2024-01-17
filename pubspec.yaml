@@ -51,7 +51,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   jitsi_meet_wrapper: ^0.2.0+1
   flutter_config: ^2.0.2
-  flutter_facebook_auth: ^6.0.3
+  flutter_facebook_auth: ^6.0.4
   google_sign_in: ^6.1.6
   injectable: ^2.3.2
   dio: ^5.4.0

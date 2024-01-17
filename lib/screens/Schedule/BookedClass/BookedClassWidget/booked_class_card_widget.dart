@@ -63,6 +63,7 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
       scheduleDetailIds: [bookingInfo.id ?? ''],
       token: token,
     );
+    print(result);
     return result;
   }
 

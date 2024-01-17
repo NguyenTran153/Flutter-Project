@@ -8,7 +8,8 @@ import '../../../providers/language_provider.dart';
 import '../../../services/messenger_service.dart';
 
 class MessengerScreen extends StatefulWidget {
-  const MessengerScreen({super.key});
+  final String tutorId;
+  const MessengerScreen({super.key, required this.tutorId});
 
   @override
   State<MessengerScreen> createState() => _MessengerScreenState();
@@ -36,7 +37,7 @@ class _MessengerScreenState extends State<MessengerScreen> {
     try {
       final messageData = await MessengerService.loadMessages(
         token: token,
-        userId: '4d54d3d7-d2a9-42e5-97a2-5ed38af5789a',
+        userId: widget.tutorId,
         page: 1,
         perPage: 25,
         startTime: 1704094786536,
