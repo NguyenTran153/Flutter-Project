@@ -52,7 +52,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
     try {
 
-
       final String token = authProvider.token?.access?.token as String;
 
       await UserService.changePassword(token: token, oldPassword: oldPassword, newPassword: newPassword);
