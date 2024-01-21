@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -19,8 +21,32 @@ import 'package:flutter_project/screens/Navigation/navigation_screen.dart';
 import 'package:flutter_project/utils/routes.dart';
 import 'package:flutter_project/providers/theme_provider.dart';
 
+import 'envs/environment.dart';
 import 'l10n/l10n.dart';
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+  }
+}
+
+void main() {
+  final flavor = String.fromEnvironment('FLAVOR');
+  print("🎚️ 🎚️ 🎚️ FLAVOR: $flavor");
+
+  if (flavor == 'dev') {
+    EnvironmentConfig.setEnvironment(Environment.dev);
+  } else if (flavor == 'product') {
+    EnvironmentConfig.setEnvironment(Environment.product);
+  } else {
+    EnvironmentConfig.setEnvironment(Environment.dev);
+  }
+
+  HttpOverrides.global = MyHttpOverrides();
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -35,7 +61,7 @@ class MyApp extends StatelessWidget {
         ],
         child: Consumer3<ThemeProvider, LanguageProvider, AuthProvider>(
           builder: (ctx, themeProvider, languageProvider, authProvider, _) => MaterialApp(
-            title: 'LetTutor',
+            title: 'Lettutor',
             locale: languageProvider.currentLocale,
             supportedLocales: const [
               Locale('en'),

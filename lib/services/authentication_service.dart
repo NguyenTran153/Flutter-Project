@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_project/constants/base_url.dart';
 import 'package:http/http.dart';
 
+import '../envs/environment.dart';
 import '../models/user/token.dart';
 import '../models/user/user.dart';
 
 class AuthenticationService {
-  static const _baseUrl = baseUrl;
+  static final _baseUrl = EnvironmentConfig.apiUrl;
 
   static User parseUser(String responseBody) => User.fromJson(jsonDecode(responseBody));
 
@@ -180,7 +180,7 @@ class AuthenticationService {
     required Function(User, Token) onSuccess,
   }) async {
     final response = await post(
-      Uri.parse("$baseUrl/auth/refresh-token"),
+      Uri.parse("$_baseUrl/auth/refresh-token"),
       body: {
         'refreshToken': refreshToken,
         'timezone': "7",

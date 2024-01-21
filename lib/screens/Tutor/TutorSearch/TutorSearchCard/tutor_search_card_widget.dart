@@ -25,7 +25,7 @@ class TutorSearchCardWidget extends StatefulWidget {
 
 class _TutorSearchCardWidgetState extends State<TutorSearchCardWidget> {
   TutorInfo? _tutorInfo;
-  late List<String> _specialties;
+  late List<String> _specialties = [];
 
   late Locale currentLocale;
 

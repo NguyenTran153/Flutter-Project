@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_project/constants/base_url.dart';
 import 'package:http/http.dart';
 
+import '../envs/environment.dart';
 import '../models/tutor/tutor.dart';
 import '../models/tutor/tutor_info.dart';
 import '../models/user/learn_topic.dart';
 import '../models/user/test_preparation.dart';
 
 class TutorService {
-  static const _baseUrl = baseUrl;
+  static final _baseUrl = EnvironmentConfig.apiUrl;
 
   static Future<List<LearnTopic>> getTopics() async {
     return <LearnTopic>[];
@@ -137,7 +137,7 @@ class TutorService {
     required String userId,
   }) async {
     final response = await post(
-      Uri.parse('$baseUrl/user/manageFavoriteTutor'),
+      Uri.parse('$_baseUrl/user/manageFavoriteTutor'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -161,7 +161,7 @@ class TutorService {
     required String content,
   }) async {
     final response = await post(
-      Uri.parse('$baseUrl/report'),
+      Uri.parse('$_baseUrl/report'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

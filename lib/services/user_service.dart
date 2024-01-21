@@ -4,13 +4,13 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 
-import '../constants/base_url.dart';
+import '../envs/environment.dart';
 import '../models/user/learn_topic.dart';
 import '../models/user/test_preparation.dart';
 import '../models/user/user.dart';
 
 class UserService {
-  static const _baseUrl = baseUrl;
+  static final _baseUrl = EnvironmentConfig.apiUrl;
 
   static Future<Response> changePassword(
       {required String token,

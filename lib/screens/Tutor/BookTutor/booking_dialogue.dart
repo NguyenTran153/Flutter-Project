@@ -104,7 +104,8 @@ class _BookingDialogueWidgetState extends State<BookingDialogueWidget> {
               style: const TextStyle(color: Colors.red),
             )),
         TextButton(
-            onPressed: () async {
+          onPressed: () async {
+            try {
               await ScheduleService.bookAClass(
                 scheduleDetailIds: [
                   widget.schedule.scheduleDetails?.first.id ?? ''
@@ -112,13 +113,25 @@ class _BookingDialogueWidgetState extends State<BookingDialogueWidget> {
                 note: _controller.text,
                 token: accessToken,
               );
-
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(AppLocalizations(currentLocale).translate('success')!),
+                ),
+              );
               if (mounted) {
                 Navigator.pop(context);
                 Navigator.pop(context);
               }
-            },
-            child: Text(AppLocalizations(currentLocale).translate('book')!)),
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(e.toString()),
+                ),
+              );
+            }
+          },
+          child: Text(AppLocalizations(currentLocale).translate('book')!),
+        ),
       ],
     );
   }

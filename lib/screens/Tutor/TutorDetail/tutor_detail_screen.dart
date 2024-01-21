@@ -180,6 +180,13 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
             ),
             TextButton(
               onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      AppLocalizations(currentLocale)
+                          .translate('reportSuccess')!,),
+                  ),
+                );
                 Navigator.pop(context, true);
               },
               child: const Text(
@@ -205,9 +212,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
 
       _getTutor(authProvider);
     }
-    return _isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : Scaffold(
+    return Scaffold(
             appBar: AppBar(
               elevation: 0,
               backgroundColor: Theme.of(context).primaryColor,
@@ -219,7 +224,9 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                 style: Theme.of(context).textTheme.displayMedium,
               ),
             ),
-            body: SingleChildScrollView(
+            body:  _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

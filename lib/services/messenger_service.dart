@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_project/constants/base_url.dart';
 import 'package:flutter_project/models/messenger/message.dart';
 import 'package:http/http.dart';
 
+import '../envs/environment.dart';
+
 class MessengerService {
-  static const _baseUrl = baseUrl;
+  static final _baseUrl = EnvironmentConfig.apiUrl;
 
   static Future<MessageData> loadMessages({
     required String token,
@@ -16,7 +17,7 @@ class MessengerService {
     required int startTime,
   }) async {
     String url =
-        '$baseUrl/message/get/$userId?page=$page&perPage=$perPage&startTime=$startTime';
+        '$_baseUrl/message/get/$userId?page=$page&perPage=$perPage&startTime=$startTime';
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',

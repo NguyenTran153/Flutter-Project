@@ -3,10 +3,10 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import '../constants/base_url.dart';
+import '../envs/environment.dart';
 
 class BecomeTeacherService {
-  static const _baseUrl = baseUrl;
+  static final _baseUrl = EnvironmentConfig.apiUrl;
 
   static Future<Response> becomeTeacher({
     required String name,
