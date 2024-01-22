@@ -124,6 +124,8 @@ class AppLocalizations {
       'messenger': 'Messenger',
       'selectLanguage': 'Select language',
       'confirmNewPassword': 'Enter your new password again',
+      'targetStudents': 'Target students',
+      'profession': 'Profession',
     },
     'vi': {
       'errorLogin': 'Email hoặc mật khẩu không đúng',
@@ -242,6 +244,8 @@ class AppLocalizations {
       'messenger': 'Tin nhắn',
       'selectLanguage': 'Chọn ngôn ngữ',
       'confirmNewPassword': 'Nhập lại mật khẩu mới',
+      'targetStudents': 'Đối tượng học viên',
+      'profession': 'Nghề nghiệp',
     },
   };
 

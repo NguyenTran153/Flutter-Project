@@ -241,7 +241,7 @@ class _BecomeTutorScreenState extends State<BecomeTutorScreen> {
               controller: languagesController,
               decoration: InputDecoration(
                 labelText:
-                    AppLocalizations(currentLocale).translate('languages')!,
+                    AppLocalizations(currentLocale).translate('language')!,
               ),
             ),
             sizedBox,

@@ -113,9 +113,19 @@ class _BookingDialogueWidgetState extends State<BookingDialogueWidget> {
                 note: _controller.text,
                 token: accessToken,
               );
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(AppLocalizations(currentLocale).translate('success')!),
+              await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(AppLocalizations(currentLocale).translate('success')!),
+                  content: Text(
+                    '${AppLocalizations(currentLocale).translate('reviewSent')}',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('OK'),
+                    ),
+                  ],
                 ),
               );
               if (mounted) {

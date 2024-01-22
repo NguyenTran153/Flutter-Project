@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_project/screens/Schedule/BookedClass/BookedClassWidget/booked_class_card_widget.dart";
 import "package:flutter_project/services/schedule_service.dart";
+import "package:intl/intl.dart";
 import "package:provider/provider.dart";
 
 import "../../../constants/constant.dart";
@@ -23,6 +24,7 @@ class _BookedClassScreenState extends State<BookedClassScreen> {
   int _page = 1;
   int _perPage = itemsPerPage.first;
   int _count = 0;
+  int _totalStudyTime = 0;
   bool _isLoading = true;
 
   late Locale currentLocale;
@@ -45,11 +47,28 @@ class _BookedClassScreenState extends State<BookedClassScreen> {
       perPage: _perPage,
     );
 
+    List<BookingInfo> newBookedClasses = result['classes'];
+
+    int newTotalStudyTime = 0;
+    for (BookingInfo booking in newBookedClasses) {
+      int startTimestamp = booking.scheduleDetailInfo?.startPeriodTimestamp ?? 0;
+      int endTimestamp = booking.scheduleDetailInfo?.endPeriodTimestamp ?? 0;
+      newTotalStudyTime += (endTimestamp - startTimestamp);
+    }
+
     setState(() {
       bookedClasses = result['classes'];
       _count = result['count'];
+      _totalStudyTime = newTotalStudyTime;
       _isLoading = false;
     });
+  }
+
+  String _formattedTotalStudyTime() {
+    Duration duration = Duration(milliseconds: _totalStudyTime);
+    int hours = duration.inHours;
+    int minutes = (duration.inMinutes % 60);
+    return '$hours:$minutes';
   }
 
   @override
@@ -80,6 +99,11 @@ class _BookedClassScreenState extends State<BookedClassScreen> {
                       AppLocalizations(currentLocale)
                           .translate('youHaveBookedClasses', ['$_count'])!,
                       style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    sizedBox,
+                    Text(
+                      'Total Study Time for All Classes: ${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(
+                          _totalStudyTime ?? 0))}',
                     ),
                     sizedBox,
                     Row(

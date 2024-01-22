@@ -72,9 +72,10 @@ class _WritingReviewScreenState extends State<WritingReviewScreen> {
       await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(AppLocalizations(currentLocale).translate('success')!),
+          title: Text(AppLocalizations(currentLocale).translate('error')!),
           content: Text(
-            '${AppLocalizations(currentLocale).translate('reviewSent')}',
+            '${AppLocalizations(currentLocale).translate('reviewSent')}' +
+                '\n${AppLocalizations(currentLocale).translate('error')}: ${e.toString()}',
           ),
           actions: [
             TextButton(
