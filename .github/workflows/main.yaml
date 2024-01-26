@@ -21,4 +21,4 @@ jobs:
 
       - name: Push to master and milestone-4
         run: |
-          git push origin master milestone-4
+          git push origin HEAD:master HEAD:milestone-4
