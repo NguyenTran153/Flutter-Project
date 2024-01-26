@@ -39,13 +39,13 @@ jobs:
           name: debug-apk
           path: build/app/outputs/flutter-apk/
 
-      - name: Push to main and milestone-4
+      - name: Push to master and milestone-4
         run: |
           git config user.name "NguyenTran153"
           git config user.email "nguyentran.07052002ak@gmail.com"
           git add .
           git commit -m "Auto build and push APK"
-          git push origin main milestone-4
+          git push origin master milestone-4
 
   release:
     name: Release APK
