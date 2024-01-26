@@ -37,6 +37,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       });
     });
   }
+  // test
 
   Future<void> _getCourseDetail(String token) async {
     final result = await CourseService.getCourseDetailById(
