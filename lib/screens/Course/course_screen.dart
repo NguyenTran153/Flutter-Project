@@ -46,7 +46,7 @@ class _CourseScreenState extends State<CourseScreen> {
       token: token,
       search: search,
     );
-    // Set state
+
     setState(() {
       courses = result['courses'];
       _count = result['count'];
