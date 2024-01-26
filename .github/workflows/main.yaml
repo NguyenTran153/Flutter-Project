@@ -1,4 +1,4 @@
-name: Auto Push
+name: Auto Push and Build APK
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - 'master'
 
 jobs:
-  build:
+  build_and_push:
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -27,3 +27,27 @@ jobs:
           git push origin master milestone-4 --force
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+  build_apk:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.8.1'  # Replace with your Flutter version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
