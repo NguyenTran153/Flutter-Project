@@ -1,4 +1,4 @@
-name: Auto Push to Master and milestone-4
+name: Auto Push
 
 on:
   push:
@@ -6,19 +6,13 @@ on:
       - '*'
 
 jobs:
-  auto_push:
-    name: Auto Push to Master and milestone-4
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Configure Git
-        run: |
-          git config user.name "NguyenTran153"
-          git config user.email "nguyentran.07052002ak@gmail.com"
-          echo -e "machine github.com\n  login ${{ secrets.FLUTTER }}" > ~/.netrc
-
-      - name: Push to master and milestone-4
-        run: |
-          git push origin master milestone-4
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
