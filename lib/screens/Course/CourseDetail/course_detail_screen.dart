@@ -43,7 +43,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       token: token,
       courseId: courseId,
     );
-// CI
+
     setState(() {
       courseDetail = result;
       _isLoading = false;
