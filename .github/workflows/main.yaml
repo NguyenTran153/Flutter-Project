@@ -1,74 +1,24 @@
-name: Test, Build, and Release APK
+name: Auto Push to Master and milestone-4
 
 on:
   push:
     branches:
-      - milestone-4
+      - '*'
 
 jobs:
-  build:
-    name: Build APK
+  auto_push:
+    name: Auto Push to Master and milestone-4
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Setup Java
-        uses: actions/setup-java@v2
-        with:
-          java-version: '12.x'
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '2.10.0' # Chọn phiên bản Flutter tương thích
-          channel: 'stable'
-
-      - name: Get dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test
-
-      - name: Build APK
-        run: flutter build apk --debug --split-per-abi
-
-      - name: Upload APK as Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: debug-apk
-          path: build/app/outputs/flutter-apk/
-
-      - name: Push to main and milestone-4
+      - name: Configure Git
         run: |
-          git config user.name "NguyenTran153"
-          git config user.email "nguyentran.07052002ak@gmail.com"
-          git add .
-          git commit -m "Auto build and push APK"
-          git push origin main milestone-4
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          echo -e "machine github.com\n  login ${{ secrets.TOKEN }}" > ~/.netrc
 
-  release:
-    name: Release APK
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download APK Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: debug-apk
-
-      - name: Create a Release
-        id: create_release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "debug-apk/*.apk"
-          token: ${{ secrets.TOKEN }}
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.TOKEN }}
-          publish_dir: ./debug-apk/
-          user_name: NguyenTran153
-          user_email: nguyentran.07052002ak@gmail.com
-          commit_message: 'Deploy debug APK'
+      - name: Push to master and milestone-4
+        run: |
+          git push origin HEAD:master HEAD:milestone-4
