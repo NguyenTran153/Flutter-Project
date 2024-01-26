@@ -13,7 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Configure Git
+        run: |
+          git config user.name "NguyenTran153"
+          git config user.email "nguyentran.07052002ak@gmail.com"
+
       - name: Push changes
-        uses: github/action-push@master
+        run: |
+          git push origin HEAD:master HEAD:milestone-4
         with:
           github_token: ${{ secrets.TOKEN }}
