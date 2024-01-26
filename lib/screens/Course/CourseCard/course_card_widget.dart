@@ -86,7 +86,6 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
                         color: Theme.of(context).colorScheme.tertiary),
                   ),
                   sizedBox,
-                  // second row
                   Row(
                     children: [
                       Expanded(
