@@ -51,7 +51,8 @@ class _BookedClassScreenState extends State<BookedClassScreen> {
 
     int newTotalStudyTime = 0;
     for (BookingInfo booking in newBookedClasses) {
-      int startTimestamp = booking.scheduleDetailInfo?.startPeriodTimestamp ?? 0;
+      int startTimestamp =
+          booking.scheduleDetailInfo?.startPeriodTimestamp ?? 0;
       int endTimestamp = booking.scheduleDetailInfo?.endPeriodTimestamp ?? 0;
       newTotalStudyTime += (endTimestamp - startTimestamp);
     }
@@ -64,11 +65,16 @@ class _BookedClassScreenState extends State<BookedClassScreen> {
     });
   }
 
-  String _formattedTotalStudyTime() {
-    Duration duration = Duration(milliseconds: _totalStudyTime);
-    int hours = duration.inHours;
-    int minutes = (duration.inMinutes % 60);
-    return '$hours:$minutes';
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) {
+      if (n >= 10) return "$n";
+      return "0$n";
+    }
+
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return "${twoDigits(duration.inHours)}:${twoDigitMinutes}:${twoDigitSeconds}";
   }
 
   @override
@@ -102,8 +108,7 @@ class _BookedClassScreenState extends State<BookedClassScreen> {
                     ),
                     sizedBox,
                     Text(
-                      'Total Study Time for All Classes: ${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(
-                          _totalStudyTime ?? 0))}',
+                      'Total Study Time for All Classes: ${_formatDuration(Duration(milliseconds: _totalStudyTime ?? 0))}',
                     ),
                     sizedBox,
                     Row(

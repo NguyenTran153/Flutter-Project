@@ -417,7 +417,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                             width: 2),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10))),
-                    child: _chewieController != null
+                    child: _chewieController == null
                         ? Text(
                             AppLocalizations(currentLocale)
                                 .translate('noVideo')!,

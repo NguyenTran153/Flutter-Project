@@ -35,7 +35,7 @@ class MyHttpOverrides extends HttpOverrides {
 void main() {
   final flavor = String.fromEnvironment('FLAVOR');
   print("🎚️ 🎚️ 🎚️ FLAVOR: $flavor");
-
+  // flutter run --dart-define=FLAVOR=dev
   if (flavor == 'dev') {
     EnvironmentConfig.setEnvironment(Environment.dev);
   } else if (flavor == 'product') {

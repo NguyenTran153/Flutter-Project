@@ -58,6 +58,10 @@ class _CourseScreenState extends State<CourseScreen> {
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
 
+    if(_searchController.text.isEmpty) {
+      _searchController.text = '';
+    }
+
     if (_isLoading && authProvider.token != null) {
       final String accessToken = authProvider.token?.access?.token as String;
       _getCourses(accessToken, _searchController.text);

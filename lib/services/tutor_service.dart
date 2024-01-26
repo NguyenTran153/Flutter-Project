@@ -50,20 +50,19 @@ class TutorService {
     required int rate,
     required String content,
   }) async {
-    String url = '$_baseUrl/tutor/feedbackTutor';
-    Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token'
-    };
-
-    Map<String, dynamic> body = {
-      'bookingId': bookingId,
-      'tutorId': userId,
-      'rate': rate,
-      'content': content
-    };
-
-    Response response = await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
+    final response = await post(
+      Uri.parse('$_baseUrl/user/feedbackTutor'),
+      headers: {
+        'Content-Type': 'application/json;encoding=utf-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode({
+        'bookingId': bookingId,
+        'userId': userId,
+        'rating': rate,
+        'content': content,
+      }),
+    );
 
     final jsonDecode = json.decode(response.body);
 

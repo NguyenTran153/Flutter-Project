@@ -3,7 +3,7 @@ name: Test, Build, and Release APK
 on:
   push:
     branches:
-      - master
+      - milestone-4
 
 jobs:
   build:
@@ -39,6 +39,14 @@ jobs:
           name: debug-apk
           path: build/app/outputs/flutter-apk/
 
+      - name: Push to main and milestone-4
+        run: |
+          git config user.name "NguyenTran153"
+          git config user.email "nguyentran.07052002ak@gmail.com"
+          git add .
+          git commit -m "Auto build and push APK"
+          git push origin main milestone-4
+
   release:
     name: Release APK
     needs: build
@@ -54,13 +62,13 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "debug-apk/*.apk"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.TOKEN }}
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.TOKEN }}
           publish_dir: ./debug-apk/
-          user_name: ${{ github.actor }}
-          user_email: ${{ github.actor }}@users.noreply.github.com
+          user_name: NguyenTran153
+          user_email: nguyentran.07052002ak@gmail.com
           commit_message: 'Deploy debug APK'
