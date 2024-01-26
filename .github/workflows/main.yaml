@@ -15,8 +15,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "NguyenTran153"
+          git config user.email "nguyen07052002ak@gmail.com"
           echo -e "machine github.com\n  login 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" > ~/.netrc
 
       - name: Push to master and milestone-4
