@@ -20,6 +20,6 @@ jobs:
 
       - name: Push changes
         run: |
-          git push origin HEAD:master HEAD:milestone-4
+          git push origin master milestone-4 --force
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
