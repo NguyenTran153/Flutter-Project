@@ -18,6 +18,10 @@ jobs:
           git config user.name "NguyenTran153"
           git config user.email "nguyentran.07052002ak@gmail.com"
 
+      - name: Create and checkout master branch
+        run: |
+          git checkout -b master
+
       - name: Push changes
         run: |
           git push origin master milestone-4 --force
