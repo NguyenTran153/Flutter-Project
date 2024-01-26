@@ -87,6 +87,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
                         fontWeight: FontWeight.w500,
                         color: Theme.of(context).colorScheme.tertiary),
                   ),
+                  // Test
                   sizedBox,
                   Row(
                     children: [
