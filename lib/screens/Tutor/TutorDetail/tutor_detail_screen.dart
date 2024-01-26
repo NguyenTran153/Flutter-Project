@@ -9,18 +9,19 @@ import "package:provider/provider.dart";
 import "package:video_player/video_player.dart";
 
 import "../../../constants/constant.dart";
-import "../../../l10n.dart";
+import '../../../l10n/l10n.dart';
 import "../../../models/course/course.dart";
 import "../../../models/tutor/tutor_info.dart";
 import "../../../providers/language_provider.dart";
 import "../../../services/tutor_service.dart";
 import "../../../utils/routes.dart";
+import "../Messenger/messenger_screen.dart";
 
 class TutorDetailScreen extends StatefulWidget {
   const TutorDetailScreen({
     Key? key,
   }) : super(key: key);
-  
+
   @override
   State<TutorDetailScreen> createState() => _TutorDetailScreenState();
 }
@@ -92,10 +93,113 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
     _chewieController?.dispose();
     super.dispose();
   }
-  // //Fake
-  // List<Course> courses = [
-  //
-  // ];
+
+  Future<bool> showReportDialog(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(AppLocalizations(currentLocale).translate('report')!),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 72,
+                      height: 72,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl:  _tutorInfo.user?.avatar ?? '',
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.error_outline_rounded,
+                          size: 32,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+
+                    sizedBox,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _tutorInfo.user?.name ?? '',
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          subSizedBox,
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                sizedBox,
+                Text(
+                  'Please tell us what went wrong',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                subSizedBox,
+                TextField(
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(12),
+                      border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(10))),
+                ),
+                subSizedBox,
+                TextField(
+                  minLines: 3,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                      hintText: 'Additional Notes',
+                      contentPadding: const EdgeInsets.all(12),
+                      border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(10))),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: Text(
+                AppLocalizations(currentLocale)
+                    .translate('cancel')!,
+                style: const TextStyle(fontSize: 18),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      AppLocalizations(currentLocale)
+                          .translate('reportSuccess')!,),
+                  ),
+                );
+                Navigator.pop(context, true);
+              },
+              child: const Text(
+                'OK',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        );
+      },
+    ).then((value) => value ?? false);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -109,20 +213,20 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
       _getTutor(authProvider);
     }
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: BackButton(
-          color: Theme.of(context).colorScheme.secondary,
-        ),
-        title: Text(
-          AppLocalizations(currentLocale).translate('tutor')!,
-          style: Theme.of(context).textTheme.displayMedium,
-        ),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Theme.of(context).primaryColor,
+              leading: BackButton(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              title: Text(
+                AppLocalizations(currentLocale).translate('tutor')!,
+                style: Theme.of(context).textTheme.displayMedium,
+              ),
+            ),
+            body:  _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,23 +361,33 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                       Expanded(
                         child: TextButton(
                           onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text(AppLocalizations(currentLocale)
-                                      .translate('reportSuccess')!),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        MessengerScreen(tutorId: userId,)));
+                          },
+                          child: Column(
+                            children: [
+                              Icon(Icons.message,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                              Text(
+                                AppLocalizations(currentLocale)
+                                    .translate('messenger')!,
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () async {
+                            await showReportDialog(context);
                           },
                           child: Column(
                             children: [
@@ -303,7 +417,7 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                             width: 2),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10))),
-                    child: _chewieController != null
+                    child: _chewieController == null
                         ? Text(
                             AppLocalizations(currentLocale)
                                 .translate('noVideo')!,
@@ -385,14 +499,16 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                   //   ),
                   // ),
                   sizedBox,
-                  Text( AppLocalizations(currentLocale).translate('interests')!,
+                  Text(AppLocalizations(currentLocale).translate('interests')!,
                       style: Theme.of(context).textTheme.displaySmall),
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 8),
                     child: Text(_tutorInfo.interests ?? ''),
                   ),
                   sizedBox,
-                  Text(AppLocalizations(currentLocale).translate('experienceLevel')!,
+                  Text(
+                      AppLocalizations(currentLocale)
+                          .translate('experienceLevel')!,
                       style: Theme.of(context).textTheme.displaySmall),
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 8),
@@ -418,7 +534,8 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                                 top: Radius.circular(16),
                               ),
                             ),
-                            builder: (context) => TutorScheduleWidget(userId: userId),
+                            builder: (context) =>
+                                TutorScheduleWidget(userId: userId),
                           );
                         },
                         child: Text(
@@ -431,6 +548,6 @@ class _TutorDetailScreenState extends State<TutorDetailScreen> {
                 ],
               ),
             ),
-    );
+          );
   }
 }

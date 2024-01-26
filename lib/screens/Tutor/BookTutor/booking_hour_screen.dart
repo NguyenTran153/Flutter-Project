@@ -3,7 +3,7 @@ import 'package:flutter_project/screens/Tutor/BookTutor/booking_dialogue.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../l10n.dart';
+import '../../../l10n/l10n.dart';
 import '../../../models/schedule/schedule.dart';
 import '../../../providers/language_provider.dart';
 

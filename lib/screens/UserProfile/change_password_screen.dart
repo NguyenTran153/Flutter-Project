@@ -3,7 +3,7 @@ import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:flutter_project/services/user_service.dart';
 import 'package:provider/provider.dart';
 
-import '../../l10n.dart';
+import '../../l10n/l10n.dart';
 import '../../providers/language_provider.dart';
 import '../../utils/sized_box.dart';
 import '../../widgets/text_field.dart';
@@ -51,7 +51,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     }
 
     try {
-
 
       final String token = authProvider.token?.access?.token as String;
 
@@ -148,7 +147,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     color: Theme.of(context).colorScheme.secondary,
                   ),
                   child: Text(
-                    AppLocalizations(currentLocale).translate('change')!,
+                    AppLocalizations(currentLocale).translate('submit')!,
                   ),
                 ),
               ),

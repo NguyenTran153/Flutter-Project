@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../l10n.dart';
+import '../../l10n/l10n.dart';
 import '../../providers/language_provider.dart';
 import '../../services/authentication_service.dart';
 import '../../utils/routes.dart';

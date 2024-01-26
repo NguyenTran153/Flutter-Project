@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_project/constants/base_url.dart';
 import 'package:http/http.dart';
 
+import '../envs/environment.dart';
 import '../models/tutor/tutor.dart';
 import '../models/tutor/tutor_info.dart';
 import '../models/user/learn_topic.dart';
 import '../models/user/test_preparation.dart';
 
 class TutorService {
-  static const _baseUrl = baseUrl;
+  static final _baseUrl = EnvironmentConfig.apiUrl;
 
   static Future<List<LearnTopic>> getTopics() async {
     return <LearnTopic>[];
@@ -50,20 +50,19 @@ class TutorService {
     required int rate,
     required String content,
   }) async {
-    String url = '$_baseUrl/tutor/feedbackTutor';
-    Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token'
-    };
-
-    Map<String, dynamic> body = {
-      'bookingId': bookingId,
-      'tutorId': userId,
-      'rate': rate,
-      'content': content
-    };
-
-    Response response = await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
+    final response = await post(
+      Uri.parse('$_baseUrl/user/feedbackTutor'),
+      headers: {
+        'Content-Type': 'application/json;encoding=utf-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode({
+        'bookingId': bookingId,
+        'userId': userId,
+        'rating': rate,
+        'content': content,
+      }),
+    );
 
     final jsonDecode = json.decode(response.body);
 
@@ -137,7 +136,7 @@ class TutorService {
     required String userId,
   }) async {
     final response = await post(
-      Uri.parse('$baseUrl/user/manageFavoriteTutor'),
+      Uri.parse('$_baseUrl/user/manageFavoriteTutor'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -161,7 +160,7 @@ class TutorService {
     required String content,
   }) async {
     final response = await post(
-      Uri.parse('$baseUrl/report'),
+      Uri.parse('$_baseUrl/report'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

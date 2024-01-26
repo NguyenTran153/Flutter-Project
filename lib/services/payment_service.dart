@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:http/http.dart';
-import '../constants/base_url.dart';
+import '../envs/environment.dart';
 
 class PaymentService {
-  static const _baseUrl = baseUrl;
+  static final _baseUrl = EnvironmentConfig.apiUrl;
 
   static Future<Response> getPaymentHistory({
     required String token,

@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_project/constants/base_url.dart';
 import 'package:http/http.dart';
 
+import '../envs/environment.dart';
 import '../models/user/token.dart';
 import '../models/user/user.dart';
 
 class AuthenticationService {
-  static const _baseUrl = baseUrl;
+  static final _baseUrl = EnvironmentConfig.apiUrl;
 
   static User parseUser(String responseBody) => User.fromJson(jsonDecode(responseBody));
 
@@ -81,44 +81,48 @@ class AuthenticationService {
     return response;
   }
 
-  static Future<void> loginByGoogle({
+  static loginByGoogle({
     required String accessToken,
     required Function(User, Token) onSuccess,
   }) async {
-    String url = '$_baseUrl/auth/google';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'access_token': accessToken};
-
-    Response response =
-        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
+    final response = await post(
+      Uri.parse("$_baseUrl/auth/google"),
+      body: {
+        'access_token': accessToken,
+      },
+    );
 
     final jsonDecode = json.decode(response.body);
     if (response.statusCode != 200) {
       throw Exception(jsonDecode['message']);
     }
+
     final user = User.fromJson(jsonDecode['user']);
     final tokens = Token.fromJson(jsonDecode['tokens']);
     await onSuccess(user, tokens);
   }
 
-  static Future<void> loginByFacebook({
+  static loginByFacebook({
     required String accessToken,
     required Function(User, Token) onSuccess,
   }) async {
-    String url = '$_baseUrl/auth/facebook';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
-    Map<String, String> body = {'access_token': accessToken};
+    final response = await post(
+      Uri.parse("$_baseUrl/auth/facebook"),
+      body: {
+        'access_token': accessToken,
+      },
+    );
 
-    Response response =
-        await post(Uri.parse(url), headers: headers, body: jsonEncode(body));
     final jsonDecode = json.decode(response.body);
     if (response.statusCode != 200) {
       throw Exception(jsonDecode['message']);
     }
+
     final user = User.fromJson(jsonDecode['user']);
     final tokens = Token.fromJson(jsonDecode['tokens']);
     await onSuccess(user, tokens);
   }
+
 
   static Future<Response> refreshToken(String refreshToken) async {
     String url = '$_baseUrl/auth/refresh-token';
@@ -176,7 +180,7 @@ class AuthenticationService {
     required Function(User, Token) onSuccess,
   }) async {
     final response = await post(
-      Uri.parse("$baseUrl/auth/refresh-token"),
+      Uri.parse("$_baseUrl/auth/refresh-token"),
       body: {
         'refreshToken': refreshToken,
         'timezone': "7",

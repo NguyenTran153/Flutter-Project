@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:flutter_project/providers/language_provider.dart';
+import 'package:flutter_project/screens/Auth/login_phone_screen.dart';
 import 'package:flutter_project/screens/Tutor/Review/review_screen.dart';
 import 'package:flutter_project/screens/UserProfile/become_tutor_screen.dart';
 import 'package:flutter_project/screens/UserProfile/change_password_screen.dart';
@@ -18,7 +21,8 @@ import 'package:flutter_project/screens/Navigation/navigation_screen.dart';
 import 'package:flutter_project/utils/routes.dart';
 import 'package:flutter_project/providers/theme_provider.dart';
 
-import 'l10n.dart';
+import 'envs/environment.dart';
+import 'l10n/l10n.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -28,8 +32,18 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-
 void main() {
+  final flavor = String.fromEnvironment('FLAVOR');
+  print("🎚️ 🎚️ 🎚️ FLAVOR: $flavor");
+  // flutter run --dart-define=FLAVOR=dev
+  if (flavor == 'dev') {
+    EnvironmentConfig.setEnvironment(Environment.dev);
+  } else if (flavor == 'product') {
+    EnvironmentConfig.setEnvironment(Environment.product);
+  } else {
+    EnvironmentConfig.setEnvironment(Environment.dev);
+  }
+
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
@@ -47,7 +61,7 @@ class MyApp extends StatelessWidget {
         ],
         child: Consumer3<ThemeProvider, LanguageProvider, AuthProvider>(
           builder: (ctx, themeProvider, languageProvider, authProvider, _) => MaterialApp(
-            title: 'LetTutor',
+            title: 'Lettutor',
             locale: languageProvider.currentLocale,
             supportedLocales: const [
               Locale('en'),
@@ -55,6 +69,8 @@ class MyApp extends StatelessWidget {
             ],
             localizationsDelegates: const [
               AppLocalizationsDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
             ],
             theme:
                 themeProvider.mode == ThemeMode.light ? lightTheme : darkTheme,
@@ -62,6 +78,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             routes: {
               Routes.login: (context) => const LoginScreen(),
+              Routes.loginByPhone: (context) => const LoginByPhoneScreen(),
               Routes.register: (context) => const RegisterScreen(),
               Routes.forgotPassword: (context) => const ForgotPasswordScreen(),
               Routes.main: (context) => const NavigationScreen(),

@@ -6,7 +6,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import "package:flutter_project/utils/routes.dart";
 import "package:provider/provider.dart";
 
-import "../../l10n.dart";
+import '../../l10n/l10n.dart';
 import "../../providers/auth_provider.dart";
 import "../../providers/language_provider.dart";
 import "../Course/course_screen.dart";
@@ -53,11 +53,25 @@ class _NavigationScreenState extends State<NavigationScreen> {
           elevation: 0,
           automaticallyImplyLeading: false,
           backgroundColor: Theme.of(context).primaryColor,
-          title: Text(
-            AppLocalizations(currentLocale).translate(
-              pagesTitles[_chosenPageIndex],
-            )!,
-            style: Theme.of(context).textTheme.displayMedium,
+          title: Row(
+            children: [
+              Image.asset(
+                'public/icons/lettutor.png',
+                width: 50,
+                height: 50,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Expanded(
+                  child: Text(
+                    AppLocalizations(currentLocale).translate(
+                      pagesTitles[_chosenPageIndex],
+                    )!,
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                ),
+              ),
+            ],
           ),
           actions: _chosenPageIndex == 0
               ? [
@@ -75,16 +89,19 @@ class _NavigationScreenState extends State<NavigationScreen> {
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        child: Image.network(
-                          authProvider.currentUser.avatar ?? '',
+                        child: (authProvider.currentUser.avatar?.isNotEmpty ??
+                            false)
+                            ? Image.network(
+                          authProvider.currentUser.avatar!,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.person_rounded),
-                        ),
+                          const Icon(Icons.person_rounded),
+                        )
+                            : const SizedBox(),
                       ),
                     ),
                   )
-                ]
+          ]
               : [],
         ),
         body: pages[_chosenPageIndex],

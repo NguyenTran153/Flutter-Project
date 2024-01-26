@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_project/constants/base_url.dart';
 import 'package:http/http.dart';
 
+import '../envs/environment.dart';
 import '../models/course/course.dart';
 
 class CourseService {
-  static const _baseUrl = baseUrl;
+  static final _baseUrl = EnvironmentConfig.apiUrl;
 
   static Future<Map<String, dynamic>> getListCourseWithPagination({
     required String token,

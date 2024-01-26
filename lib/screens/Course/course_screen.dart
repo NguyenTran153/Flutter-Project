@@ -3,7 +3,7 @@ import 'package:flutter_project/utils/sized_box.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/constant.dart';
-import '../../l10n.dart';
+import '../../l10n/l10n.dart';
 import '../../models/course/course.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/language_provider.dart';
@@ -57,6 +57,10 @@ class _CourseScreenState extends State<CourseScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
+
+    if(_searchController.text.isEmpty) {
+      _searchController.text = '';
+    }
 
     if (_isLoading && authProvider.token != null) {
       final String accessToken = authProvider.token?.access?.token as String;

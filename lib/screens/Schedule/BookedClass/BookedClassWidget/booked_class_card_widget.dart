@@ -9,7 +9,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:jitsi_meet_wrapper/jitsi_meet_wrapper.dart';
 
 
-import "../../../../l10n.dart";
+import '../../../../l10n/l10n.dart';
 import "../../../../models/schedule/booking_info.dart";
 import "../../../../providers/auth_provider.dart";
 import "../../../../providers/language_provider.dart";
@@ -56,6 +56,17 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
         bookingInfo.scheduleDetailInfo!.endPeriodTimestamp ?? 0));
     return result;
   }
+
+  bool _canCancelClass() {
+    final startTimestamp =
+        bookingInfo.scheduleDetailInfo?.startPeriodTimestamp ?? 0;
+    final startTime = DateTime.fromMillisecondsSinceEpoch(startTimestamp);
+
+    final timeDifference = startTime.difference(DateTime.now());
+
+    return timeDifference.inHours >= 2;
+  }
+
 
   Future<String> _cancelClass(AuthProvider authProvider) async {
     final String token = authProvider.token?.access?.token as String;
@@ -182,54 +193,62 @@ class _BookedClassCardWidgetState extends State<BookedClassCardWidget> {
                       foregroundColor: Colors.red,
                     ),
                     onPressed: () async {
-                      final dialogResult = await showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(AppLocalizations(currentLocale)
-                              .translate('cancel')!),
-                          content: Text(AppLocalizations(currentLocale)
-                              .translate('areYouSure')!),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, false),
-                              child: const Text('NO'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context, true);
-                                // setState(() {
-                                //   _isCardVisible = false;
-                                // });
-                              },
-                              child: const Text('YES'),
-                            ),
-                          ],
-                        ),
-                      );
-                      if (dialogResult) {
-                        final currentContext = context;
-
-                        _cancelClass(authProvider).then((result) {
-                          showDialog(
-                            context: currentContext,
+                      try {
+                        if (_canCancelClass()) {
+                          final dialogResult = await showDialog(
+                            context: context,
                             builder: (context) => AlertDialog(
-                              content: Text(result),
+                              title: Text(AppLocalizations(currentLocale)
+                                  .translate('cancel')!),
+                              content: Text(AppLocalizations(currentLocale)
+                                  .translate('areYouSure')!),
                               actions: [
                                 TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: const Text('NO'),
+                                ),
+                                TextButton(
                                   onPressed: () {
-                                    if (result ==
-                                        AppLocalizations(currentLocale)
-                                            .translate('cancelSuccess')!) {
-                                      onCancel(true);
-                                    }
-                                    Navigator.pop(currentContext);
+                                    Navigator.pop(context, true);
                                   },
-                                  child: const Text('OK'),
+                                  child: const Text('YES'),
                                 ),
                               ],
                             ),
                           );
-                        });
+
+                          if (dialogResult) {
+                            final result = await _cancelClass(authProvider);
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(result),
+                              ),
+                            );
+
+                            if (result ==
+                                AppLocalizations(currentLocale)
+                                    .translate('cancelSuccess')!) {
+                              onCancel(true);
+                            }
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'Cancellation is only allowed within 2 hours before the class.'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Error during cancelClass: $e'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
                       }
                     },
                     child: Text(

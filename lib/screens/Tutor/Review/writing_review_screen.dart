@@ -3,7 +3,7 @@ import 'package:flutter_project/providers/auth_provider.dart';
 import 'package:flutter_project/utils/sized_box.dart';
 import 'package:provider/provider.dart';
 
-import '../../../l10n.dart';
+import '../../../l10n/l10n.dart';
 import '../../../providers/language_provider.dart';
 import '../../../services/tutor_service.dart';
 import '../../../services/user_service.dart';
@@ -68,13 +68,14 @@ class _WritingReviewScreenState extends State<WritingReviewScreen> {
         Navigator.pop(context);
       }
     } catch (e) {
+      Navigator.pop(context);
+      print(e.toString());
       await showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text(AppLocalizations(currentLocale).translate('error')!),
           content: Text(
-            '${AppLocalizations(currentLocale).translate('reviewError')}: ${e.toString()}',
-          ),
+            AppLocalizations(currentLocale).translate('reviewSent')!),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

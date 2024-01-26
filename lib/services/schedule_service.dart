@@ -4,11 +4,11 @@ import 'dart:async';
 import 'package:flutter_project/models/schedule/schedule.dart';
 import 'package:http/http.dart';
 
-import '../constants/base_url.dart';
+import '../envs/environment.dart';
 import '../models/schedule/booking_info.dart';
 
 class ScheduleService {
-  static const _baseUrl = baseUrl;
+  static final _baseUrl = EnvironmentConfig.apiUrl;
 
   static Future<Map<String, dynamic>> getBookedClasses({
     required String token,
@@ -109,7 +109,8 @@ class ScheduleService {
     if (response.statusCode != 200) {
       throw Exception(jsonDecode(['message']));
     }
-    final schedules = jsonDecode['data'] as List;
+
+    final schedules = jsonDecode['scheduleOfTutor'] as List;
     return schedules.map((schedule) => Schedule.fromJson(schedule)).toList();
   }
 
@@ -146,25 +147,22 @@ class ScheduleService {
     required List<String> scheduleDetailIds,
     required String token,
   }) async {
-    String url = '$_baseUrl/booking/cancel';
-    Map<String, String> headers = {
-      'Content-Type': 'application/json;encoding=utf-8',
-      'Authorization': 'Bearer $token',
-    };
-
-    Response response = await delete(
-      Uri.parse(url),
-      headers: headers,
-      body: jsonEncode({
-        'scheduleDetailIds': scheduleDetailIds,
-      }),
+    final response = await delete(
+      Uri.parse('$_baseUrl/booking'),
+      headers: {
+        'Content-Type': 'application/json;encoding=utf-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(
+        {
+          'scheduleDetailIds': scheduleDetailIds,
+        },
+      ),
     );
 
-    final jsonDecode = json.decode(response.body);
     if (response.statusCode != 200) {
-      throw Exception('Error: Cannot cancel class. ${jsonDecode['message']}');
+      return json.decode(response.body)['message'];
     }
-
-    return jsonDecode['message'];
+    return "Class Cancelled Successfully";
   }
 }
