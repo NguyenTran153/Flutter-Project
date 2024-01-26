@@ -17,3 +17,4 @@ jobs:
         uses: actions/github-push@v2
         with:
           github_token: ${{ secrets.TOKEN }}
+          repository: NguyenTran153/Lettutor
