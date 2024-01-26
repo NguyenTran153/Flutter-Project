@@ -16,7 +16,7 @@ import 'package:flutter_project/screens/Auth/login_screen.dart';
 import 'package:flutter_project/screens/Auth/register_screen.dart';
 import 'package:flutter_project/screens/Course/CourseDetail/course_detail_screen.dart';
 import 'package:flutter_project/screens/Tutor/TutorSearch/tutor_result_screen.dart';
-import 'package:flutter_project/screens/Tutor/tutorDetail/tutor_detail_screen.dart';
+import 'package:flutter_project/screens/Tutor/TutorDetail/tutor_detail_screen.dart';
 import 'package:flutter_project/screens/Navigation/navigation_screen.dart';
 import 'package:flutter_project/utils/routes.dart';
 import 'package:flutter_project/providers/theme_provider.dart';
