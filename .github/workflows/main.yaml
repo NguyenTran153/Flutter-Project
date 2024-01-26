@@ -3,7 +3,8 @@ name: Auto Push
 on:
   push:
     branches:
-      - '*'
+      - 'milestone-4'
+      - 'master'
 
 jobs:
   publish:
