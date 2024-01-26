@@ -26,7 +26,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   bool _isLoading = true;
 
   late Locale currentLocale;
-  // fix
+
   @override
   void initState() {
     super.initState();
