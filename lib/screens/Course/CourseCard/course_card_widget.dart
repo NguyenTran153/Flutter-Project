@@ -77,9 +77,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
                         AppLocalizations(currentLocale).translate('null')!,
                     style: Theme.of(context).textTheme.displaySmall,
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  sizedBox,
                   Text(
                     course.description ??
                         AppLocalizations(currentLocale).translate('null')!,
