@@ -98,7 +98,7 @@ class _CourseCardWidgetState extends State<CourseCardWidget> {
                           style: const TextStyle(fontSize: 18),
                         ),
                       ),
-                      //CI
+
                       Text(
                         '${course.topics!.length} lessons',
                         style: const TextStyle(fontSize: 18),
